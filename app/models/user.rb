@@ -1,0 +1,20 @@
+class User < ApplicationRecord
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable
+
+  validates :username, presence: true, uniqueness: true
+  validates :username, length: { minimum: 3, maximum: 20 }
+  validates :email, presence: true, uniqueness: true
+
+  attr_accessor :login
+
+  def self.find_for_database_authentication(warden_conditions)
+    conditions = warden_conditions.dup
+    login = conditions.delete(:login)&.downcase
+
+    where(conditions).where(
+      "lower(email) = :value OR lower(username) = :value",
+      value: login
+    ).first
+  end
+end

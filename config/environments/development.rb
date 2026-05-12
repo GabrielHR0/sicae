@@ -25,6 +25,10 @@ Rails.application.configure do
     config.action_controller.perform_caching = false
   end
 
+  # In production, :host should be set to the actual host of your application.
+  # For development, we can use localhost and the default port 3000.
+  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
+
   # Change to :null_store to avoid any caching.
   config.cache_store = :memory_store
 
