@@ -85,3 +85,5 @@ group :test do
   gem "capybara", "~> 3.40"
   gem "selenium-webdriver", "~> 4.30"
 end
+
+gem "tailwindcss-rails", "~> 4.4"
