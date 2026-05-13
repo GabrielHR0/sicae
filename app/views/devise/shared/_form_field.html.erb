@@ -1,0 +1,18 @@
+<div class="form-field">
+    <%= f.label field, label%>
+
+    <% af = local_assigns.fetch(:autofocus, false) %>
+    <% ac = local_assigns.fetch(:autocomplete, nil) %>
+
+    <% if type == :password%>
+        <%= f.password_field field, autofocus: af,  autocomplete: ac %>
+    <% else %>
+        <%= f.text_field field, autofocus: af ,autocomplete: ac %>
+    <% end %>
+
+    <% if f.object && f.object.errors[field].present? %>
+        <div class="form-field__error">
+            <%= f.object.errors[field].join(", ") %>
+        </div>
+    <% end %>
+</div>

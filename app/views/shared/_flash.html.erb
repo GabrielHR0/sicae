@@ -1,5 +1,17 @@
 <% flash.each do |type, message| %>
-  <div class="flash flash--<%= type %>">
-    <%= message %>
+  <% klass = case type.to_sym
+    when :notice then "flash--success"
+    when :alert then "flash--danger"
+    when :error then "flash--danger"
+    when :warning then "flash--warning"
+    else "flash--info"
+  end %>
+
+  <div class="flash <%= klass %>">
+    <button type="button" class="flash__close" aria-label="Fechar" onclick="this.parentElement.style.display='none'">&times;</button>
+
+    <% Array(message).each do |m| %>
+      <div class="flash__message"><%= m %></div>
+    <% end %>
   </div>
 <% end %>
