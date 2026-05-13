@@ -1,5 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe "Testar factory" do
+    it "deve criar um usuário válido" do
+      user = FactoryBot.build(:user)
+      expect(user).to be_valid
+    end
+  end
 end
