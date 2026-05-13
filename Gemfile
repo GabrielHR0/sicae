@@ -30,7 +30,7 @@ gem "devise", "~> 4.9"
 
 gem "pundit", "~> 2.5"
 
-gem "rails-i18n", "~> 8.0.0"
+gem "rails-i18n", "~> 8.1.0"
 
 gem "pagy", "~> 43.4"
 
