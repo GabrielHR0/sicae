@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /rails
+    env_file:
+      - .env
+    environment:
+      RAILS_ENV: development
+      PORT: 3000
+      SICAE_DATABASE_HOST: db
+      DB_HOST: db
+      LISTEN_FORCE_POLLING: '1'
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    # Use a regular bind mount (no :cached) so file changes are immediately visible
+    volumes:
+      - ./:/rails
+      - bundle_cache:/usr/local/bundle
+    tty: true
+    entrypoint: ["/bin/bash", "/rails/docker/dev-entrypoint.sh"]
+    command: ["bin/dev"]
+
+volumes:
+  bundle_cache:
