@@ -10,9 +10,36 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_12_192135) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_15_172555) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "permissions", force: :cascade do |t|
+    t.string "acao"
+    t.datetime "created_at", null: false
+    t.string "descricao"
+    t.string "nome"
+    t.string "recurso"
+    t.datetime "updated_at", null: false
+    t.index ["acao", "recurso"], name: "index_permissions_on_acao_and_recurso", unique: true
+    t.index ["nome"], name: "index_permissions_on_nome", unique: true
+  end
+
+  create_table "roles", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "descricao"
+    t.string "nome"
+    t.datetime "updated_at", null: false
+    t.index ["nome"], name: "index_roles_on_nome", unique: true
+  end
+
+  create_table "roles_permissions", id: false, force: :cascade do |t|
+    t.bigint "permission_id", null: false
+    t.bigint "role_id", null: false
+    t.index ["permission_id"], name: "index_roles_permissions_on_permission_id"
+    t.index ["role_id", "permission_id"], name: "index_roles_permissions_on_role_id_and_permission_id", unique: true
+    t.index ["role_id"], name: "index_roles_permissions_on_role_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -27,4 +54,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_12_192135) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
   end
+
+  create_table "users_roles", id: false, force: :cascade do |t|
+    t.bigint "role_id", null: false
+    t.bigint "user_id", null: false
+    t.index ["role_id"], name: "index_users_roles_on_role_id"
+    t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id", unique: true
+    t.index ["user_id"], name: "index_users_roles_on_user_id"
+  end
+
+  add_foreign_key "roles_permissions", "permissions"
+  add_foreign_key "roles_permissions", "roles"
+  add_foreign_key "users_roles", "roles"
+  add_foreign_key "users_roles", "users"
 end
