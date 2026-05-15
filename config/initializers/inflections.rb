@@ -14,3 +14,20 @@
 # ActiveSupport::Inflector.inflections(:en) do |inflect|
 #   inflect.acronym "RESTful"
 # end
+
+# colocar inflections para palavras em português
+ActiveSupport::Inflector.inflections do |inflect|
+  inflect.plural(/$/, "s")
+  inflect.plural(/(s|z|x|ch|sh|ss|o)$/, "\\1es")
+  inflect.plural(/(al|el|ol|ul)$/, "\\1is")
+  inflect.plural(/(r|n)$/, "\\1es")
+  inflect.plural(/ão$/, "ões")
+
+  inflect.singular(/s$/, "")
+  inflect.singular(/(s|z|x|ch|sh|ss|o)es$/, "\\1")
+  inflect.singular(/(al|el|ol|ul)is$/, "\\1")
+  inflect.singular(/(r|n)es$/, "\\1")
+  inflect.singular(/ões$/, "ão")
+
+  inflect.irregular "perfil", "perfis"
+end
