@@ -30,4 +30,9 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.singular(/ões$/, "ão")
 
   inflect.irregular "perfil", "perfis"
+  inflect.irregular "user", "users"
+  inflect.irregular "role", "roles"
+  inflect.irregular "permission", "permissions"
+  inflect.irregular "responsavel", "responsaveis"
+  inflect.irregular "responsável", "responsáveis"
 end
