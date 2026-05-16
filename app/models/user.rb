@@ -6,6 +6,9 @@ class User < ApplicationRecord
   validates :username, length: { minimum: 3, maximum: 20 }
   validates :email, presence: true, uniqueness: true
 
+  has_and_belongs_to_many :roles
+  has_many :permissions, through: :role
+
   attr_accessor :login
 
   def self.find_for_database_authentication(warden_conditions)
