@@ -1,134 +1,86 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Rodar sem Docker
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-## Setup (development)
-
-1. Install gems:
+1. Instale as gems:
 
 ```bash
 bundle install
 ```
 
-2. Copy example env and edit if needed:
+2. Copie o env de exemplo e ajuste se necessario:
 
 ```bash
 cp .env.example .env
-# edit .env and set DB credentials if necessary
+# edite .env e ajuste credenciais do banco se necessario
 ```
 
-3. Create and migrate the database:
+3. Crie e migre o banco:
 
 ```bash
 bin/rails db:create
 bin/rails db:migrate
 ```
 
-4. Start the app (example):
+4. Suba o app:
 
 ```bash
 bin/rails server
 ```
 
-Notes:
-- The app reads `DATABASE_URL` automatically if set; the `config/database.yml` is configured to prefer explicit env vars when provided.
-- Do not commit your `.env` file to version control.
+Notas:
+- O app le `DATABASE_URL` se estiver definido; o `config/database.yml` prioriza variaveis de ambiente quando existirem.
+- Nao commite o arquivo `.env`.
 
-## Rodar em desenvolvimento com Docker
+## Rodar com Docker (dev)
 
-Existem duas formas comuns de rodar o ambiente de desenvolvimento conteinerizado:
+Este projeto ja possui `docker-compose.yml` (banco + web) e `docker-compose.dev.yml` para desenvolvimento. O modo dev usa o servico `dev`, monta o codigo e executa `bin/dev` com hot reload.
 
-- Opção rápida (temporária): usa o serviço `web` do `docker-compose` para executar `bin/dev` com bind-mount do código.
-
-```bash
-# inicia apenas o banco
-docker compose up -d db
-
-# abre um container temporário ligado à mesma rede e expõe a porta 3000
-docker compose run --service-ports web bin/dev
-```
-
-Observação: esse modo funciona se a imagem `web` tiver as dependências de desenvolvimento (Node/Yarn, ferramentas de assets). Se sua `Dockerfile` for orientada a produção, prefira a segunda opção.
-
-- Opção recomendada: crie um arquivo `docker-compose.dev.yml` que sobrescreva o serviço para montar o código e executar `bin/dev` (watchers do Tailwind + hot reload).
-
-Exemplo de `docker-compose.dev.yml`:
-
-```yaml
-services:
-	dev:
-		build:
-			context: .
-			dockerfile: Dockerfile
-		command: bin/dev
-		working_dir: /rails
-		env_file:
-			- .env
-		volumes:
-			- .:/rails:cached
-			- bundle_cache:/usr/local/bundle
-		ports:
-			- "3000:3000"
-		depends_on:
-			- db
-
-volumes:
-	bundle_cache:
-```
-
-Suba com:
+1. Suba o ambiente de desenvolvimento:
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 ```
 
-Isso permite hot-reload do Rails e do Tailwind (via `bin/dev`) enquanto o código é editado localmente.
-
-Se o `bin/dev` não rodar (falta Node/Yarn no container), adicione essas ferramentas à sua `Dockerfile` de desenvolvimento ou use uma `Dockerfile.dev` com dependências de desenvolvimento.
-
-Fique atento a não commitar credenciais sensíveis no repositório quando usar `.env`.
-
-### Tailwind
-
-Se você alterar o `tailwind.config.js` ou as fontes de estilos, é necessário rebuildar o CSS dentro do container (o host pode não ter o `rails`/Node). Exemplos:
-
-Rebuild único:
+2. Acesse o app:
 
 ```bash
-docker compose run --rm web bin/rails tailwindcss:build
+http://localhost:3000
 ```
 
-Assistir mudanças (watch):
+### Comandos Rails dentro do container
+
+Use o servico `dev` para rodar comandos do Rails dentro do container:
 
 ```bash
-docker compose run --rm web bin/rails tailwindcss:watch
+docker compose -f docker-compose.yml -f docker-compose.dev.yml exec dev bin/rails db:create
+docker compose -f docker-compose.yml -f docker-compose.dev.yml exec dev bin/rails db:migrate
+docker compose -f docker-compose.yml -f docker-compose.dev.yml exec dev bin/rails db:seed
 ```
 
-Se o serviço `web` já estiver em execução num container (ex.: `sicae-dev-1`), você também pode executar:
+Outros exemplos:
 
 ```bash
-docker exec -it sicae-dev-1 bin/rails tailwindcss:build
+docker compose -f docker-compose.yml -f docker-compose.dev.yml exec dev bin/rails console
+docker compose -f docker-compose.yml -f docker-compose.dev.yml exec dev bin/rails routes
 ```
 
-Ou use `bin/dev` quando a imagem/container tiver Node/Yarn instalados para rodar watchers (Rails + Tailwind) em modo de desenvolvimento.
+Observacoes:
+- Se preferir comandos pontuais sem manter o container aberto, use `run --rm` no lugar de `exec`.
+- Caso o `bin/dev` nao suba por falta de dependencias (Node/Yarn), adicione as dependencias na imagem de dev ou crie uma `Dockerfile.dev`.
+
+## Testes e lint
+
+Sem Docker:
+
+```bash
+bundle exec rspec
+bundle exec rubocop
+```
+
+Com Docker (dev):
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml exec dev bundle exec rspec
+docker compose -f docker-compose.yml -f docker-compose.dev.yml exec dev bundle exec rubocop
+```
