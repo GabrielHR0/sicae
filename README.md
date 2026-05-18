@@ -28,6 +28,12 @@ bin/rails db:migrate
 bin/rails server
 ```
 
+Para rodar Rails + Tailwind juntos (watch em tempo real), use o `bin/dev`:
+
+```bash
+bin/dev
+```
+
 Notas:
 - O app le `DATABASE_URL` se estiver definido; o `config/database.yml` prioriza variaveis de ambiente quando existirem.
 - Nao commite o arquivo `.env`.
@@ -47,6 +53,8 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 ```bash
 http://localhost:3000
 ```
+
+Esse modo ja sobe o watcher do Tailwind (via `bin/dev`) e aplica mudancas em tempo real no CSS e no codigo.
 
 ### Comandos Rails dentro do container
 
@@ -68,6 +76,32 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml exec dev bin/rail
 Observacoes:
 - Se preferir comandos pontuais sem manter o container aberto, use `run --rm` no lugar de `exec`.
 - Caso o `bin/dev` nao suba por falta de dependencias (Node/Yarn), adicione as dependencias na imagem de dev ou crie uma `Dockerfile.dev`.
+
+## Tailwind (CSS)
+
+Sem Docker:
+
+```bash
+bin/rails tailwindcss:build
+```
+
+Para assistir mudancas:
+
+```bash
+bin/rails tailwindcss:watch
+```
+
+Com Docker (dev):
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml exec dev bin/rails tailwindcss:build
+```
+
+Para assistir mudancas:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml exec dev bin/rails tailwindcss:watch
+```
 
 ## Testes e lint
 
