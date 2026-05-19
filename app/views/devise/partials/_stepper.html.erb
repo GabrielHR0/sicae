@@ -1,0 +1,60 @@
+<% current_value = local_assigns.fetch(:current, 0) %>
+<nav class="stepper font-sans relative" aria-label="Progresso" data-controller="stepper" data-stepper-current-value="<%= current_value %>">
+    <ol class="flex items-center w-full gap-4 mb-6">
+        <% steps.each_with_index do |step, index| %>
+            <% active = (index == current_value) %>
+            <% status = index < current_value ? 'completed' : (active ? 'current' : 'upcoming') %>
+
+            <%# compute after pseudo-element classes for connecting line except on last item %>
+                        <% if index == steps.size - 1 %>
+                            <% after_classes = '' %>
+                        <% else %>
+                            <% after_color = index < current_value ? 'after:border-indigo-400 dark:after:border-indigo-300' : 'after:border-gray-300 dark:after:border-gray-600' %>
+                            <% after_classes = "after:content-[''] after:flex-1 after:block after:h-1 after:border-b after:border-4 after:ms-4 after:rounded-full ".concat(after_color) %>
+                        <% end %>
+
+            <li class="flex w-full items-center <%= after_classes %>">
+                <div class="flex items-center gap-3">
+                    <%# only the current step should be visually highlighted (blue background). past steps keep neutral circles but the connecting line will show as indigo for completed %>
+                    <span class="flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12 rounded-full border text-sm font-medium <%= (index == current_value) ? 'border-indigo-600 bg-indigo-600 text-white dark:border-indigo-500 dark:bg-indigo-500' : 'border-gray-300 bg-white text-gray-600 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300' %>">
+                        <% if step[:icon_html].present? %>
+                            <%= raw(step[:icon_html].to_s.gsub(/<svg\b/, '<svg class="w-5 h-5"')) %>
+                        <% else %>
+                            <span class="w-5 h-5 flex items-center justify-center"><%= index + 1 %></span>
+                        <% end %>
+                    </span>
+                </div>
+            </li>
+        <% end %>
+    </ol>
+
+    <div>
+        <% steps.each_with_index do |step, index| %>
+            <div class="step-content <%= 'hidden' unless index == current_value %>" data-step-index="<%= index %>">
+                <header class="mb-4 flex items-center justify-start gap-3 text-gray-900 dark:text-white">
+                    <% if step[:icon_html].present? %>
+                        <div class="flex items-center justify-center w-8 h-8">
+                            <%= step[:icon_html].html_safe %>
+                        </div>
+                    <% end %>
+                    <h3 class="text-lg font-semibold leading-tight"><%= step[:name] %></h3>
+                </header>
+
+                <div class="step-body">
+                    <%= step[:body_html].to_s.html_safe %>
+                </div>
+                <footer class="mt-4 flex items-center justify-end gap-2">
+                    <div class="mt-6 flex items-center justify-between">
+                        <button type="button" data-action="click->stepper#prev" aria-label="Voltar" class="inline-flex items-center justify-center rounded-full p-2.5 bg-transparent hover:bg-white/30 dark:hover:bg-white/20 transition-colors text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white z-10">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                        </button>
+
+                        <button type="button" data-action="click->stepper#next" aria-label="Próximo" class="inline-flex items-center justify-center rounded-full p-2.5 bg-transparent hover:bg-white/30 dark:hover:bg-white/20 transition-colors text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white z-10">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </footer>
+            </div>
+        <% end %>
+    </div>
+</nav>
