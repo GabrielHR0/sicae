@@ -83,7 +83,7 @@ end
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara", "~> 3.40"
-  gem "selenium-webdriver", "~> 4.30"
+  gem "selenium-webdriver", "~> 4.44"
 end
 
 gem "tailwindcss-rails", "~> 4.4"
