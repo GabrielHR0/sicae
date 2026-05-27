@@ -4,7 +4,8 @@ module.exports = {
     './app/views/**/*.html.erb',
     './app/helpers/**/*.rb',
     './app/javascript/**/*.js',
-    './app/assets/**/*.{css,js,html}'
+    './app/assets/**/*.{css,js,html}',
+    './node_modules/flowbite/**/*.js'
   ],
   theme: {
     extend: {
@@ -21,10 +22,6 @@ module.exports = {
       ]
     }
   },
-  plugins: [
-    require('@tailwindcss/forms')
-  ]
-  ,
   safelist: [
     { pattern: /(^|\s)(bg|text|border)-primary(-\d{2,3})?(\s|$)/ }
   ]

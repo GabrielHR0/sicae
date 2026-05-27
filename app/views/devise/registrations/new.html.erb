@@ -5,7 +5,7 @@
   .no-native-date::-webkit-calendar-picker-indicator { opacity: 0; }
 </style>
 
-<div class="bg-gray-50 dark:bg-gray-900 font-sans">
+<div class="bg-gray-200 dark:bg-gray-900 font-sans">
   <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
    <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
       <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -59,7 +59,7 @@
           icon_html: '<svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"/><path d="M7 9h.01M7 13h10M7 17h4"/></svg>',
           body_html: capture do %>
 
-          <%= f.fields_for :profile do |profile_fields| %>
+          <%= f.fields_for :perfil_attributes do |profile_fields| %>
             <div class="mb-4">
               <%= profile_fields.label :nome, class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" do %>
                 Nome completo <span class="text-red-600 dark:text-red-500 ml-1">*</span>
@@ -79,7 +79,12 @@
                 Data de nascimento
               <% end %>
               <div class="relative">
-                <%= profile_fields.text_field :data_nascimento, type: 'text', data: { controller: 'flatpickr' }, class: "no-native-date bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full pr-10 py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" %>
+                <%= profile_fields.text_field :data_nascimento,
+                  type: 'text',
+                  datepicker: true,
+                  "datepicker-format": "dd/mm/yyyy",
+                  "datepicker-autohide": true,
+                  class: "no-native-date bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full pr-10 py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" %>
                 <svg class="w-5 h-5 text-gray-500 dark:text-gray-300 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3M3 11h18M5 21h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1z"/></svg>
               </div>
             </div>

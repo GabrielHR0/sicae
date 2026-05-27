@@ -20,33 +20,6 @@
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
-    <!-- flatpickr CSS (CDN) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <style>
-      /* flatpickr dark theme overrides when calendar has .dark */
-      .flatpickr-calendar.dark {
-        background: #0f172a; /* gray-900 */
-        color: #e5e7eb; /* gray-200 */
-        border-color: #334155; /* gray-700 */
-      }
-      .flatpickr-calendar.dark .flatpickr-day {
-        color: #e5e7eb;
-      }
-      .flatpickr-calendar.dark .flatpickr-day.today {
-        color: #fff;
-      }
-      .flatpickr-calendar.dark .flatpickr-day.selected,
-      .flatpickr-calendar.dark .flatpickr-day.startRange,
-      .flatpickr-calendar.dark .flatpickr-day.endRange {
-        background: #6366f1; /* indigo-500 */
-        color: #fff;
-      }
-      /* Light explicit styles (optional) */
-      .flatpickr-calendar.light .flatpickr-day.selected {
-        background: #bfdbfe; /* blue-200 */
-        color: #111827;
-      }
-    </style>
     <%= javascript_importmap_tags %>
   </head>
 
@@ -98,7 +71,5 @@
         }
       })();
     </script>
-    <!-- flatpickr JS (CDN) -->
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   </body>
 </html>
