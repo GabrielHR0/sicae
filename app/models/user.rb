@@ -10,11 +10,11 @@ class User < ApplicationRecord
   # relacionamentos
   has_and_belongs_to_many :roles
   has_many :permissions, through: :role
-  belongs_to :perfil, optional: true
+  has_one :perfil, inverse_of: :user, dependent: :destroy
 
   # atributos aninhados para perfil
   accepts_nested_attributes_for :perfil, reject_if: proc { |attributes| attributes["nome"].blank? }
-
+  
   # atributo virtual para login com email ou username
   attr_accessor :login
 
