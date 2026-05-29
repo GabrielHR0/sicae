@@ -40,12 +40,12 @@ Notas:
 
 ## Rodar com Docker (dev)
 
-Este projeto ja possui `docker-compose.yml` (banco + web) e `docker-compose.dev.yml` para desenvolvimento. O modo dev usa o servico `dev`, monta o codigo e executa `bin/dev` com hot reload.
+Este projeto possui um `docker-compose.dev.yml` proprio para desenvolvimento. Ele sobe o banco e o servico `dev`, monta o codigo e executa `bin/dev` com hot reload.
 
 1. Suba o ambiente de desenvolvimento:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+docker compose -f docker-compose.dev.yml up --build
 ```
 
 2. Acesse o app:
@@ -61,16 +61,16 @@ Esse modo ja sobe o watcher do Tailwind (via `bin/dev`) e aplica mudancas em tem
 Use o servico `dev` para rodar comandos do Rails dentro do container:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.dev.yml exec dev bin/rails db:create
-docker compose -f docker-compose.yml -f docker-compose.dev.yml exec dev bin/rails db:migrate
-docker compose -f docker-compose.yml -f docker-compose.dev.yml exec dev bin/rails db:seed
+docker compose -f docker-compose.dev.yml exec dev bin/rails db:create
+docker compose -f docker-compose.dev.yml exec dev bin/rails db:migrate
+docker compose -f docker-compose.dev.yml exec dev bin/rails db:seed
 ```
 
 Outros exemplos:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.dev.yml exec dev bin/rails console
-docker compose -f docker-compose.yml -f docker-compose.dev.yml exec dev bin/rails routes
+docker compose -f docker-compose.dev.yml exec dev bin/rails console
+docker compose -f docker-compose.dev.yml exec dev bin/rails routes
 ```
 
 Observacoes:
@@ -86,7 +86,7 @@ bin/rails tailwindcss:build
 ```
 
 Para assistir mudancas:
-
+<!--  -->
 ```bash
 bin/rails tailwindcss:watch
 ```
@@ -94,13 +94,13 @@ bin/rails tailwindcss:watch
 Com Docker (dev):
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.dev.yml exec dev bin/rails tailwindcss:build
+docker compose -f docker-compose.dev.yml exec dev bin/rails tailwindcss:build
 ```
 
 Para assistir mudancas:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.dev.yml exec dev bin/rails tailwindcss:watch
+docker compose -f docker-compose.dev.yml exec dev bin/rails tailwindcss:watch
 ```
 
 ## Testes e lint
@@ -115,6 +115,6 @@ bundle exec rubocop
 Com Docker (dev):
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.dev.yml exec dev bundle exec rspec
-docker compose -f docker-compose.yml -f docker-compose.dev.yml exec dev bundle exec rubocop
+docker compose -f docker-compose.dev.yml exec dev bundle exec rspec
+docker compose -f docker-compose.dev.yml exec dev bundle exec rubocop
 ```

@@ -1,5 +1,5 @@
 class Responsavel < ApplicationRecord
-  belongs_to :perfil
+  belongs_to :user
   has_many :estudantes, dependent: :nullify
 
   enum relacao_parental: {
@@ -8,4 +8,5 @@ class Responsavel < ApplicationRecord
     tutor: 2,
     outro: 3
   }
+  
 end

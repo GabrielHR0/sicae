@@ -1,15 +1,18 @@
-/*
- * This is a manifest file that'll be compiled into application.css.
- *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
- */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
 
-/* Tornar o cursor pointer em botões e checkboxes (quando aplicável) */
+@layer base {
+  html { @apply font-sans; }
+  body { @apply bg-gray-50 text-gray-900; }
+  .dark body { @apply bg-gray-900 text-gray-100; }
+
+  h1, h2, h3, h4, h5, h6 { @apply text-gray-900 dark:text-gray-50; }
+  a { @apply text-ruby-600 hover:text-ruby-700; }
+  .dark a { @apply text-ruby-400 hover:text-ruby-300; }
+
+  button { @apply font-medium; }
+}
+
 button,
 input[type="button"],
 input[type="submit"],
@@ -17,6 +20,8 @@ input[type="reset"],
 input[type="checkbox"] {
 	cursor: pointer;
 }
+
+
 
 /* Também aplicar em elementos com role="button" para acessibilidade */
 [role="button"] {
