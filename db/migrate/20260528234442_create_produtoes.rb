@@ -1,7 +1,7 @@
 class CreateProdutoes < ActiveRecord::Migration[8.1]
   def change
-    create_table :produtoes do |t|
-      t.string :nome, full: false
+    create_table :produtos do |t|
+      t.string :nome, null: false
       t.text :descricao
       t.decimal :preco, precision: 10, scale: 2, null: false
       t.string :categoria
