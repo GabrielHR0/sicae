@@ -1,0 +1,85 @@
+<div class="h-screen px-3 py-4 overflow-y-auto bg-ruby-750 dark:bg-neutral-950">
+  <a href="<%= root_path %>" class="flex items-center pl-2.5 mb-6">
+    <img src="/icon.png" class="h-6 mr-3 sm:h-7" alt="Sicae Logo">
+    <span class="self-center text-xl font-semibold whitespace-nowrap text-white">SICAE</span>
+  </a>
+
+  <% begin %>
+    <% show_users = policy(User).index? %>
+  <% rescue %>
+    <% show_users = false %>
+  <% end %>
+
+  <% menu_groups = [
+    {
+      id: "cadastros",
+      title: "Cadastros",
+      icon: '<svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v9m-9-9v9m-3-9h12M6 4.5h12a1.5 1.5 0 0 1 1.5 1.5v12A1.5 1.5 0 0 1 18 19.5H6A1.5 1.5 0 0 1 4.5 18V6a1.5 1.5 0 0 1 1.5-1.5Z"/></svg>',
+      items: [
+        { label: "Alunos", href: "#" },
+        { label: "Responsáveis", href: "#" },
+        { label: "Usuários", href: show_users ? admin_users_path : "#", visible: show_users }
+      ]
+    },
+    {
+      id: "operacao",
+      title: "Operação",
+      icon: '<svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 7.5h15M6 7.5l1.5 12h9l1.5-12M9 7.5V5.25A2.25 2.25 0 0 1 11.25 3h1.5A2.25 2.25 0 0 1 15 5.25V7.5"/></svg>',
+      items: [
+        { label: "Produtos", href: "#" },
+        { label: "Estoque", href: "#" },
+        { label: "Compras", href: "#" }
+      ]
+    },
+    {
+      id: "financeiro",
+      title: "Financeiro",
+      icon: '<svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-3h6m-7.5 3h9A2.25 2.25 0 0 0 18.75 15V9A2.25 2.25 0 0 0 16.5 6h-9A2.25 2.25 0 0 0 5.25 8.25v7.5A2.25 2.25 0 0 0 7.5 18Z"/></svg>',
+      items: [
+        { label: "Caixa", href: "#" },
+        { label: "Fluxo de vendas", href: "#" },
+        { label: "Relatórios", href: "#" }
+      ]
+    },
+    {
+      id: "configuracoes",
+      title: "Configurações",
+      icon: '<svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.109-.94h1.098c.549 0 1.02.398 1.11.94l.18 1.096c.04.243.221.44.46.54.235.1.483.2.736.31.233.102.504.096.724-.024l.992-.54a1.125 1.125 0 0 1 1.37.22l.777.777a1.125 1.125 0 0 1 .22 1.37l-.54.992c-.12.22-.126.49-.024.724.11.253.21.501.31.736.1.239.297.42.54.46l1.096.18c.542.09.94.56.94 1.109v1.098c0 .549-.398 1.02-.94 1.11l-1.096.18c-.243.04-.44.221-.54.46-.1.235-.2.483-.31.736-.102.233-.096.504.024.724l.54.992a1.125 1.125 0 0 1-.22 1.37l-.777.777a1.125 1.125 0 0 1-1.37.22l-.992-.54c-.22-.12-.49-.126-.724-.024-.253.11-.501.21-.736.31-.239.1-.42.297-.46.54l-.18 1.096c-.09.542-.56.94-1.109.94h-1.098c-.549 0-1.02-.398-1.11-.94l-.18-1.096c-.04-.243-.221-.44-.46-.54a6.525 6.525 0 0 1-.736-.31c-.233-.102-.504-.096-.724.024l-.992.54a1.125 1.125 0 0 1-1.37-.22l-.777-.777a1.125 1.125 0 0 1-.22-1.37l.54-.992c.12-.22.126-.49.024-.724a6.525 6.525 0 0 1-.31-.736c-.1-.239-.297-.42-.54-.46l-1.096-.18a1.125 1.125 0 0 1-.94-1.11v-1.098c0-.549.398-1.02.94-1.11l1.096-.18c.243-.04.44-.221.54-.46.1-.235.2-.483.31-.736.102-.233.096-.504-.024-.724l-.54-.992a1.125 1.125 0 0 1 .22-1.37l.777-.777a1.125 1.125 0 0 1 1.37-.22l.992.54c.22.12.49.126.724.024.253-.11.501-.21.736-.31.239-.1.42-.297.46-.54l.18-1.096Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>',
+      items: [
+        { label: "Perfil da escola", href: "#" },
+        { label: "Permissões", href: "#" },
+        { label: "Integrações", href: "#" }
+      ]
+    }
+  ] %>
+
+  <ul class="space-y-2 font-medium">
+    <% menu_groups.each do |group| %>
+      <li>
+        <button type="button" data-collapse-toggle="sidebar-<%= group[:id] %>" aria-controls="sidebar-<%= group[:id] %>" class="flex w-full items-center rounded-lg px-3 py-2 text-white hover:bg-ruby-800 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:hover:bg-ruby-800 dark:focus:ring-gray-500">
+          <span class="flex flex-1 items-center gap-4 text-left">
+            <span class="flex-shrink-0 text-white">
+              <%= raw(group[:icon]) %>
+            </span>
+            <span class="text-sm font-medium"><%= group[:title] %></span>
+          </span>
+          <svg class="ml-4 h-4 w-4 flex-shrink-0 transition-transform" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m1 1 4 4 4-4"/>
+          </svg>
+        </button>
+
+        <ul id="sidebar-<%= group[:id] %>" class="hidden mt-2 space-y-1 pl-3">
+          <% group[:items].each do |item| %>
+            <% next if item[:visible] == false %>
+            <li>
+              <a href="<%= item[:href] %>" class="flex items-center rounded-lg px-3 py-2 text-sm text-gray-100 hover:bg-ruby-900 hover:underline dark:text-gray-200 dark:hover:bg-ruby-900 dark:hover:underline focus:outline-none focus:ring-2 focus:ring-gray-500">
+                <span class="h-2 w-2 rounded-full bg-ruby-300 dark:bg-ruby-300"></span>
+                <span class="ml-3"><%= item[:label] %></span>
+              </a>
+            </li>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+  </ul>
+</div>
