@@ -12,6 +12,28 @@ class User < ApplicationRecord
   has_many :permissions, through: :role
   belongs_to :perfil, optional: true
 
+  # Checa se o usuário tem um role específico pelo nome
+  def has_role?(role_name)
+    roles.exists?(name: role_name)
+  end
+
+  # métodos de conveniência para verificar roles comuns
+  def admin?
+    has_role?("admin")
+  end
+
+  def funcionario?
+    has_role?("funcionario")
+  end
+
+  def responsavel?
+    has_role?("responsavel")
+  end
+
+  def aluno?
+    has_role?("aluno")
+  end
+
   # atributos aninhados para perfil
   accepts_nested_attributes_for :perfil, reject_if: proc { |attributes| attributes["nome"].blank? }
 
