@@ -9,7 +9,7 @@ class User < ApplicationRecord
 
   # relacionamentos
   has_and_belongs_to_many :roles
-  has_many :permissions, through: :role
+  has_many :permissions, through: :roles
   has_one :perfil, inverse_of: :user, dependent: :destroy
 
   # atributos aninhados para perfil
@@ -26,5 +26,20 @@ class User < ApplicationRecord
       "lower(email) = :value OR lower(username) = :value",
       value: login
     ).first
+  end
+
+  def admin?
+    has_role?(:admin)
+  end
+
+  def has_role?(role_name)
+    roles.exists?(nome: role_name.to_s)
+  end
+
+  def has_permission?(resource, action)
+     return true if admin?
+
+    permissions.exists?(recurso: resource.to_s, acao: action.to_s)
+
   end
 end
