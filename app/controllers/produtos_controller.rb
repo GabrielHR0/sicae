@@ -1,17 +1,28 @@
 class ProdutosController < ApplicationController
+  include DataTableable
+
+  DEFAULT_LIMIT = 20
+  PER_PAGE_OPTIONS = [10, 20, 50, 100].freeze
+  SORTABLE_COLUMNS = %w[nome categoria estoque preco ativo].freeze
+  SEARCHABLE_COLUMNS = %w[nome descricao categoria].freeze
+
   before_action :authenticate_user!
   before_action :set_produto, only: %i[show edit update destroy]
-  after_action :verify_authorized
-
-  # Pagy methods provided by ApplicationController (include Pagy::Method there)
+  # after_action :verify_authorized
 
   def index
-    authorize Produto
-    produtos = Produto.all
-    produtos = produtos.por_categoria(params[:categoria])
-    produtos = produtos.where(ativo: params[:ativo]) if params[:ativo].present?
-    produtos = produtos.order(:nome)
-    @pagy, @records = pagy(:offset, produtos, limit: params[:limit] || 20)
+    @pagy, @records = paginate_data_table(
+      Produto.all,
+      default_sort: :nome,
+      sortable_columns: SORTABLE_COLUMNS,
+      searchable_columns: SEARCHABLE_COLUMNS,
+      default_limit: DEFAULT_LIMIT,
+      per_page_options: PER_PAGE_OPTIONS
+    ) do |scope|
+      scope = scope.por_categoria(params[:categoria])
+      scope = scope.where(ativo: active_filter) if params[:ativo].present?
+      scope
+    end
   end
 
   def show
@@ -62,5 +73,9 @@ class ProdutosController < ApplicationController
 
   def produto_params
     params.require(:produto).permit(:nome, :descricao, :preco, :categoria, :estoque, :ativo)
+  end
+
+  def active_filter
+    ActiveModel::Type::Boolean.new.cast(params[:ativo])
   end
 end
