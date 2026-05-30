@@ -36,4 +36,6 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular "permission", "permissions"
   inflect.irregular "responsavel", "responsaveis"
   inflect.irregular "responsável", "responsáveis"
+  inflect.irregular "categoria", "categorias"
+  inflect.irregular "produto", "produtos"
 end
