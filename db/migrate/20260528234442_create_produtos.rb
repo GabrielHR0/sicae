@@ -1,4 +1,4 @@
-class CreateProdutoes < ActiveRecord::Migration[8.1]
+class CreateProdutos < ActiveRecord::Migration[8.1]
   def change
     create_table :produtos do |t|
       t.string :nome, null: false
@@ -15,3 +15,4 @@ class CreateProdutoes < ActiveRecord::Migration[8.1]
     add_index :produtos, :ativo
   end
 end
+  
