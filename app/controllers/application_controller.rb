@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   allow_browser versions: :modern
   include Pundit::Authorization
-  include Pagy::Backend
+  include Pagy::Method
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 

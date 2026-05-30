@@ -3,7 +3,7 @@ class ProdutosController < ApplicationController
   before_action :set_produto, only: %i[show edit update destroy]
   after_action :verify_authorized
 
-  include Pagy::Backend
+  # Pagy methods provided by ApplicationController (include Pagy::Method there)
 
   def index
     authorize Produto
@@ -11,7 +11,7 @@ class ProdutosController < ApplicationController
     produtos = produtos.por_categoria(params[:categoria])
     produtos = produtos.where(ativo: params[:ativo]) if params[:ativo].present?
     produtos = produtos.order(:nome)
-    @pagy, @produtos = pagy(produtos, limit: 20)
+    @pagy, @records = pagy(:offset, produtos, limit: params[:limit] || 20)
   end
 
   def show
