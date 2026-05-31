@@ -4,7 +4,14 @@
   categorias = local_assigns[:categorias] || []
 %>
 
-<%= form_with model: produto, class: "space-y-6" do |form| %>
+<%= form_with model: produto,
+              class: "space-y-6",
+              data: (
+                modal_id.present? ? {
+                  controller: "modal-form",
+                  action: "turbo:submit-start->modal-form#start turbo:submit-end->modal-form#end"
+                } : {}
+              ) do |form| %>
   <% if produto.errors.any? %>
     <div class="rounded-xl border border-red-300 bg-red-50 p-4 text-sm text-red-800 shadow-sm dark:border-red-900/40 dark:bg-red-950/35 dark:text-red-200">
       <p class="font-semibold"><%= pluralize(produto.errors.count, "erro") %> impediram o salvamento</p>
@@ -50,7 +57,7 @@
             </svg>
           </button>
 
-          <div data-category-select-target="panel" class="admin-form-select-panel">
+          <div data-category-select-target="panel" class="admin-form-select-panel hidden">
             <div class="max-h-60 overflow-y-auto space-y-1">
               <% categorias.each do |categoria| %>
                 <button type="button"
@@ -132,7 +139,7 @@
   <div class="flex items-center justify-end gap-3 border-t border-gray-200 pt-4 dark:border-gray-700">
     <% if modal_id.present? %>
       <button type="button"
-              data-modal-hide="<%= modal_id %>"
+              data-action="click->modal-loader#close"
               class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">
         Cancelar
       </button>
@@ -140,6 +147,14 @@
       <%= link_to "Cancelar", produtos_path, class: "rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800" %>
     <% end %>
 
-    <%= form.submit submit_label, class: "rounded-lg bg-ruby-750 px-4 py-2 text-sm font-medium text-white hover:bg-ruby-800" %>
+    <%= form.button type: :submit,
+                    data: { modal_form_target: "submitButton" },
+                    class: "inline-flex items-center justify-center gap-2 rounded-lg bg-ruby-750 px-4 py-2 text-sm font-medium text-white hover:bg-ruby-800" do %>
+      <span data-modal-form-target="submitLabel"><%= submit_label %></span>
+      <svg data-modal-form-target="submitSpinner" class="hidden h-4 w-4 animate-spin" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M12 2a10 10 0 1 0 10 10h-3a7 7 0 1 1-7-7V2Z"></path>
+      </svg>
+    <% end %>
   </div>
 <% end %>
