@@ -12,9 +12,5 @@ class CreateEscolas < ActiveRecord::Migration[8.1]
 
       t.timestamps
     end
-
-    add_index :escolas, :slug, unique: true
-    add_index :escolas, :schema_name, unique: true
-    add_index :escolas, :cnpj, unique: true
   end
 end
