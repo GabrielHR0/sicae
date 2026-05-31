@@ -8,9 +8,13 @@ class Produto < ApplicationRecord
 
   scope :ativos, -> { where(ativo: true) }
   scope :inativos, -> { where(ativo: false) }
-  scope :por_categoria, ->(cat) { where(categoria: cat) if cat.present? }
+  scope :por_nome_categoria, ->(nome_cat) {
+    return all if nome_cat.blank?
+    joins(:categoria).where("categorias.nome ILIKE ?", "%#{nome_cat.strip}%")
+  }
 
   def disponivel?
     ativo? && estoque > 0
   end
+  
 end

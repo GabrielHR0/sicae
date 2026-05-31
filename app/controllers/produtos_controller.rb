@@ -1,25 +1,22 @@
 class ProdutosController < ApplicationController
   include DataTableable
 
-  DEFAULT_LIMIT = 20
-  PER_PAGE_OPTIONS = [10, 20, 50, 100].freeze
   SORTABLE_COLUMNS = %w[nome categoria estoque preco ativo].freeze
   SEARCHABLE_COLUMNS = %w[nome descricao categoria].freeze
+
+  data_table default_sort: :nome,
+             sortable_columns: SORTABLE_COLUMNS,
+             searchable_columns: SEARCHABLE_COLUMNS,
+             default_limit: 20,
+             per_page_options: [10, 20, 50, 100]
 
   before_action :authenticate_user!
   before_action :set_produto, only: %i[show edit update destroy]
   # after_action :verify_authorized
 
   def index
-    @pagy, @records = paginate_data_table(
-      Produto.all,
-      default_sort: :nome,
-      sortable_columns: SORTABLE_COLUMNS,
-      searchable_columns: SEARCHABLE_COLUMNS,
-      default_limit: DEFAULT_LIMIT,
-      per_page_options: PER_PAGE_OPTIONS
-    ) do |scope|
-      scope = scope.por_categoria(params[:categoria])
+    @pagy, @records = paginate_data_table(Produto.all) do |scope|
+      scope = scope.por_nome_categoria(params[:categoria])
       scope = scope.where(ativo: active_filter) if params[:ativo].present?
       scope
     end
@@ -66,6 +63,12 @@ class ProdutosController < ApplicationController
   end
 
   private
+
+  def data_table_search_scope(scope, search_field, term)
+    return [scope.por_nome_categoria(term), true] if search_field == "categoria"
+
+    [scope, false]
+  end
 
   def set_produto
     @produto = Produto.find(params[:id])

@@ -6,7 +6,7 @@
     label: "Categoria",
     sortable: true,
     width: "18%",
-    render: ->(record, _view) { record.categoria.presence || "-" }
+    render: ->(record, _view) { record.categoria&.nome || record[:categoria].presence || "-" }
   },
   { key: :estoque, label: "Estoque", sortable: true, width: "12%" },
   {

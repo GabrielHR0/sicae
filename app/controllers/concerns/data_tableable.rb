@@ -1,22 +1,46 @@
 module DataTableable
   extend ActiveSupport::Concern
 
+  included do
+    class_attribute :data_table_config, default: {}
+  end
+
+  class_methods do
+    def data_table(default_sort:, sortable_columns:, searchable_columns:, default_limit: 20, per_page_options: [10, 20, 50, 100])
+      self.data_table_config = {
+        default_sort: default_sort,
+        sortable_columns: sortable_columns,
+        searchable_columns: searchable_columns,
+        default_limit: default_limit,
+        per_page_options: per_page_options
+      }
+    end
+  end
+
   private
 
-  def paginate_data_table(scope, default_sort:, sortable_columns:, searchable_columns:, default_limit:, per_page_options:)
-    scope = yield(scope) if block_given?
-    scope = apply_data_table_search(scope, searchable_columns)
-    scope = apply_data_table_sort(scope, default_sort, sortable_columns)
+  def paginate_data_table(scope)
+    config = self.class.data_table_config
 
-    pagy(:offset, scope, limit: data_table_per_page(default_limit, per_page_options))
+    scope = yield(scope) if block_given?
+    scope = apply_data_table_search(scope, config[:searchable_columns])
+    scope = apply_data_table_sort(scope, config[:default_sort], config[:sortable_columns])
+
+    pagy(:offset, scope, limit: data_table_per_page(config[:default_limit], config[:per_page_options]))
   end
 
   def apply_data_table_search(scope, searchable_columns)
-    return scope if data_table_search_term.blank?
+    term = data_table_search_term
+    return scope if term.blank?
+
+    search_field = data_table_search_column(searchable_columns)
+
+    scope, handled = data_table_search_scope(scope, search_field, term)
+    return scope if handled
 
     scope.where(
-      "#{data_table_search_column(searchable_columns)} ILIKE :term",
-      term: "%#{data_table_search_term}%"
+      "#{search_field} ILIKE :term",
+      term: "%#{term}%"
     )
   end
 
@@ -40,5 +64,9 @@ module DataTableable
   def data_table_per_page(default_limit, per_page_options)
     limit = params[:limit].to_i
     per_page_options.include?(limit) ? limit : default_limit
+  end
+
+  def data_table_search_scope(scope, _search_field, _term)
+    [scope, false]
   end
 end

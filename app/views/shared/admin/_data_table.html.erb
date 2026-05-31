@@ -234,8 +234,10 @@
         <% end %>
       <% end %>
 
-      <% pagy.send(:series).each do |item| %>
-        <% if item.is_a?(Integer) || item.to_s.match?(/\A\d+\z/) %>
+      <% pagy_page_items(pagy).each do |item| %>
+        <% if item == :gap %>
+          <span class="inline-flex items-center px-2 text-sm font-medium text-gray-400">...</span>
+        <% else %>
           <% page_number = item.to_i %>
           <% if page_number == pagy.page %>
             <span class="inline-flex items-center rounded-lg bg-ruby-750 px-4 py-2 text-sm font-medium text-white"><%= page_number %></span>
@@ -244,8 +246,6 @@
               <%= page_number %>
             <% end %>
           <% end %>
-        <% else %>
-          <span class="inline-flex items-center px-2 text-sm font-medium text-gray-400">...</span>
         <% end %>
       <% end %>
 
