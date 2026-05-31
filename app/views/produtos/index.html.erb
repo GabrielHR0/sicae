@@ -67,12 +67,41 @@
   }
 ] %>
 
+<% cards = [
+  {
+    title: "Total de produtos",
+    value: Produto.count,
+    description: "Quantidade de registros cadastrados",
+    icon: icon_svg("box")
+  },
+  {
+    title: "Produtos ativos",
+    value: Produto.where(ativo: true).count,
+    description: "Itens disponíveis no catálogo",
+    icon: icon_svg("check")
+  },
+  {
+    title: "Sem estoque",
+    value: Produto.where(estoque: 0).count,
+    description: "Produtos que precisam reposição",
+    icon: icon_svg("alert")
+  },
+  {
+    title: "Categorias usadas",
+    value: Produto.where.not(categoria_id: nil).distinct.count(:categoria_id),
+    description: "Categorias com produtos vinculados",
+    icon: icon_svg("grid")
+  }
+] %>
+
 <%= render layout: "layouts/admin" do %>
   <div class="space-y-6">
     <div>
       <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Produtos</h1>
       <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gerencie os itens cadastrados no sistema.</p>
     </div>
+
+    <%= render "shared/admin/summary_cards", cards: cards %>
 
     <%= render "shared/admin/data_table", 
       pagy: @pagy,

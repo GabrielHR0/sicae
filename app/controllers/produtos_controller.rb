@@ -15,7 +15,7 @@ class ProdutosController < ApplicationController
   # after_action :verify_authorized
 
   def index
-    @pagy, @records = paginate_data_table(Produto.all) do |scope|
+    @pagy, @records = paginate_data_table(Produto.includes(:categoria)) do |scope|
       scope = scope.por_nome_categoria(params[:categoria])
       scope = scope.where(ativo: active_filter) if params[:ativo].present?
       scope
