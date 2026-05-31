@@ -1,0 +1,34 @@
+<div id="<%= dom_id escola %>" class="w-full sm:w-auto my-5 space-y-5">
+  <div>
+    <strong class="block font-medium mb-1">Nome:</strong>
+    <%= escola.nome %>
+  </div>
+  <div>
+    <strong class="block font-medium mb-1">Slug:</strong>
+    <%= escola.slug %>
+  </div>
+  <div>
+    <strong class="block font-medium mb-1">Schema name:</strong>
+    <%= escola.schema_name %>
+  </div>
+  <div>
+    <strong class="block font-medium mb-1">Cnpj:</strong>
+    <%= escola.cnpj %>
+  </div>
+  <div>
+    <strong class="block font-medium mb-1">Email:</strong>
+    <%= escola.email %>
+  </div>
+  <div>
+    <strong class="block font-medium mb-1">Telefone:</strong>
+    <%= escola.telefone %>
+  </div>
+  <div>
+    <strong class="block font-medium mb-1">Ativo:</strong>
+    <%= escola.ativo? ? "Yes" : "No" %>
+  </div>
+  <div>
+    <strong class="block font-medium mb-1">Metadata:</strong>
+    <%= escola.metadata %>
+  </div>
+</div>

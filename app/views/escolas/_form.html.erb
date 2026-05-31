@@ -1,0 +1,57 @@
+<%= form_with(model: escola, class: "contents") do |form| %>
+  <% if escola.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
+      <h2><%= pluralize(escola.errors.count, "error") %> prohibited this escola from being saved:</h2>
+
+      <ul class="list-disc ml-6">
+        <% escola.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="my-5">
+    <%= form.label :nome %>
+    <%= form.text_field :nome, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": escola.errors[:nome].none?, "border-red-400 focus:outline-red-600": escola.errors[:nome].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :slug %>
+    <%= form.text_field :slug, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": escola.errors[:slug].none?, "border-red-400 focus:outline-red-600": escola.errors[:slug].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :schema_name %>
+    <%= form.text_field :schema_name, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": escola.errors[:schema_name].none?, "border-red-400 focus:outline-red-600": escola.errors[:schema_name].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :cnpj %>
+    <%= form.text_field :cnpj, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": escola.errors[:cnpj].none?, "border-red-400 focus:outline-red-600": escola.errors[:cnpj].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :email %>
+    <%= form.text_field :email, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": escola.errors[:email].none?, "border-red-400 focus:outline-red-600": escola.errors[:email].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :telefone %>
+    <%= form.text_field :telefone, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": escola.errors[:telefone].none?, "border-red-400 focus:outline-red-600": escola.errors[:telefone].any?}] %>
+  </div>
+
+  <div class="my-5 flex items-center gap-2">
+    <%= form.label :ativo %>
+    <%= form.checkbox :ativo, class: ["block shadow-sm rounded-md border order-first h-5 w-5", {"border-gray-400 focus:outline-blue-600": escola.errors[:ativo].none?, "border-red-400 focus:outline-red-600": escola.errors[:ativo].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :metadata %>
+    <%= form.text_field :metadata, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": escola.errors[:metadata].none?, "border-red-400 focus:outline-red-600": escola.errors[:metadata].any?}] %>
+  </div>
+
+  <div class="inline">
+    <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+  </div>
+<% end %>
