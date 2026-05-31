@@ -4,7 +4,7 @@
 <% clear_search_params = request.query_parameters.except("q", "page").merge(page: 1) %>
 
 <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
-  <div class="flex flex-col gap-4 border-b border-gray-200 px-6 py-4 md:flex-row md:items-center md:justify-between dark:border-gray-800">
+  <div class="flex flex-col gap-4 border-b border-ruby-100 bg-white px-6 py-4 md:flex-row md:items-center md:justify-between dark:border-gray-800 dark:bg-gray-800">
     <div>
       <h2 class="text-lg font-semibold text-gray-900 dark:text-white"><%= title %></h2>
       <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Lista com paginação, seleção de itens por página e ações rápidas.</p>
@@ -77,7 +77,7 @@
           <%= tag.col unless col[:width].present? %>
         <% end %>
       </colgroup>
-      <thead class="bg-gray-50 text-xs uppercase text-gray-800 dark:bg-gray-800 dark:text-gray-300">
+      <thead class="bg-ruby-100 text-xs uppercase text-gray-800 dark:bg-gray-800 dark:text-gray-300">
         <tr>
           <% columns.each do |col| %>
             <% header_classes = [
@@ -126,7 +126,12 @@
       </thead>
       <tbody>
         <% records.each do |record| %>
-          <tr class="cursor-pointer border-b border-gray-100 hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800">
+          <tr class="cursor-pointer border-b border-gray-100 hover:bg-ruby-750/10 dark:border-gray-800 dark:hover:bg-gray-800">
+            <% resource_modal_prefix = record.model_name.singular %>
+            <% view_modal_id = "#{resource_modal_prefix}-modal-visualizar" %>
+            <% edit_modal_id = "#{resource_modal_prefix}-modal-editar" %>
+            <% view_frame_id = "#{view_modal_id}-frame" %>
+            <% edit_frame_id = "#{edit_modal_id}-frame" %>
             <% columns.each_with_index do |col, index| %>
               <% cell_value = if col[:render].respond_to?(:call)
                 col[:render].call(record, self)
@@ -154,7 +159,12 @@
                     <% action_buttons = col[:buttons].presence || [
                       {
                         title: "Ver",
-                        href: ->(row) { polymorphic_path(row) },
+                        href: ->(row) { polymorphic_path(row, modal: "view") },
+                        data: {
+                          action: "click->modal-loader#open",
+                          modal_loader_modal_id: view_modal_id,
+                          turbo_frame: view_frame_id
+                        },
                         class: "rounded-lg border border-gray-300 px-3 py-2 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800",
                         icon: ->(view) do
                           view.raw('<svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1.5 12s3.75-7.5 10.5-7.5S22.5 12 22.5 12s-3.75 7.5-10.5 7.5S1.5 12 1.5 12Zm10.5 4.5a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Z"/></svg>')
@@ -162,7 +172,12 @@
                       },
                       {
                         title: "Editar",
-                        href: ->(row) { polymorphic_path([:edit, row]) },
+                        href: ->(row) { polymorphic_path(row, modal: "edit") },
+                        data: {
+                          action: "click->modal-loader#open",
+                          modal_loader_modal_id: edit_modal_id,
+                          turbo_frame: edit_frame_id
+                        },
                         class: "rounded-lg bg-ruby-750 px-3 py-2 text-white hover:bg-ruby-800",
                         icon: ->(view) do
                           view.raw('<svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16.862 4.487 1.687-1.687a1.875 1.875 0 1 1 2.652 2.652L7.875 18.778a4.5 4.5 0 0 1-1.897 1.13L3 21l1.092-2.978a4.5 4.5 0 0 1 1.13-1.897l11.64-11.638ZM19.5 7.125 16.875 4.5"/></svg>')
@@ -173,10 +188,20 @@
                     <% action_buttons.each do |button| %>
                       <% next if button[:if].respond_to?(:call) && !button[:if].call(record, self) %>
                       <% href = button[:href].respond_to?(:call) ? button[:href].call(record) : button[:href] %>
+                      <% link_options = {
+                        title: button[:title],
+                        aria: { label: button[:title] },
+                        class: button[:class]
+                      } %>
+                      <% if button[:data].present? %>
+                        <% link_options[:data] = button[:data].each_with_object({}) do |(key, value), data|
+                          data[key] = value.respond_to?(:call) ? value.call(record) : value
+                        end %>
+                      <% end %>
+                      <% link_options[:target] = button[:target] if button[:target].present? %>
+
                       <%= link_to href,
-                                  title: button[:title],
-                                  aria: { label: button[:title] },
-                                  class: button[:class] do %>
+                                  **link_options do %>
                         <% if button[:icon].respond_to?(:call) %>
                           <%= button[:icon].call(self) %>
                         <% else %>

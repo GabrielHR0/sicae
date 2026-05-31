@@ -8,13 +8,13 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
 
   # relacionamentos
-  has_and_belongs_to_many :roles
+  has_and_belongs_to_many :roles, join_table: :users_roles
   has_many :permissions, through: :roles
   has_one :perfil, inverse_of: :user, dependent: :destroy
 
   # Checa se o usuário tem um role específico pelo nome
   def has_role?(role_name)
-    roles.exists?(name: role_name)
+    roles.exists?(nome: role_name.to_s)
   end
 
   # métodos de conveniência para verificar roles comuns
@@ -48,14 +48,6 @@ class User < ApplicationRecord
       "lower(email) = :value OR lower(username) = :value",
       value: login
     ).first
-  end
-
-  def admin?
-    has_role?(:admin)
-  end
-
-  def has_role?(role_name)
-    roles.exists?(nome: role_name.to_s)
   end
 
   def has_permission?(resource, action)

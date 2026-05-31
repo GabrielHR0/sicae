@@ -1,0 +1,50 @@
+<%
+  modal_id = local_assigns.fetch(:modal_id)
+  mode = local_assigns[:mode]&.to_sym
+  resource_name = local_assigns[:resource_name].to_s.strip
+  title = local_assigns[:title].presence || begin
+    mode_label = mode == :edit ? "Editar" : "Criar"
+    resource_name.present? ? "#{mode_label} #{resource_name}" : mode_label
+  end
+  subtitle = local_assigns[:subtitle]
+  size_class = local_assigns[:size_class].presence || "max-w-5xl"
+  footer_actions = local_assigns[:footer_actions]
+%>
+
+<div id="<%= modal_id %>"
+     tabindex="-1"
+     aria-hidden="true"
+    class="fixed inset-0 z-50 hidden flex min-h-screen w-full items-center justify-center overflow-y-auto overflow-x-hidden bg-ruby-950/45 p-4 backdrop-blur-md dark:bg-black/65">
+  <div class="relative max-h-full w-full <%= size_class %>">
+    <div class="relative overflow-hidden rounded-xl border border-ruby-400/25 bg-ruby-50 shadow-xl dark:border-ruby-900/50 dark:bg-gray-950">
+      <div class="flex items-start justify-between border-b border-ruby-400/25 bg-ruby-750 px-5 py-4 text-white dark:border-ruby-900/50 dark:bg-ruby-800">
+        <div>
+          <h3 class="text-lg font-semibold"><%= title %></h3>
+          <% if subtitle.present? %>
+            <p class="mt-1 text-sm text-ruby-50"><%= subtitle %></p>
+          <% end %>
+        </div>
+
+        <button type="button"
+          data-modal-hide="<%= modal_id %>"
+          data-action="click->modal-loader#close"
+                class="ms-3 inline-flex h-8 w-8 items-center justify-center rounded-lg text-ruby-50 hover:bg-white/15 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/40"
+                aria-label="Fechar modal">
+          <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="space-y-4 px-5 py-5 text-sm text-gray-700 dark:text-gray-200">
+        <%= yield if block_given? %>
+      </div>
+
+      <% if footer_actions.present? %>
+        <div class="flex items-center justify-end gap-3 border-t border-gray-200 px-5 py-4 dark:border-gray-800">
+          <%= footer_actions %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

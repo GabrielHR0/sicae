@@ -1,0 +1,42 @@
+<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+  <div class="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+    <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Categoria</p>
+    <p class="mt-2 text-sm font-medium text-gray-900 dark:text-white"><%= produto.categoria&.nome || "-" %></p>
+  </div>
+
+  <div class="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+    <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Estoque</p>
+    <p class="mt-2 text-sm font-medium text-gray-900 dark:text-white"><%= produto.estoque %></p>
+  </div>
+
+  <div class="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+    <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Preço</p>
+    <p class="mt-2 text-sm font-medium text-gray-900 dark:text-white"><%= number_to_currency(produto.preco) %></p>
+  </div>
+</div>
+
+<div class="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+  <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Descrição</p>
+  <p class="mt-2 text-sm text-gray-700 dark:text-gray-300"><%= produto.descricao.presence || "Sem descrição cadastrada." %></p>
+</div>
+
+<div class="flex items-center justify-end gap-3 border-t border-gray-200 px-0 py-4 dark:border-gray-800">
+  <button type="button"
+          data-modal-hide="produto-modal-visualizar"
+          data-action="click->modal-loader#close"
+          class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">
+    Fechar
+  </button>
+
+  <%= link_to polymorphic_path(produto, modal: "edit"),
+      title: "Editar",
+      aria: { label: "Editar" },
+      class: "rounded-lg bg-ruby-750 px-4 py-2 text-sm font-medium text-white hover:bg-ruby-800",
+      data: {
+        action: "click->modal-loader#open",
+        modal_loader_modal_id: "produto-modal-editar",
+        turbo_frame: "produto-modal-editar-frame"
+      } do %>
+    Editar
+  <% end %>
+</div>

@@ -45,25 +45,7 @@
     key: :actions,
     label: "Ações",
     width: "16%",
-    actions: true,
-    buttons: [
-      {
-        title: "Ver",
-        href: ->(record) { polymorphic_path(record) },
-        class: "rounded-lg border border-gray-300 px-3 py-2 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800",
-        icon: ->(view) do
-          view.raw('<svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1.5 12s3.75-7.5 10.5-7.5S22.5 12 22.5 12s-3.75 7.5-10.5 7.5S1.5 12 1.5 12Zm10.5 4.5a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Z"/></svg>')
-        end
-      },
-      {
-        title: "Editar",
-        href: ->(record) { polymorphic_path([:edit, record]) },
-        class: "rounded-lg bg-ruby-750 px-3 py-2 text-white hover:bg-ruby-800",
-        icon: ->(view) do
-          view.raw('<svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16.862 4.487 1.687-1.687a1.875 1.875 0 1 1 2.652 2.652L7.875 18.778a4.5 4.5 0 0 1-1.897 1.13L3 21l1.092-2.978a4.5 4.5 0 0 1 1.13-1.897l11.64-11.638ZM19.5 7.125 16.875 4.5"/></svg>')
-        end
-      }
-    ]
+    actions: true
   }
 ] %>
 
@@ -95,11 +77,55 @@
 ] %>
 
 <%= render layout: "layouts/admin" do %>
-  <div class="space-y-6">
-    <div>
-      <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Produtos</h1>
-      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gerencie os itens cadastrados no sistema.</p>
+  <div class="space-y-6" data-controller="modal-loader">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div>
+        <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Produtos</h1>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gerencie os itens cadastrados no sistema.</p>
+      </div>
+
+      <button type="button"
+              data-modal-target="produto-modal-criar"
+              data-modal-toggle="produto-modal-criar"
+              class="inline-flex items-center justify-center rounded-lg bg-ruby-750 px-4 py-2.5 text-sm font-medium text-white hover:bg-ruby-800 focus:outline-none focus:ring-2 focus:ring-ruby-400">
+        Novo produto
+      </button>
     </div>
+
+    <%= render "shared/admin/modal",
+      modal_id: "produto-modal-criar",
+      mode: :create,
+      resource_name: "produto",
+      subtitle: "Cadastre um novo produto sem sair da listagem." do %>
+      <%= render "produtos/form",
+        produto: (@novo_produto || Produto.new),
+        categorias: @categorias,
+        submit_label: "Criar produto",
+        modal_id: "produto-modal-criar" %>
+    <% end %>
+
+    <%= render "shared/admin/modal",
+      modal_id: "produto-modal-editar",
+      mode: :edit,
+      resource_name: "produto",
+      subtitle: "Os dados são carregados dinamicamente ao clicar em editar." do %>
+      <%= turbo_frame_tag "produto-modal-editar-frame" do %>
+        <div class="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4 text-sm text-gray-600 dark:border-gray-700 dark:bg-gray-800/60 dark:text-gray-300">
+          Selecione um produto na tabela para carregar o formulário de edição.
+        </div>
+      <% end %>
+    <% end %>
+
+    <%= render "shared/admin/modal",
+      modal_id: "produto-modal-visualizar",
+      title: "Visualizar produto",
+      subtitle: "Veja os detalhes do produto sem sair da listagem." do %>
+      <%= turbo_frame_tag "produto-modal-visualizar-frame" do %>
+        <div class="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4 text-sm text-gray-600 dark:border-gray-700 dark:bg-gray-800/60 dark:text-gray-300">
+          Selecione um produto na tabela para carregar os detalhes.
+        </div>
+      <% end %>
+    <% end %>
 
     <%= render "shared/admin/summary_cards", cards: cards %>
 

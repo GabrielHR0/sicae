@@ -1,0 +1,145 @@
+<%
+  submit_label = local_assigns[:submit_label].presence || (produto.persisted? ? "Salvar alterações" : "Criar produto")
+  modal_id = local_assigns[:modal_id]
+  categorias = local_assigns[:categorias] || []
+%>
+
+<%= form_with model: produto, class: "space-y-6" do |form| %>
+  <% if produto.errors.any? %>
+    <div class="rounded-xl border border-red-300 bg-red-50 p-4 text-sm text-red-800 shadow-sm dark:border-red-900/40 dark:bg-red-950/35 dark:text-red-200">
+      <p class="font-semibold"><%= pluralize(produto.errors.count, "erro") %> impediram o salvamento</p>
+      <ul class="mt-3 list-disc space-y-1 ps-5">
+        <% produto.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="admin-form-panel-primary">
+    <div class="mb-5 flex items-center justify-between gap-3 border-b border-gray-200 pb-4 dark:border-gray-800">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-wide text-ruby-750 dark:text-white">Informações principais</p>
+        <p class="mt-1 text-sm text-gray-700 dark:text-gray-300">Preencha os dados básicos do produto.</p>
+      </div>
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-2">
+      <div class="md:col-span-2">
+        <%= form.label :nome, class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <%= form.text_field :nome,
+                required: true,
+                placeholder: "Ex.: Teclado mecânico",
+                class: "admin-form-input" %>
+        <p class="mt-2 text-xs text-gray-700 dark:text-gray-400">Use um nome claro e objetivo para facilitar a busca.</p>
+      </div>
+
+      <div>
+        <%= form.label :categoria_id, "Categoria", class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <div class="relative" data-controller="category-select">
+          <%= form.hidden_field :categoria_id, data: { category_select_target: "input" } %>
+
+          <button type="button"
+                  data-category-select-target="button"
+                  data-placeholder="Selecione uma categoria"
+                  data-action="category-select#toggle"
+                  class="admin-form-select-trigger">
+            <span data-category-select-target="label" class="truncate">Selecione uma categoria</span>
+            <svg class="h-4 w-4 shrink-0 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 10 4 4 4-4"/>
+            </svg>
+          </button>
+
+          <div data-category-select-target="panel" class="admin-form-select-panel">
+            <div class="max-h-60 overflow-y-auto space-y-1">
+              <% categorias.each do |categoria| %>
+                <button type="button"
+                        data-category-select-option
+                        data-category-select-id="<%= categoria.id %>"
+                        data-category-select-label="<%= categoria.nome %>"
+                        data-action="category-select#select"
+                        class="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm text-gray-700 hover:bg-ruby-50 hover:text-ruby-900 dark:text-gray-200 dark:hover:bg-ruby-950/40 dark:hover:text-white">
+                  <span class="truncate"><%= categoria.nome %></span>
+                  <span class="ms-3 inline-flex h-2 w-2 rounded-full bg-ruby-750/80"></span>
+                </button>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <p class="mt-2 text-xs text-gray-700 dark:text-gray-400">O produto será vinculado a esta categoria.</p>
+      </div>
+
+      <div>
+        <%= form.label :ativo, class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <label class="admin-form-toggle-shell">
+          <%= form.check_box :ativo, class: "sr-only peer", checked: produto.new_record? ? true : produto.ativo? %>
+          <div class="relative h-5 w-9 rounded-full bg-gray-300 transition peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-ruby-300 dark:bg-gray-700 dark:peer-focus:ring-ruby-900/40 peer-checked:bg-ruby-750 dark:peer-checked:bg-ruby-750 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full"></div>
+          <div class="ms-3">
+            <span class="block text-sm font-medium text-gray-800 dark:text-gray-100">Produto ativo</span>
+            <span class="block text-xs text-gray-700 dark:text-gray-400">Desative para ocultar na listagem pública.</span>
+          </div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-form-panel-secondary">
+    <div class="mb-5 border-b border-gray-200 pb-4 dark:border-gray-800">
+      <p class="text-sm font-semibold uppercase tracking-wide text-ruby-750 dark:text-white">Valores e descrição</p>
+      <p class="mt-1 text-sm text-gray-700 dark:text-gray-300">Informações de preço, estoque e observações adicionais.</p>
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-2">
+      <div>
+        <%= form.label :preco, class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <div class="flex rounded-lg shadow-xs">
+          <span class="admin-form-input-addon rounded-s-lg rounded-e-none border-e-0">R$</span>
+          <%= form.number_field :preco,
+                               step: 0.01,
+                               min: 0.01,
+                               required: true,
+                               placeholder: "0,00",
+                               class: "admin-form-input rounded-none rounded-e-lg" %>
+        </div>
+        <p class="mt-2 text-xs text-gray-700 dark:text-gray-400">Informe o valor unitário do produto.</p>
+      </div>
+
+      <div>
+        <%= form.label :estoque, class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <div class="flex rounded-lg shadow-xs">
+          <%= form.number_field :estoque,
+                               min: 0,
+                               step: 1,
+                               required: true,
+                               placeholder: "0",
+                               class: "admin-form-input rounded-s-lg rounded-e-none" %>
+          <span class="admin-form-input-addon rounded-s-none rounded-e-lg border-s-0">un.</span>
+        </div>
+        <p class="mt-2 text-xs text-gray-700 dark:text-gray-400">Quantidade disponível em estoque.</p>
+      </div>
+
+      <div class="md:col-span-2">
+        <%= form.label :descricao, class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <%= form.text_area :descricao,
+                           rows: 5,
+                           placeholder: "Descreva características, observações ou detalhes importantes.",
+               class: "admin-form-input p-3" %>
+        <p class="mt-2 text-xs text-gray-700 dark:text-gray-400">Esse campo ajuda a detalhar melhor o item na visualização.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex items-center justify-end gap-3 border-t border-gray-200 pt-4 dark:border-gray-700">
+    <% if modal_id.present? %>
+      <button type="button"
+              data-modal-hide="<%= modal_id %>"
+              class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">
+        Cancelar
+      </button>
+    <% else %>
+      <%= link_to "Cancelar", produtos_path, class: "rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800" %>
+    <% end %>
+
+    <%= form.submit submit_label, class: "rounded-lg bg-ruby-750 px-4 py-2 text-sm font-medium text-white hover:bg-ruby-800" %>
+  </div>
+<% end %>

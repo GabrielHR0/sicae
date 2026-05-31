@@ -62,5 +62,31 @@ input[type="checkbox"] {
 .border-primary-800 { border-color: #1e40af; }
 .border-primary-900 { border-color: #1e3a8a; }
 
+/* Small neutral step between gray-100 and gray-200 for subtle surfaces */
+.bg-gray-150 { background-color: #eceff3; }
+
 /* Tornar labels com for clicáveis visualmente */
 label[for] { cursor: pointer; }
+
+/* Number inputs: remove native spinners so we can control the visual style */
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Keep select options aligned with the app palette where the browser allows it */
+select option {
+  background-color: #f9fafb;
+  color: #111827;
+}
+
+.dark select option {
+  background-color: #1f2937;
+  color: #f3f4f6;
+}
