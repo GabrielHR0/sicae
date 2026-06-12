@@ -38,4 +38,8 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular "responsável", "responsáveis"
   inflect.irregular "categoria", "categorias"
   inflect.irregular "produto", "produtos"
+  inflect.irregular "estudante", "estudantes"
+  inflect.irregular "cardapio", "cardapios"
+  inflect.irregular "bloqueio", "bloqueios"
+  inflect.irregular "reserva",  "reservas"
 end

@@ -1,6 +1,10 @@
 class Produto < ApplicationRecord
 
   belongs_to :categoria, optional: true
+  has_many :bloqueios, dependent: :destroy
+  has_many :reservas, dependent: :destroy
+  has_many :cardapio_produtos, dependent: :destroy
+  has_many :cardapios, through: :cardapio_produtos   
   
   validates :nome, presence: true, length: { maximum: 100 }
   validates :preco, presence: true, numericality: { greater_than: 0 }
