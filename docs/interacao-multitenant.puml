@@ -1,0 +1,203 @@
+@startuml
+!theme plain
+
+title SICAE - Fluxos de Autenticação e Multi-Tenancy
+
+actor "Visitante" as VIS
+actor "Dono de Escola" as DONO
+actor "Funcionário" as FUNC
+actor "Pai / Responsável" as PAI
+actor "Aluno" as ALUNO
+actor "Admin de Rede" as ADMINR
+
+box "SICAE"
+participant "Landing Page" as LANDING
+participant "Middleware Tenant" as MW
+participant "Login" as LOGIN
+participant "Cadastro Escola" as CAD_ESCOLA
+participant "Cadastro Usuário" as CAD_USER
+participant "Schema Manager" as SCHEMA
+participant "Convite" as CONVITE
+participant "Seletor Escola" as SELETOR
+end box
+
+database "public" as PUBLIC
+database "Schema A" as SCHEMA_A
+database "Schema B" as SCHEMA_B
+
+== 1. Acesso sem slug (/) ==
+
+VIS -> LANDING: GET /
+activate LANDING
+
+LANDING -> MW: passa a requisição
+MW -> MW: sem slug\nsearch_path = public
+
+LANDING --> VIS: Landing page ou Login
+
+deactivate LANDING
+
+== 2. Acesso com slug (/colegio-x) ==
+
+VIS -> MW: GET /colegio-x/produtos
+activate MW
+
+MW -> MW: extrai slug "colegio-x"
+MW -> PUBLIC: busca Escola.find_by(slug:)
+PUBLIC --> MW: escola encontrada
+
+MW -> MW: schema_search_path = colegio_x,public
+MW -> MW: PATH_INFO = /produtos
+
+MW -> SCHEMA_A: encaminha para aplicação
+
+deactivate MW
+
+== 3. Cadastro de Escola + Dono ==
+
+VIS -> CAD_ESCOLA: Preenche dados da escola e do dono
+activate CAD_ESCOLA
+
+CAD_ESCOLA -> PUBLIC: cria Escola(slug, schema_name)
+PUBLIC --> CAD_ESCOLA: escola salva
+
+CAD_ESCOLA -> SCHEMA: create_schema!(schema_name)
+activate SCHEMA
+
+SCHEMA -> SCHEMA: CREATE SCHEMA IF NOT EXISTS
+SCHEMA -> SCHEMA: lê schema.rb
+SCHEMA -> SCHEMA: remove tabelas globais
+SCHEMA -> SCHEMA: executa schema no novo tenant
+
+SCHEMA --> CAD_ESCOLA: schema criado
+
+deactivate SCHEMA
+
+CAD_ESCOLA -> PUBLIC: cria User(dono)
+CAD_ESCOLA -> PUBLIC: associa role dono
+
+CAD_ESCOLA --> VIS: confirmação e redirecionamento
+
+deactivate CAD_ESCOLA
+
+== 4. Cadastro de Pai / Responsável ==
+
+PAI -> LANDING: GET /colegio-x/cadastro
+activate LANDING
+
+LANDING -> MW: processa requisição
+
+MW -> MW: search_path = colegio_x,public
+MW -> MW: PATH_INFO = /cadastro
+
+LANDING --> PAI: formulário de cadastro
+
+PAI -> CAD_USER: envia dados e matrícula
+activate CAD_USER
+
+CAD_USER -> SCHEMA_A: busca estudante
+SCHEMA_A --> CAD_USER: estudante encontrado
+
+CAD_USER -> PUBLIC: cria User(pai)
+CAD_USER -> PUBLIC: cria Responsavel
+
+CAD_USER -> SCHEMA_A: vincula responsável ao estudante
+
+CAD_USER --> PAI: conta criada
+
+deactivate CAD_USER
+deactivate LANDING
+
+== 5. Login e Navegação Multi-Escola ==
+
+DONO -> LOGIN: POST /colegio-x/login
+activate LOGIN
+
+LOGIN -> PUBLIC: autentica usuário
+PUBLIC --> LOGIN: usuário encontrado
+
+LOGIN -> LOGIN: valida escola do usuário
+
+LOGIN -> PUBLIC: cria sessão
+
+LOGIN --> DONO: /colegio-x/dashboard
+
+deactivate LOGIN
+
+== Admin de Rede ==
+
+ADMINR -> LOGIN: POST /login
+activate LOGIN
+
+LOGIN -> PUBLIC: autentica usuário
+PUBLIC --> LOGIN: admin_rede
+
+LOGIN -> LOGIN: usuário sem escola fixa
+
+LOGIN --> ADMINR: /selecionar-escola
+
+deactivate LOGIN
+
+ADMINR -> SELETOR: GET /selecionar-escola
+activate SELETOR
+
+SELETOR -> PUBLIC: busca escolas permitidas
+PUBLIC --> SELETOR: lista de escolas
+
+SELETOR --> ADMINR: exibe menu
+
+deactivate SELETOR
+
+ADMINR -> MW: GET /escola-a/relatorios
+activate MW
+
+MW -> PUBLIC: valida permissão
+PUBLIC --> MW: acesso permitido
+
+MW -> MW: search_path = escola_a,public
+MW -> MW: PATH_INFO = /relatorios
+
+deactivate MW
+
+== 6. Dono convida Funcionário ==
+
+DONO -> CONVITE: envia convite
+activate CONVITE
+
+CONVITE -> SCHEMA_A: registra convite pendente
+
+CONVITE --> DONO: convite enviado
+
+deactivate CONVITE
+
+... tempo passa ...
+
+FUNC -> LOGIN: acessa link do convite
+activate LOGIN
+
+LOGIN -> SCHEMA_A: busca convite
+SCHEMA_A --> LOGIN: convite válido
+
+LOGIN -> PUBLIC: cria usuário
+LOGIN -> PUBLIC: associa escola_id
+LOGIN -> PUBLIC: associa role funcionario
+
+LOGIN --> FUNC: /escola-x/dashboard
+
+deactivate LOGIN
+
+note over VIS
+
+DECISAO PONTO 3
+
+O que fazer quando acessar sem slug?
+
+A) Landing publica com seletor de escola
+
+B) Redirecionar para a escola padrao do usuario logado
+
+C) Exibir erro ou pagina 404
+
+end note
+
+@enduml
