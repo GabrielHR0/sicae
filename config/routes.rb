@@ -12,5 +12,6 @@ Rails.application.routes.draw do
   resources :redes
   resources :escolas
   # Defines the root path route ("/")
-  root "home#index" 
+  root "landing#index"
+  get "dashboard", to: "home#index" 
 end
