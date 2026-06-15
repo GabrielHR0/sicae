@@ -1,0 +1,16 @@
+<%
+  loading_label = local_assigns[:loading_label].presence || "Carregando conteúdo..."
+  wrapper_class = local_assigns[:wrapper_class].presence
+  content_class = local_assigns[:content_class].presence
+  spinner_wrapper_class = local_assigns[:spinner_wrapper_class].presence || "min-h-48 rounded-lg border border-dashed border-gray-300 bg-gray-50 px-4 py-8 dark:border-gray-700 dark:bg-gray-800/60"
+%>
+
+<div class="turbo-frame-loader <%= wrapper_class %>">
+  <div class="turbo-frame-loader__content <%= content_class %>">
+    <%= yield if block_given? %>
+  </div>
+
+  <div class="turbo-frame-loader__spinner <%= spinner_wrapper_class %>">
+    <%= render "shared/admin/spinner", label: loading_label %>
+  </div>
+</div>

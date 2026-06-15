@@ -1,0 +1,8 @@
+<%
+  label = local_assigns[:label].presence || "Carregando..."
+  height_class = local_assigns[:height_class].presence || "min-h-[28rem]"
+%>
+
+<div class="flex w-full items-center justify-center px-6 py-10 <%= height_class %>">
+  <%= render "shared/admin/spinner", label: label, hide_label: true %>
+</div>

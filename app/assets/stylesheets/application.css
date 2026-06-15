@@ -90,3 +90,34 @@ select option {
   background-color: #1f2937;
   color: #f3f4f6;
 }
+
+.turbo-frame-loader {
+  position: relative;
+}
+
+.turbo-frame-loader__content {
+  transition: opacity 150ms ease;
+}
+
+.turbo-frame-loader__spinner {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  background: rgb(255 255 255 / 0.82);
+  backdrop-filter: blur(2px);
+}
+
+.dark .turbo-frame-loader__spinner {
+  background: rgb(3 7 18 / 0.82);
+}
+
+turbo-frame[busy] .turbo-frame-loader__content {
+  opacity: 0.35;
+}
+
+turbo-frame[busy] .turbo-frame-loader__spinner {
+  display: flex;
+}

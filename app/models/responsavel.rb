@@ -1,8 +1,8 @@
 class Responsavel < ApplicationRecord
   belongs_to :user
-  has_many :estudantes, dependent: :nullify
+  has_many :estudantes, dependent: :restrict_with_error
 
-  enum relacao_parental: {
+  enum :relacao_parental, {
     pai: 0,
     mae: 1,
     tutor: 2,

@@ -52,25 +52,25 @@
 <% cards = [
   {
     title: "Total de produtos",
-    value: Produto.count,
+    value: @stats["total_count"].to_i,
     description: "Quantidade de registros cadastrados",
     icon: icon_svg("box")
   },
   {
     title: "Produtos ativos",
-    value: Produto.where(ativo: true).count,
+    value: @stats["active_count"].to_i,
     description: "Itens disponíveis no catálogo",
     icon: icon_svg("check")
   },
   {
     title: "Sem estoque",
-    value: Produto.where(estoque: 0).count,
+    value: @stats["out_of_stock_count"].to_i,
     description: "Produtos que precisam reposição",
     icon: icon_svg("alert")
   },
   {
     title: "Categorias usadas",
-    value: Produto.where.not(categoria_id: nil).distinct.count(:categoria_id),
+    value: @stats["categories_count"].to_i,
     description: "Categorias com produtos vinculados",
     icon: icon_svg("grid")
   }
@@ -84,12 +84,15 @@
         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gerencie os itens cadastrados no sistema.</p>
       </div>
 
-      <button type="button"
-              data-modal-target="produto-modal-criar"
-              data-modal-toggle="produto-modal-criar"
-              class="inline-flex items-center justify-center rounded-lg bg-ruby-750 px-4 py-2.5 text-sm font-medium text-white hover:bg-ruby-800 focus:outline-none focus:ring-2 focus:ring-ruby-400">
+      <%= link_to new_produto_path(modal: "create"),
+          class: "inline-flex items-center justify-center rounded-lg bg-ruby-750 px-4 py-2.5 text-sm font-medium text-white hover:bg-ruby-800 focus:outline-none focus:ring-2 focus:ring-ruby-400",
+          data: {
+            action: "click->modal-loader#open",
+            modal_loader_modal_id: "produto-modal-criar",
+            turbo_frame: "produto-modal-criar-frame"
+          } do %>
         Novo produto
-      </button>
+      <% end %>
     </div>
 
     <%= render "shared/admin/modal",
@@ -97,11 +100,13 @@
       mode: :create,
       resource_name: "produto",
       subtitle: "Cadastre um novo produto sem sair da listagem." do %>
-      <%= render "produtos/form",
-        produto: (@novo_produto || Produto.new),
-        categorias: @categorias,
-        submit_label: "Criar produto",
-        modal_id: "produto-modal-criar" %>
+      <template data-modal-loader-loading-template>
+        <%= render "shared/admin/modal_loading_state", label: "Carregando formulário de novo produto" %>
+      </template>
+      <%= turbo_frame_tag "produto-modal-criar-frame" do %>
+        <%= render "shared/admin/modal_loading_state",
+          label: "Carregando formulário de novo produto" %>
+      <% end %>
     <% end %>
 
     <%= render "shared/admin/modal",
@@ -109,10 +114,12 @@
       mode: :edit,
       resource_name: "produto",
       subtitle: "Os dados são carregados dinamicamente ao clicar em editar." do %>
+      <template data-modal-loader-loading-template>
+        <%= render "shared/admin/modal_loading_state", label: "Carregando formulário de edição do produto" %>
+      </template>
       <%= turbo_frame_tag "produto-modal-editar-frame" do %>
-        <div class="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4 text-sm text-gray-600 dark:border-gray-700 dark:bg-gray-800/60 dark:text-gray-300">
-          Selecione um produto na tabela para carregar o formulário de edição.
-        </div>
+        <%= render "shared/admin/modal_loading_state",
+          label: "Carregando formulário de edição do produto" %>
       <% end %>
     <% end %>
 
@@ -120,10 +127,12 @@
       modal_id: "produto-modal-visualizar",
       title: "Visualizar produto",
       subtitle: "Veja os detalhes do produto sem sair da listagem." do %>
+      <template data-modal-loader-loading-template>
+        <%= render "shared/admin/modal_loading_state", label: "Carregando detalhes do produto" %>
+      </template>
       <%= turbo_frame_tag "produto-modal-visualizar-frame" do %>
-        <div class="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4 text-sm text-gray-600 dark:border-gray-700 dark:bg-gray-800/60 dark:text-gray-300">
-          Selecione um produto na tabela para carregar os detalhes.
-        </div>
+        <%= render "shared/admin/modal_loading_state",
+          label: "Carregando detalhes do produto" %>
       <% end %>
     <% end %>
 
