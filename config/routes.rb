@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-
   devise_for :users, controllers: { registrations: "users/registrations" }
   get "up" => "rails/health#show", as: :rails_health_check
 
@@ -13,5 +12,5 @@ Rails.application.routes.draw do
   resources :escolas
   # Defines the root path route ("/")
   root "landing#index"
-  get "dashboard", to: "home#index" 
+  get "dashboard", to: "home#index"
 end

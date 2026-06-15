@@ -1,6 +1,6 @@
 class TenantSwitcherMiddleware
   TENANT_FALLBACK = "public".freeze
-  EXCLUDED_PATHS = ["/assets", "/favicon.ico", "rails", "up"].freeze
+  EXCLUDED_PATHS = [ "/assets", "/favicon.ico", "/rails", "/up", "/users", "/dashboard" ].freeze
 
   def initialize(app)
     @app = app
@@ -20,7 +20,7 @@ class TenantSwitcherMiddleware
         else
           connection.schema_search_path = TENANT_FALLBACK
         end
-        
+
         env["PATH_INFO"] = request.path.sub("/#{escola_slug}", "")
 
         @app.call(env)
