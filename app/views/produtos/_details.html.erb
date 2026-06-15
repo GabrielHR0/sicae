@@ -21,7 +21,7 @@
     <div class="flex flex-col gap-4 border-b border-gray-200 pb-5 dark:border-gray-800 md:flex-row md:items-start md:justify-between">
       <div class="space-y-2">
         <div class="flex flex-wrap items-center gap-2">
-          <span class="rounded-full bg-ruby-750/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-ruby-750 dark:bg-ruby-950/50 dark:text-ruby-200">
+          <span class="rounded-full bg-gradient-to-br from-red-600/20 to-red-800/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-red-800 dark:bg-gradient-to-br from-red-900/50 to-red-950/50 dark:text-red-200">
             Visualização do produto
           </span>
           <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium <%= status_class %>"><%= status_label %></span>
@@ -63,7 +63,7 @@
 
   <div class="admin-form-panel-secondary">
     <div class="mb-5 border-b border-gray-200 pb-4 dark:border-gray-800">
-      <p class="text-sm font-semibold uppercase tracking-wide text-ruby-750 dark:text-white">Descrição detalhada</p>
+      <p class="text-sm font-semibold uppercase tracking-wide text-red-800 dark:text-white">Descrição detalhada</p>
       <p class="mt-1 text-sm text-gray-700 dark:text-gray-300">Informações complementares sobre o produto.</p>
     </div>
 
@@ -84,7 +84,7 @@
     <%= link_to polymorphic_path(produto, modal: "edit"),
         title: "Editar",
         aria: { label: "Editar" },
-        class: "inline-flex items-center justify-center rounded-lg bg-ruby-750 px-4 py-2 text-sm font-medium text-white hover:bg-ruby-800",
+        class: "inline-flex items-center justify-center rounded-lg bg-gradient-to-br from-red-700 to-red-900 px-4 py-2 text-sm font-medium text-white hover:bg-gradient-to-br from-red-700 to-red-900",
         data: {
           action: "click->modal-loader#open",
           modal_loader_modal_id: "produto-modal-editar",

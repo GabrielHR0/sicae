@@ -24,7 +24,7 @@
                 Nome de usuário <span class="text-red-600 dark:text-red-300 ml-1">*</span>
               <% end %>
               <%= f.text_field :username, autofocus: true, autocomplete: "username", required: true,
-                class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-ruby-500 focus:border-ruby-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500"
+                class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500"
               %>
             </div>
 
@@ -32,14 +32,14 @@
               <%= f.label :email, class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" do %>
                 Email <span class="text-red-600 dark:text-red-300 ml-1">*</span>
               <% end %>
-              <%= f.email_field :email, autocomplete: "email", required: true, class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-ruby-500 focus:border-ruby-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500" %>
+              <%= f.email_field :email, autocomplete: "email", required: true, class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500" %>
             </div>
 
             <div class="mb-4">
               <%= f.label :password, class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" do %>
                 Senha <span class="text-red-600 dark:text-red-300 ml-1">*</span>
               <% end %>
-              <%= f.password_field :password, autocomplete: "new-password", required: true, class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-ruby-500 focus:border-ruby-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500" %>
+              <%= f.password_field :password, autocomplete: "new-password", required: true, class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500" %>
               <% if @minimum_password_length %>
                   <p class="font-light text-gray-500 dark:text-gray-300">
                     <em>(<%= @minimum_password_length %> caracteres no mínimo)</em>
@@ -49,7 +49,7 @@
 
           <p class="text-sm font-light text-gray-500 dark:text-gray-400">
             Já tem uma conta? 
-            <%= link_to "Entrar", new_user_session_path, class: "font-medium text-ruby-600 hover:underline dark:text-ruby-300 dark:hover:underline" %>
+            <%= link_to "Entrar", new_user_session_path, class: "font-medium text-red-600 hover:underline dark:text-red-300 dark:hover:underline" %>
           </p>
         <% end } %>
 
@@ -63,14 +63,14 @@
               <%= profile_fields.label :nome, class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" do %>
                 Nome completo <span class="text-red-600 dark:text-red-300 ml-1">*</span>
               <% end %>
-              <%= profile_fields.text_field :nome, required: true, class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-ruby-500 focus:border-ruby-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500" %>
+              <%= profile_fields.text_field :nome, required: true, class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500" %>
             </div>
 
             <div class="mb-4">
               <%= profile_fields.label :telefone, class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" do %>
                 Telefone
               <% end %>
-              <%= profile_fields.text_field :telefone, class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-ruby-500 focus:border-ruby-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500" %>
+              <%= profile_fields.text_field :telefone, class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500" %>
             </div>
 
             <div class="mb-4">
@@ -83,7 +83,7 @@
                   datepicker: true,
                   "datepicker-format": "dd/mm/yyyy",
                   "datepicker-autohide": true,
-                  class: "no-native-date bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-ruby-500 focus:border-ruby-500 block w-full pr-10 py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500" %>
+                  class: "no-native-date bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full pr-10 py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500" %>
                 <svg class="w-5 h-5 text-gray-500 dark:text-gray-300 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3M3 11h18M5 21h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1z"/></svg>
               </div>
             </div>
@@ -92,18 +92,18 @@
               <%= profile_fields.label :cpf, class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" do %>
                 CPF <span class="text-red-600 dark:text-red-300 ml-1">*</span>
               <% end %>
-              <%= profile_fields.text_field :cpf, required: true, class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-ruby-500 focus:border-ruby-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500" %>
+              <%= profile_fields.text_field :cpf, required: true, class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500" %>
             </div>
           <% end %>
 
           <div class="flex items-start">
             <div class="flex items-center h-5">
-              <input id="terms" aria-describedby="terms" type="checkbox" class="w-4 h-4 text-ruby-600 dark:text-ruby-500 bg-white border-gray-300 rounded focus:ring-ruby-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-gray-500" required="">
+              <input id="terms" aria-describedby="terms" type="checkbox" class="w-4 h-4 text-red-600 dark:text-red-500 bg-white border-gray-300 rounded focus:ring-red-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-gray-500" required="">
             </div>
             <div class="ml-2 text-sm">
               <label for="terms" class="font-medium text-gray-900 dark:text-white">
                 Eu aceito os 
-                <a href="#" class="text-ruby-600 hover:underline dark:text-ruby-300 dark:hover:underline">
+                <a href="#" class="text-red-600 hover:underline dark:text-red-300 dark:hover:underline">
                   Termos e Condições
                 </a>
                 <span class="text-red-600 dark:text-red-300 ml-1">*</span>
@@ -111,7 +111,7 @@
           </div>
 
           <div class="mt-4">
-            <%= f.submit "Criar conta", type: "submit", class: "w-full inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-ruby-750 hover:bg-ruby-800 focus:outline-none focus:ring-2 focus:ring-ruby-300 dark:bg-ruby-750 dark:hover:bg-ruby-800 dark:focus:ring-gray-500" %>
+            <%= f.submit "Criar conta", type: "submit", class: "w-full inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-gradient-to-br from-red-700 to-red-900 hover:bg-gradient-to-br from-red-700 to-red-900 focus:outline-none focus:ring-2 focus:ring-red-300 dark:bg-gradient-to-br dark:from-red-800 dark:to-red-950 dark:hover:bg-gradient-to-br from-red-700 to-red-900 dark:focus:ring-gray-500" %>
           </div>
 
         <% end } %>

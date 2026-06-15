@@ -4,7 +4,7 @@
 <% clear_search_params = request.query_parameters.except("q", "page").merge(page: 1) %>
 
 <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
-  <div class="flex flex-col gap-4 border-b border-ruby-100 bg-white px-6 py-4 md:flex-row md:items-center md:justify-between dark:border-gray-800 dark:bg-gray-800">
+  <div class="flex flex-col gap-4 border-b border-red-100 bg-white px-6 py-4 md:flex-row md:items-center md:justify-between dark:border-gray-800 dark:bg-gray-800">
     <div>
       <h2 class="text-lg font-semibold text-gray-900 dark:text-white"><%= title %></h2>
       <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Lista com paginação, seleção de itens por página e ações rápidas.</p>
@@ -27,10 +27,10 @@
             name="q"
             value="<%= current_query %>"
             placeholder="Pesquisar produtos..."
-            class="block w-full rounded-lg [&::-webkit-search-cancel-button]:appearance-none border border-gray-300 bg-white p-2.5 ps-10 pe-10 text-sm text-gray-900 focus:border-ruby-750 focus:ring-2 focus:ring-ruby-750 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+            class="block w-full rounded-lg [&::-webkit-search-cancel-button]:appearance-none border border-gray-300 bg-white p-2.5 ps-10 pe-10 text-sm text-gray-900 focus:border-red-800 focus:ring-2 focus:ring-red-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
           >
           <% if current_query.present? %>
-            <%= link_to url_for(clear_search_params), class: "absolute inset-y-0 end-0 flex items-center pe-3 text-ruby-750 transition hover:text-ruby-800", title: "Limpar busca", aria: { label: "Limpar busca" } do %>
+            <%= link_to url_for(clear_search_params), class: "absolute inset-y-0 end-0 flex items-center pe-3 text-red-800 transition hover:text-red-800", title: "Limpar busca", aria: { label: "Limpar busca" } do %>
               <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6M6 6l12 12"/>
               </svg>
@@ -40,14 +40,14 @@
         <% if search_fields.present? %>
           <select
             name="search_field"
-            class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-ruby-750 focus:ring-2 focus:ring-ruby-750 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+            class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-red-800 focus:ring-2 focus:ring-red-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
           >
             <% search_fields.each do |field| %>
               <option value="<%= field[:value] %>" <%= "selected" if current_search_field == field[:value] %>><%= field[:label] %></option>
             <% end %>
           </select>
         <% end %>
-        <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-ruby-750 px-4 py-2.5 text-sm font-medium text-white hover:bg-ruby-800">
+        <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-gradient-to-br from-red-700 to-red-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gradient-to-br from-red-700 to-red-900">
           Pesquisar
         </button>
       </form>
@@ -57,7 +57,7 @@
         <select
           id="limit"
           onchange="window.location.href = this.value"
-          class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-ruby-750 focus:ring-2 focus:ring-ruby-750 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+          class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-red-800 focus:ring-2 focus:ring-red-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
         >
           <% [10, 20, 50, 100].each do |limit| %>
             <option value="<%= url_for(request.query_parameters.merge(limit: limit, page: 1)) %>" <%= "selected" if current_limit == limit %>>
@@ -77,7 +77,7 @@
           <%= tag.col unless col[:width].present? %>
         <% end %>
       </colgroup>
-      <thead class="bg-ruby-100 text-xs uppercase text-gray-800 dark:bg-gray-800 dark:text-gray-300">
+      <thead class="bg-red-100 text-xs uppercase text-gray-800 dark:bg-gray-800 dark:text-gray-300">
         <tr>
           <% columns.each do |col| %>
             <% header_classes = [
@@ -126,7 +126,7 @@
       </thead>
       <tbody>
         <% records.each do |record| %>
-          <tr class="cursor-pointer border-b border-gray-100 hover:bg-ruby-750/10 dark:border-gray-800 dark:hover:bg-gray-800">
+          <tr class="cursor-pointer border-b border-gray-100 hover:bg-gradient-to-br from-red-600/20 to-red-800/10 dark:border-gray-800 dark:hover:bg-gray-800">
             <% resource_modal_prefix = record.model_name.singular %>
             <% view_modal_id = "#{resource_modal_prefix}-modal-visualizar" %>
             <% edit_modal_id = "#{resource_modal_prefix}-modal-editar" %>
@@ -178,7 +178,7 @@
                           modal_loader_modal_id: edit_modal_id,
                           turbo_frame: edit_frame_id
                         },
-                        class: "rounded-lg bg-ruby-750 px-3 py-2 text-white hover:bg-ruby-800",
+                        class: "rounded-lg bg-gradient-to-br from-red-700 to-red-900 px-3 py-2 text-white hover:bg-gradient-to-br from-red-700 to-red-900",
                         icon: ->(view) do
                           view.raw('<svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16.862 4.487 1.687-1.687a1.875 1.875 0 1 1 2.652 2.652L7.875 18.778a4.5 4.5 0 0 1-1.897 1.13L3 21l1.092-2.978a4.5 4.5 0 0 1 1.13-1.897l11.64-11.638ZM19.5 7.125 16.875 4.5"/></svg>')
                         end
@@ -265,7 +265,7 @@
         <% else %>
           <% page_number = item.to_i %>
           <% if page_number == pagy.page %>
-            <span class="inline-flex items-center rounded-lg bg-ruby-750 px-4 py-2 text-sm font-medium text-white"><%= page_number %></span>
+            <span class="inline-flex items-center rounded-lg bg-gradient-to-br from-red-700 to-red-900 px-4 py-2 text-sm font-medium text-white"><%= page_number %></span>
           <% else %>
             <%= link_to url_for(request.query_parameters.merge(page: page_number)), class: "inline-flex items-center rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800" do %>
               <%= page_number %>
