@@ -12,7 +12,6 @@ Rails.application.routes.draw do
     get "cardapio/produto/:produto_id", to: "cardapios#show", as: :cardapio_produto_responsavel
   end
 
-  root "home#index"
   resources :redes
   resources :escolas
   # Defines the root path route ("/")
