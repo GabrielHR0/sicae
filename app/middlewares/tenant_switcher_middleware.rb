@@ -10,16 +10,25 @@ class TenantSwitcherMiddleware
     request = ActionDispatch::Request.new(env)
     escola_slug = extract_slug(request.path)
 
+    if escola_slug.blank?
+      return not_found_response(env) unless excluded_path?(request.path)
+      return @app.call(env)
+    end
+
     if escola_slug.present?
       ActiveRecord::Base.connection_pool.with_connection do |connection|
         tenant = resolve_escola(escola_slug)
 
-        if tenant.present?
-          Current.escola = tenant
-          connection.schema_search_path = "#{tenant.schema_name},#{TENANT_FALLBACK}"
-        else
-          connection.schema_search_path = TENANT_FALLBACK
+        connection.schema_search_path = TENANT_FALLBACK
+        return not_found_response(env) if tenant.nil?
+
+        user = request.env["warden"].user
+        if user && user.escola != tenant
+          return not_found_response(env)
         end
+        
+        Current.escola = tenant
+        connection.schema_search_path = "#{tenant.schema_name},#{TENANT_FALLBACK}"
         
         env["PATH_INFO"] = request.path.sub("/#{escola_slug}", "")
 
@@ -51,5 +60,14 @@ class TenantSwitcherMiddleware
     Rails.cache.fetch("escola_slug:#{slug}", expires_in: 1.hour) do
       Escola.find_by(slug: slug)
     end
+  end
+
+  def not_found_response(env)
+    env["PATH_INFO"] = "/404"
+    @app.call(env)
+  end
+
+  def excluded_path?(path)
+    EXCLUDED_PATHS.any? { |excluded| path.start_with?(excluded) }
   end
 end
