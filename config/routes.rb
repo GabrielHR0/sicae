@@ -2,8 +2,7 @@ Rails.application.routes.draw do
   devise_for :users, controllers: { registrations: "users/registrations" }
   get "up" => "rails/health#show", as: :rails_health_check
 
-  resources :produtos
-  resources :categorias
+  match "/404", to: "errors#not_found", via: :all
 
   resources :produtos
   resources :categorias
