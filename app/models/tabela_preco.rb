@@ -1,0 +1,2 @@
+class TabelaPreco < ApplicationRecord
+end

@@ -34,4 +34,5 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular "produto", "produtos"
   inflect.irregular "cantina", "cantinas"
   inflect.irregular "escola", "escolas"
+  inflect.irregular "item_preco", "itens_preco"
 end
