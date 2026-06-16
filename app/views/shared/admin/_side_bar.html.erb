@@ -1,4 +1,4 @@
-<div class="h-screen px-3 py-4 overflow-y-auto bg-ruby-750 dark:bg-neutral-950">
+<div class="h-screen px-3 py-4 overflow-y-auto bg-red-800 dark:bg-neutral-950">
   <a href="<%= root_path %>" class="flex items-center pl-2.5 mb-6">
     <img src="/icon.png" class="h-6 mr-3 sm:h-7" alt="Sicae Logo">
     <span class="self-center text-xl font-semibold whitespace-nowrap text-white">SICAE</span>
@@ -56,7 +56,7 @@
   <ul class="space-y-2 font-medium">
     <% menu_groups.each do |group| %>
       <li>
-        <button type="button" data-collapse-toggle="sidebar-<%= group[:id] %>" aria-controls="sidebar-<%= group[:id] %>" class="flex w-full items-center rounded-lg px-3 py-2 text-white hover:bg-ruby-800 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:hover:bg-ruby-800 dark:focus:ring-gray-500">
+        <button type="button" data-collapse-toggle="sidebar-<%= group[:id] %>" aria-controls="sidebar-<%= group[:id] %>" class="flex w-full items-center rounded-lg px-3 py-2 text-white hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:hover:bg-red-800 dark:focus:ring-gray-500">
           <span class="flex flex-1 items-center gap-4 text-left">
             <span class="flex-shrink-0 text-white">
               <%= raw(group[:icon]) %>
@@ -72,8 +72,8 @@
           <% group[:items].each do |item| %>
             <% next if item[:visible] == false %>
             <li>
-              <a href="<%= item[:href] %>" class="flex items-center rounded-lg px-3 py-2 text-sm text-gray-100 hover:bg-ruby-900 hover:underline dark:text-gray-200 dark:hover:bg-ruby-900 dark:hover:underline focus:outline-none focus:ring-2 focus:ring-gray-500">
-                <span class="h-2 w-2 rounded-full bg-ruby-300 dark:bg-ruby-300"></span>
+              <a href="<%= item[:href] %>" class="flex items-center rounded-lg px-3 py-2 text-sm text-gray-100 hover:bg-red-700 hover:underline dark:text-gray-200 dark:hover:bg-red-700 dark:hover:underline focus:outline-none focus:ring-2 focus:ring-gray-500">
+                <span class="h-2 w-2 rounded-full bg-red-300 dark:bg-red-300"></span>
                 <span class="ml-3"><%= item[:label] %></span>
               </a>
             </li>

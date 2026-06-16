@@ -1,0 +1,7 @@
+<%= turbo_frame_tag "produto-modal-criar-frame" do %>
+  <%= render "produtos/form",
+    produto: produto,
+    categorias: categorias,
+    submit_label: "Criar produto",
+    modal_id: "produto-modal-criar" %>
+<% end %>

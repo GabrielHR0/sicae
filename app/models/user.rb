@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  self.table_name = "public.users"
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
@@ -11,6 +13,8 @@ class User < ApplicationRecord
   has_and_belongs_to_many :roles, join_table: :users_roles
   has_many :permissions, through: :roles
   has_one :perfil, inverse_of: :user, dependent: :destroy
+
+  belongs_to :escola, optional: true
 
   # Checa se o usuário tem um role específico pelo nome
   def has_role?(role_name)

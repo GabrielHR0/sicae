@@ -15,8 +15,7 @@ class ProdutosController < ApplicationController
   # after_action :verify_authorized
 
   def index
-    @categorias = Categoria.order(:nome)
-    @novo_produto = Produto.new
+    @stats = Produto.stats
 
     @pagy, @records = paginate_data_table(Produto.includes(:categoria)) do |scope|
       scope = scope.por_nome_categoria(params[:categoria])
@@ -43,6 +42,10 @@ class ProdutosController < ApplicationController
     @produto = Produto.new
     @categorias = Categoria.order(:nome)
     # Authorization removed to avoid dependency on roles/permissions during dev
+
+    if turbo_frame_request?
+      return render partial: "produtos/create_modal_content", locals: { produto: @produto, categorias: @categorias }
+    end
   end
 
   def create
@@ -85,7 +88,7 @@ class ProdutosController < ApplicationController
   end
 
   def set_produto
-    @produto = Produto.find(params[:id])
+    @produto = Produto.includes(:categoria).find(params[:id])
   end
 
   def produto_params
