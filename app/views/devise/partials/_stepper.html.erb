@@ -9,14 +9,14 @@
                         <% if index == steps.size - 1 %>
                             <% after_classes = '' %>
                         <% else %>
-                            <% after_color = index < current_value ? 'after:border-ruby-750 dark:after:border-ruby-750' : 'after:border-gray-300 dark:after:border-gray-600' %>
+                            <% after_color = index < current_value ? 'after:border-red-800 dark:after:border-red-800' : 'after:border-gray-300 dark:after:border-gray-600' %>
                             <% after_classes = "after:content-[''] after:flex-1 after:block after:h-1 after:border-b after:border-4 after:ms-4 after:rounded-full ".concat(after_color) %>
                         <% end %>
 
             <li class="flex w-full items-center <%= after_classes %>">
                 <div class="flex items-center gap-3">
                     <%# only the current step should be visually highlighted. past steps keep neutral circles but the connecting line will show ruby for completed %>
-                    <span class="flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12 rounded-full border text-sm font-medium <%= (index == current_value) ? 'border-ruby-750 bg-ruby-750 text-white dark:border-ruby-750 dark:bg-ruby-750' : 'border-gray-300 bg-white text-gray-600 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300' %>">
+                    <span class="flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12 rounded-full border text-sm font-medium <%= (index == current_value) ? 'border-red-800 bg-gradient-to-br from-red-700 to-red-900 text-white dark:border-red-800 dark:bg-gradient-to-br dark:from-red-800 dark:to-red-950' : 'border-gray-300 bg-white text-gray-600 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300' %>">
                         <% if step[:icon_html].present? %>
                             <%= raw(step[:icon_html].to_s.gsub(/<svg\b/, '<svg class="w-5 h-5"')) %>
                         <% else %>
