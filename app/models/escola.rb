@@ -18,7 +18,7 @@ class Escola < ApplicationRecord
     identifier = parametize_nome
 
     self.slug ||= identifier
-    self.schema_name ||= "tenant_"+identifier
+    self.schema_name ||= ("tenant-"+identifier).tr("-", "_")
   end
 
   def parametize_nome
