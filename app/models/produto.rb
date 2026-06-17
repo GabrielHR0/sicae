@@ -1,9 +1,8 @@
 class Produto < ApplicationRecord
-
   belongs_to :categoria, optional: true
-  
+  has_many :item_precos
+
   validates :nome, presence: true, length: { maximum: 100 }
-  validates :preco, presence: true, numericality: { greater_than: 0 }
   validates :estoque, numericality: { greater_than_or_equal_to: 0, only_integer: true }
 
   scope :ativos, -> { where(ativo: true) }
@@ -12,6 +11,21 @@ class Produto < ApplicationRecord
     return all if nome_cat.blank?
     joins(:categoria).where("categorias.nome ILIKE ?", "%#{nome_cat.strip}%")
   }
+
+  def preco
+    tempo_atual = Time.current
+    ItemPreco.joins(:tabela_preco)
+    .where(
+      "
+        tabela_precos.status = ?
+        AND
+        tabela_precos.fimVigencia >= ?
+        AND
+        tabela_precos.inicioVigencia <= ?
+        AND item_precos.produto_id = ?
+      ", 0, tempo_atual, tempo_atual, id
+    ).first&.preco
+  end
 
   def disponivel?
     ativo? && estoque > 0
@@ -27,5 +41,4 @@ class Produto < ApplicationRecord
       FROM #{table_name}
     SQL
   end
-  
 end

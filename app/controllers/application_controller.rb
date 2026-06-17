@@ -7,8 +7,6 @@ class ApplicationController < ActionController::Base
 
   stale_when_importmap_changes
 
-
-  
   private
 
   def user_not_authorized

@@ -8,9 +8,9 @@ class ProdutosController < ApplicationController
              sortable_columns: SORTABLE_COLUMNS,
              searchable_columns: SEARCHABLE_COLUMNS,
              default_limit: 20,
-             per_page_options: [10, 20, 50, 100]
+             per_page_options: [ 10, 20, 50, 100 ]
 
-  #before_action :authenticate_user!
+  # before_action :authenticate_user!
   before_action :set_produto, only: %i[show edit update destroy]
   # after_action :verify_authorized
 
@@ -34,24 +34,23 @@ class ProdutosController < ApplicationController
         render partial: "produtos/edit_modal_content", locals: { produto: @produto, categorias: @categorias }
       end
 
-      return
+      nil
     end
   end
 
   def new
     @produto = Produto.new
     @categorias = Categoria.order(:nome)
-    # Authorization removed to avoid dependency on roles/permissions during dev
 
     if turbo_frame_request?
-      return render partial: "produtos/create_modal_content", locals: { produto: @produto, categorias: @categorias }
+      render partial: "produtos/create_modal_content", locals: { produto: @produto, categorias: @categorias }
     end
   end
 
   def create
     @produto = Produto.new(produto_params)
     @categorias = Categoria.order(:nome)
-    # Authorization removed to avoid dependency on roles/permissions during dev
+
     if @produto.save
       redirect_to produtos_path, notice: "Produto cadastrado com sucesso."
     else
@@ -82,9 +81,9 @@ class ProdutosController < ApplicationController
   private
 
   def data_table_search_scope(scope, search_field, term)
-    return [scope.por_nome_categoria(term), true] if search_field == "categoria"
+    return [ scope.por_nome_categoria(term), true ] if search_field == "categoria"
 
-    [scope, false]
+    [ scope, false ]
   end
 
   def set_produto
@@ -92,7 +91,7 @@ class ProdutosController < ApplicationController
   end
 
   def produto_params
-    params.require(:produto).permit(:nome, :descricao, :preco, :categoria_id, :estoque, :ativo)
+    params.require(:produto).permit(:nome, :descricao, :categoria_id, :estoque, :ativo)
   end
 
   def active_filter

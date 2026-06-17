@@ -9,7 +9,11 @@ class Escola < ApplicationRecord
 
   after_create :create_schema
 
-  private 
+  private
+
+  def create_base_tabela_preco
+    connection = connection_schema
+  end
 
   def create_schema(schema_name)
     begin
@@ -18,5 +22,9 @@ class Escola < ApplicationRecord
       update!(metadata: metadata.merge("schema_status" => "error", "schema_error" => e.message))
     raise
     end
+  end
+
+  def connection_schema(schema = schema_name)
+    ActiveRecord::Base.connection.execute("SET search_path TO #{schema}")
   end
 end

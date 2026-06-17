@@ -20,6 +20,7 @@ module Sicae
     config.eager_load = true if Rails.env.production? || ENV["RAILS_EAGER_LOAD"] == "true"
 
     config.autoload_lib(ignore: %w[assets tasks])
+    config.time_zone = "Brasilia"
 
     # Configuration for the application, engines, and railties goes here.
     #
