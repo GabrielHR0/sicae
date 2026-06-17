@@ -40,7 +40,7 @@ class User < ApplicationRecord
 
   # atributos aninhados para perfil
   accepts_nested_attributes_for :perfil, reject_if: proc { |attributes| attributes["nome"].blank? }
-  
+
   # atributo virtual para login com email ou username
   attr_accessor :login
 
@@ -58,6 +58,5 @@ class User < ApplicationRecord
      return true if admin?
 
     permissions.exists?(recurso: resource.to_s, acao: action.to_s)
-
   end
 end
