@@ -1,6 +1,11 @@
-class Produto < ApplicationRecord
+﻿class Produto < ApplicationRecord
+  attr_reader :preco
+
   belongs_to :categoria, optional: true
   has_many :item_precos
+
+  after_create :criar_preco_base
+  after_update :atualizar_preco_base
 
   validates :nome, presence: true, length: { maximum: 100 }
   validates :estoque, numericality: { greater_than_or_equal_to: 0, only_integer: true }
@@ -12,19 +17,27 @@ class Produto < ApplicationRecord
     joins(:categoria).where("categorias.nome ILIKE ?", "%#{nome_cat.strip}%")
   }
 
-  def preco
+  def preco_atual
     tempo_atual = Time.current
-    ItemPreco.joins(:tabela_preco)
-    .where(
-      "
-        tabela_precos.status = ?
-        AND
-        tabela_precos.fimVigencia >= ?
-        AND
-        tabela_precos.inicioVigencia <= ?
-        AND item_precos.produto_id = ?
-      ", 0, tempo_atual, tempo_atual, id
-    ).first&.preco
+
+    ItemPreco
+      .joins(:tabela_preco)
+      .where(
+        "tabela_precos.status = ?
+         AND (
+           (tabela_precos.fimVigencia >= ? AND tabela_precos.inicioVigencia <= ?)
+           OR
+           (tabela_precos.fimVigencia IS NULL AND tabela_precos.inicioVigencia IS NULL)
+         )
+         AND item_precos.produto_id = ?",
+        1, tempo_atual, tempo_atual, id
+      )
+      .order(Arel.sql("COALESCE(tabela_precos.fimVigencia - tabela_precos.inicioVigencia, '9999 days'::interval) ASC"))
+      .first&.preco
+  end
+
+  def preco=(valor)
+    @preco = valor
   end
 
   def disponivel?
@@ -40,5 +53,26 @@ class Produto < ApplicationRecord
         COUNT(DISTINCT categoria_id) AS categories_count
       FROM #{table_name}
     SQL
+  end
+
+  private
+
+  def criar_preco_base
+    return unless @preco.present?
+
+    base = TabelaPreco.find_by(tipo: :base, status: :ativo)
+    return unless base
+
+    item = ItemPreco.create!(tabela_preco_id: base.id, produto_id: id, preco: @preco)
+  end
+
+  def atualizar_preco_base
+    return unless @preco.present?
+
+    base = TabelaPreco.find_by(tipo: :base, status: :ativo)
+    return unless base
+
+    item = ItemPreco.find_or_initialize_by(tabela_preco_id: base.id, produto_id: id)
+    item.update!(preco: @preco)
   end
 end

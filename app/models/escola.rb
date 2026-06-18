@@ -7,12 +7,19 @@ class Escola < ApplicationRecord
   validates :nome, :schema_name, :slug, presence: true
   validates :slug, :schema_name, uniqueness: true
 
-  after_create :create_schema
+  after_create :create_schema, :create_base_tabela_preco
 
   private
 
   def create_base_tabela_preco
-    connection = connection_schema
+    connection_schema
+    TabelaPreco.create!(
+      descricao: "Preço base do produto, utilizado como principal referência",
+      nome: "Tabela Base",
+      tipo: 0,
+      status: 1
+      )
+    connection_schema('public')
   end
 
   def create_schema(schema_name)

@@ -73,7 +73,6 @@ class ProdutosController < ApplicationController
   end
 
   def destroy
-    # Authorization removed to avoid dependency on roles/permissions during dev
     @produto.destroy
     redirect_to produtos_path, notice: "Produto removido com sucesso."
   end
@@ -91,7 +90,7 @@ class ProdutosController < ApplicationController
   end
 
   def produto_params
-    params.require(:produto).permit(:nome, :descricao, :categoria_id, :estoque, :ativo)
+    params.require(:produto).permit(:nome, :descricao, :preco, :categoria_id, :estoque, :ativo)
   end
 
   def active_filter
