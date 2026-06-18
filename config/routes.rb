@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   resources :produtos
   resources :categorias
+  resources :tabela_precos
 
   scope :responsavel do
     get "cardapio", to: "cardapios#index", as: :cardapio_responsavel

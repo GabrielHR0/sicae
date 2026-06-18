@@ -7,10 +7,21 @@ class Escola < ApplicationRecord
   validates :nome, :slug, :schema_name, presence: true
   validates :slug, :schema_name, uniqueness: true
 
-  after_create_commit :create_schema
+  after_create :create_schema, :create_base_tabela_preco
   before_validation :generate_identifiers, on: :create
 
   private
+
+  def create_base_tabela_preco
+    connection_schema
+    TabelaPreco.create!(
+      descricao: "Preço base do produto, utilizado como principal referência",
+      nome: "Tabela Base",
+      tipo: 0,
+      status: 1
+      )
+    connection_schema('public')
+  end
 
   def generate_identifiers
     return if nome.blank?
@@ -32,5 +43,9 @@ class Escola < ApplicationRecord
       update!(metadata: (metadata || {}).merge("schema_status" => "error", "schema_error" => e.message))
     raise
     end
+  end
+
+  def connection_schema(schema = schema_name)
+    ActiveRecord::Base.connection.execute("SET search_path TO #{schema}")
   end
 end

@@ -68,6 +68,6 @@ class TenantSwitcherMiddleware
   end
 
   def excluded_path?(path)
-    EXCLUDED_PATHS.any? { |excluded| path.start_with?(excluded) }
+    EXCLUDED_PATHS.any? { |excluded| path.start_with?(excluded) || path == "/" }
   end
 end
