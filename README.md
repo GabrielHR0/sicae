@@ -1,148 +1,73 @@
-﻿# README
+# SICAE
 
-## Rodar sem Docker
+Sistema inteligente para cantinas escolares (multi‑tenant).
 
-1. Instale as gems:
+## Setup
+
+### Sem Docker
 
 ```bash
+cp .env.example .env          # ajuste credenciais do banco
 bundle install
+bin/rails db:create db:migrate db:seed
+bin/rails db:migrate:tenants   # cria os schemas das escolas
 ```
 
-2. Copie o env de exemplo e ajuste se necessario:
+### Com Docker
 
 ```bash
-cp .env.example .env
-# edite .env e ajuste credenciais do banco se necessario
-```
-
-3. Crie e migre o banco:
-
-```bash
-bin/rails db:create
-bin/rails db:migrate
-```
-
-4. Suba o app:
-
-```bash
-bin/rails server
-```
-
-Para rodar Rails + Tailwind juntos (watch em tempo real), use o `bin/dev`:
-
-```bash
-bin/dev
-```
-
-Notas:
-- O app le `DATABASE_URL` se estiver definido; o `config/database.yml` prioriza variaveis de ambiente quando existirem.
-- Nao commite o arquivo `.env`.
-
-## Rodar com Docker (dev)
-
-Este projeto possui um `docker-compose.dev.yml` proprio para desenvolvimento. Ele sobe o banco e o servico `dev`, monta o codigo e executa `bin/dev` com hot reload.
-
-1. Suba o ambiente de desenvolvimento:
-
-```bash
-docker compose -f docker-compose.dev.yml up --build
-```
-
-2. Acesse o app:
-
-```bash
-http://localhost:3000
-```
-
-Esse modo ja sobe o watcher do Tailwind (via `bin/dev`) e aplica mudancas em tempo real no CSS e no codigo.
-
-### Comandos Rails dentro do container
-
-Use `exec` para rodar comandos no container ja rodando, ou `run --rm` para comandos avulsos.
-
-```bash
-# Criar banco de dados
-docker compose -f docker-compose.dev.yml exec dev bin/rails db:create
-
-# Rodar migrations do schema public
-docker compose -f docker-compose.dev.yml exec dev bin/rails db:migrate
-
-# Rodar migrations nos schemas dos tenants (escolas)
+docker compose -f docker-compose.dev.yml up --build -d
+docker compose -f docker-compose.dev.yml exec dev bin/rails db:create db:migrate db:seed
 docker compose -f docker-compose.dev.yml exec dev bin/rails db:migrate:tenants
-
-# Rodar seed padrao (db/seeds.rb)
-docker compose -f docker-compose.dev.yml exec dev bin/rails db:seed
-
-# Rodar seed especifica (caminho Unix dentro do container)
-docker compose -f docker-compose.dev.yml exec dev bin/rails runner db/seeds/test/dev.rb
-docker compose -f docker-compose.dev.yml exec dev bin/rails runner db/seeds/test/categorias.rb
-docker compose -f docker-compose.dev.yml exec dev bin/rails runner db/seeds/test/produtos.rb
 ```
 
-Outros exemplos:
+O app roda em `http://localhost:3000`.
+
+## Acessar o sistema
+
+O primeiro segmento da URL é a **slug da escola** (ex.: `instituto-estrela-da-manha1a2b`).
 
 ```bash
-docker compose -f docker-compose.dev.yml exec dev bin/rails console
-docker compose -f docker-compose.dev.yml exec dev bin/rails routes
-docker compose -f docker-compose.dev.yml exec dev bin/rails db:rollback
+# Descubra a slug
+docker compose -f docker-compose.dev.yml exec dev bin/rails runner "puts Escola.first.slug"
+# Sem Docker:
+bin/rails runner "puts Escola.first.slug"
 ```
 
-Para comandos avulsos (sem o container `dev` rodando):
+Acesse `http://localhost:3000/{slug}/dashboard`.
 
-```bash
-docker compose -f docker-compose.dev.yml run --rm dev bin/rails db:migrate
-docker compose -f docker-compose.dev.yml run --rm dev bin/rails runner db/seeds/test/dev.rb
-```
-
-Observacoes:
-- Caminhos dentro do container sao **Unix** (`/`), nunca Windows (`\`).
-- O `working_dir` do container e `/rails`, entao os caminhos sao relativos a raiz do projeto.
-- Se preferir comandos pontuais sem manter o container aberto, use `run --rm` no lugar de `exec`.
-
-## Tailwind (CSS)
-
-Sem Docker:
-
-```bash
-bin/rails tailwindcss:build
-```
-
-Para assistir mudancas:
-
-```bash
-bin/rails tailwindcss:watch
-```
-
-Com Docker (dev):
-
-```bash
-docker compose -f docker-compose.dev.yml exec dev bin/rails tailwindcss:build
-docker compose -f docker-compose.dev.yml exec dev bin/rails tailwindcss:watch
-```
-
-## Testes e lint
-
-Sem Docker:
-
-```bash
-bundle exec rspec
-bundle exec rubocop
-```
-
-Com Docker (dev):
-
-```bash
-docker compose -f docker-compose.dev.yml exec dev bundle exec rspec
-docker compose -f docker-compose.dev.yml exec dev bundle exec rubocop
-```
-
-## Migrations
-
-| Comando | Descricao |
+Seed padrão:
+| Campo | Valor |
 |---|---|
-| `bin/rails db:migrate` | Migra apenas o schema `public` (tabelas globais) |
-| `bin/rails db:migrate:tenants` | Migra os schemas de todas as escolas (tenants) |
-| `bin/rails db:rollback` | Reverte a ultima migration no schema `public` |
-| `bin/rails db:create` | Cria o banco de dados |
+| URL | `/{slug}/dashboard` |
+| Login (username) | `teste123` |
+| Login (email) | `teste@exemplo.com` |
+| Senha | `123456` |
 
-Os tenants usam schemas separados no PostgreSQL. O `db:migrate` padrao so atinge o `public`. Use `db:migrate:tenants` para propagar as migracoes para todas as escolas existentes.
+## Comandos
+
+| Ação | Sem Docker | Com Docker (`exec dev`) |
+|---|---|---|
+| Servidor + Tailwind | `bin/dev` | (já sobe com `compose up`) |
+| Testes | `bundle exec rspec` | `bundle exec rspec` |
+| Lint | `bin/rubocop` | `bin/rubocop` |
+| Console | `bin/rails console` | `bin/rails console` |
+| Migrar schema `public` | `bin/rails db:migrate` | `bin/rails db:migrate` |
+| Migrar tenants | `bin/rails db:migrate:tenants` | `bin/rails db:migrate:tenants` |
+| Seeds | `bin/rails db:seed` | `bin/rails db:seed` |
+| Seed específico | `bin/rails runner db/seeds/test/02_categorias.rb` | `bin/rails runner db/seeds/test/02_categorias.rb` |
+
+## Criar nova página
+
+1. **Model + migration**: `bin/rails g model Foo nome:string descricao:text`
+2. **Migre os tenants**: `bin/rails db:migrate:tenants` (a migration roda no schema `public`; o `TenantSchemaManager` a replica nos tenants)
+3. **Policy**: `app/policies/foo_policy.rb` com Pundit (`authorize @foo` no controller)
+4. **Controller**: herde de `ApplicationController`, use `after_action :verify_authorized`
+5. **Rotas**: `resources :foos` em `config/routes.rb`
+6. **Views** (seguir o padrão DataTableable):
+   - `app/views/foos/index.html.erb` — use `render 'shared/admin/data_table'`
+   - `app/views/foos/_form.html.erb` — campos do formulário
+   - `app/views/foos/_details.html.erb` — detalhes do registro
+   - `app/views/foos/show.html.erb` — página de show
+   - `app/views/foos/new.html.erb` e `edit.html.erb` — delegam ao form
+7. **Adicione ao menu**: no `menu_groups` em `app/views/shared/admin/_side_bar.html.erb`

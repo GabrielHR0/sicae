@@ -12,13 +12,22 @@ seed_categories = [
   { nome: "Outros", descricao: "Itens diversos do catálogo", ativo: true }
 ]
 
-seed_categories.each do |attrs|
-  categoria = Categoria.find_or_initialize_by(nome: attrs[:nome])
-  categoria.assign_attributes(
-    descricao: attrs[:descricao],
-    ativo: attrs[:ativo]
-  )
-  categoria.save!
+conn = ActiveRecord::Base.connection
+previous_schema = conn.schema_search_path
+
+Escola.all.each do |escola|
+  conn.schema_search_path = escola.schema_name
+
+  seed_categories.each do |attrs|
+    categoria = Categoria.find_or_initialize_by(nome: attrs[:nome])
+    categoria.assign_attributes(
+      descricao: attrs[:descricao],
+      ativo: attrs[:ativo]
+    )
+    categoria.save!
+  end
+
+  puts "Categorias carregadas para #{escola.nome}: #{seed_categories.size}"
 end
 
-puts "Categorias de teste carregadas: #{seed_categories.size}"
+conn.schema_search_path = previous_schema

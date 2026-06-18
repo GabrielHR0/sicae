@@ -26,7 +26,7 @@
   <div class="admin-form-panel-primary">
     <div class="mb-5 flex items-center justify-between gap-3 border-b border-gray-200 pb-4 dark:border-gray-800">
       <div>
-        <p class="text-sm font-semibold uppercase tracking-wide text-red-800 dark:text-white">Informações principais</p>
+        <p class="text-sm font-semibold uppercase tracking-wide text-gray-800 dark:text-white">Informações principais</p>
         <p class="mt-1 text-sm text-gray-700 dark:text-gray-300">Preencha os dados básicos do produto.</p>
       </div>
     </div>
@@ -65,9 +65,8 @@
                         data-category-select-id="<%= categoria.id %>"
                         data-category-select-label="<%= categoria.nome %>"
                         data-action="category-select#select"
-                        class="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm text-gray-700 hover:bg-red-50 hover:text-red-900 dark:text-gray-200 dark:hover:bg-gradient-to-br from-red-900/40 to-red-950/40 dark:hover:text-white">
+                        class="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-gradient-to-br from-gray-900/40 to-gray-950/40 dark:hover:text-white">
                   <span class="truncate"><%= categoria.nome %></span>
-                  <span class="ms-3 inline-flex h-2 w-2 rounded-full bg-gradient-to-br from-red-700/80 to-red-900/80"></span>
                 </button>
               <% end %>
             </div>
@@ -80,7 +79,7 @@
         <%= form.label :ativo, class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
         <label class="admin-form-toggle-shell">
           <%= form.check_box :ativo, class: "sr-only peer", checked: produto.new_record? ? true : produto.ativo? %>
-          <div class="relative h-5 w-9 rounded-full bg-gray-300 transition peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 dark:bg-gray-700 dark:peer-focus:ring-red-900/40 peer-checked:bg-gradient-to-br from-red-700 to-red-900 dark:peer-checked:bg-gradient-to-br from-red-700 to-red-900 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full"></div>
+          <div class="relative h-5 w-9 rounded-full bg-gray-300 transition peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gray-300 dark:bg-gray-700 dark:peer-focus:ring-gray-700/40 peer-checked:bg-gradient-to-br from-gray-700 to-gray-900 dark:peer-checked:bg-gradient-to-br from-gray-700 to-gray-900 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full"></div>
           <div class="ms-3">
             <span class="block text-sm font-medium text-gray-800 dark:text-gray-100">Produto ativo</span>
             <span class="block text-xs text-gray-700 dark:text-gray-400">Desative para ocultar na listagem pública.</span>
@@ -92,7 +91,7 @@
 
   <div class="admin-form-panel-secondary">
     <div class="mb-5 border-b border-gray-200 pb-4 dark:border-gray-800">
-      <p class="text-sm font-semibold uppercase tracking-wide text-red-800 dark:text-white">Valores e descrição</p>
+      <p class="text-sm font-semibold uppercase tracking-wide text-gray-800 dark:text-white">Valores e descrição</p>
       <p class="mt-1 text-sm text-gray-700 dark:text-gray-300">Informações de preço, estoque e observações adicionais.</p>
     </div>
 
@@ -149,7 +148,7 @@
 
     <%= form.button type: :submit,
                     data: { modal_form_target: "submitButton" },
-                    class: "inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-br from-red-700 to-red-900 px-4 py-2 text-sm font-medium text-white hover:bg-gradient-to-br from-red-700 to-red-900" do %>
+                    class: "inline-flex items-center justify-center gap-2 rounded-lg bg-ruby-700 px-4 py-2 text-sm font-medium text-white hover:bg-ruby-800" do %>
       <span data-modal-form-target="submitLabel"><%= submit_label %></span>
       <svg data-modal-form-target="submitSpinner" class="hidden h-4 w-4 animate-spin" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

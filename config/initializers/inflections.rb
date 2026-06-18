@@ -38,5 +38,5 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular "reserva",  "reservas"
   inflect.irregular "cantina", "cantinas"
   inflect.irregular "escola", "escolas"
-  inflect.irregular "item_preco", "itens_preco"
+  inflect.irregular "item_preco", "item_precos"
 end

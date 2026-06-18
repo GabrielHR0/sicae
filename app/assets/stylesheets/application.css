@@ -518,3 +518,27 @@ body::before {
   }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* Admin body grid pattern (same grid as landing page, adapted for admin colors) */
+.admin-body::before {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+}
+.dark .admin-body::before {
+  background-image:
+
+/* Admin main: landing page grid pattern on current bg colors */
+.admin-body main {
+  background-color: #f8f9fa;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  background-size: 120px 120px;
+}
+.dark .admin-body main {
+  background-color: #08090b;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+}

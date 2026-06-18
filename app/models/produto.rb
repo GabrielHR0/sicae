@@ -1,16 +1,14 @@
-﻿class Produto < ApplicationRecord
-  attr_reader :preco
-
+class Produto < ApplicationRecord
   belongs_to :categoria, optional: true
   has_many :item_precos
   has_many :bloqueios, dependent: :destroy
   has_many :reservas, dependent: :destroy
   has_many :cardapio_produtos, dependent: :destroy
-  has_many :cardapios, through: :cardapio_produtos 
+  has_many :cardapios, through: :cardapio_produtos
 
   after_create :criar_preco_base
   after_update :atualizar_preco_base
-   
+
   validates :nome, presence: true, length: { maximum: 100 }
   validates :estoque, numericality: { greater_than_or_equal_to: 0, only_integer: true }
 
@@ -21,23 +19,14 @@
     joins(:categoria).where("categorias.nome ILIKE ?", "%#{nome_cat.strip}%")
   }
 
-  def preco_atual
-    tempo_atual = Time.current
+  def preco
+    return @preco if instance_variable_defined?(:@preco)
 
     ItemPreco
       .joins(:tabela_preco)
-      .where(
-        "tabela_precos.status = ?
-         AND (
-           (tabela_precos.fimVigencia >= ? AND tabela_precos.inicioVigencia <= ?)
-           OR
-           (tabela_precos.fimVigencia IS NULL AND tabela_precos.inicioVigencia IS NULL)
-         )
-         AND item_precos.produto_id = ?",
-        1, tempo_atual, tempo_atual, id
-      )
-      .order(Arel.sql("COALESCE(tabela_precos.fimVigencia - tabela_precos.inicioVigencia, '9999 days'::interval) ASC"))
-      .first&.preco
+      .where(tabela_precos: { tipo: :base, status: :ativo })
+      .find_by(produto_id: id)
+      &.preco
   end
 
   def preco=(valor)

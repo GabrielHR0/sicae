@@ -17,20 +17,20 @@
   data-modal-loader-modal-container="true"
   data-modal-loader-modal-id="<%= modal_id %>"
   data-action="click->modal-loader#backdropClose"
-    class="fixed inset-0 z-50 hidden flex min-h-screen w-full items-center justify-center overflow-y-auto overflow-x-hidden bg-gradient-to-br from-red-900/45 to-red-950/45 p-4 backdrop-blur-md dark:bg-black/65">
+    class="fixed inset-0 z-50 hidden flex min-h-screen w-full items-center justify-center overflow-y-auto overflow-x-hidden bg-gradient-to-br from-gray-900/45 to-gray-950/45 p-4 backdrop-blur-md dark:bg-black/65">
   <div class="relative max-h-full w-full <%= size_class %>">
-    <div class="relative overflow-hidden rounded-xl border border-red-400/25 bg-red-50 shadow-xl dark:border-red-900/50 dark:bg-gray-950">
-      <div class="flex items-start justify-between border-b border-red-400/25 bg-gradient-to-br from-red-700 to-red-900 px-5 py-4 text-white dark:border-red-900/50 dark:bg-gradient-to-br dark:from-red-800 dark:to-red-950">
+    <div class="relative overflow-hidden rounded-xl border border-gray-400/25 bg-gray-50 shadow-xl dark:border-gray-700/50 dark:bg-gray-950">
+      <div class="flex items-start justify-between border-b border-gray-200 bg-gradient-to-br from-ruby-500 to-rose-600 px-5 py-4 text-white dark:border-gray-800 dark:bg-gradient-to-br dark:from-ruby-600 dark:to-rose-700">
         <div>
           <h3 class="text-lg font-semibold"><%= title %></h3>
           <% if subtitle.present? %>
-            <p class="mt-1 text-sm text-red-50"><%= subtitle %></p>
+            <p class="mt-1 text-sm text-gray-100"><%= subtitle %></p>
           <% end %>
         </div>
 
         <button type="button"
           data-action="click->modal-loader#close"
-                class="ms-3 inline-flex h-8 w-8 items-center justify-center rounded-lg text-red-50 hover:bg-white/15 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/40"
+                class="ms-3 inline-flex h-8 w-8 items-center justify-center rounded-lg text-gray-100 hover:bg-white/15 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/40"
                 aria-label="Fechar modal">
           <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6M6 6l12 12"/>
