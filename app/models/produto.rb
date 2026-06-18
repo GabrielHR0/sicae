@@ -3,10 +3,14 @@
 
   belongs_to :categoria, optional: true
   has_many :item_precos
+  has_many :bloqueios, dependent: :destroy
+  has_many :reservas, dependent: :destroy
+  has_many :cardapio_produtos, dependent: :destroy
+  has_many :cardapios, through: :cardapio_produtos 
 
   after_create :criar_preco_base
   after_update :atualizar_preco_base
-
+   
   validates :nome, presence: true, length: { maximum: 100 }
   validates :estoque, numericality: { greater_than_or_equal_to: 0, only_integer: true }
 

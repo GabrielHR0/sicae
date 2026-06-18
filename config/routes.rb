@@ -8,6 +8,11 @@ Rails.application.routes.draw do
   resources :categorias
   resources :tabela_precos
 
+  scope :responsavel do
+    get "cardapio", to: "cardapios#index", as: :cardapio_responsavel
+    get "cardapio/produto/:produto_id", to: "cardapios#show", as: :cardapio_produto_responsavel
+  end
+
   resources :redes
   resources :escolas
   # Defines the root path route ("/")
