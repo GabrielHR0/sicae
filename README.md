@@ -1,4 +1,4 @@
-# README
+﻿# README
 
 ## Rodar sem Docker
 
@@ -58,12 +58,25 @@ Esse modo ja sobe o watcher do Tailwind (via `bin/dev`) e aplica mudancas em tem
 
 ### Comandos Rails dentro do container
 
-Use o servico `dev` para rodar comandos do Rails dentro do container:
+Use `exec` para rodar comandos no container ja rodando, ou `run --rm` para comandos avulsos.
 
 ```bash
+# Criar banco de dados
 docker compose -f docker-compose.dev.yml exec dev bin/rails db:create
+
+# Rodar migrations do schema public
 docker compose -f docker-compose.dev.yml exec dev bin/rails db:migrate
+
+# Rodar migrations nos schemas dos tenants (escolas)
+docker compose -f docker-compose.dev.yml exec dev bin/rails db:migrate:tenants
+
+# Rodar seed padrao (db/seeds.rb)
 docker compose -f docker-compose.dev.yml exec dev bin/rails db:seed
+
+# Rodar seed especifica (caminho Unix dentro do container)
+docker compose -f docker-compose.dev.yml exec dev bin/rails runner db/seeds/test/dev.rb
+docker compose -f docker-compose.dev.yml exec dev bin/rails runner db/seeds/test/categorias.rb
+docker compose -f docker-compose.dev.yml exec dev bin/rails runner db/seeds/test/produtos.rb
 ```
 
 Outros exemplos:
@@ -71,11 +84,20 @@ Outros exemplos:
 ```bash
 docker compose -f docker-compose.dev.yml exec dev bin/rails console
 docker compose -f docker-compose.dev.yml exec dev bin/rails routes
+docker compose -f docker-compose.dev.yml exec dev bin/rails db:rollback
+```
+
+Para comandos avulsos (sem o container `dev` rodando):
+
+```bash
+docker compose -f docker-compose.dev.yml run --rm dev bin/rails db:migrate
+docker compose -f docker-compose.dev.yml run --rm dev bin/rails runner db/seeds/test/dev.rb
 ```
 
 Observacoes:
+- Caminhos dentro do container sao **Unix** (`/`), nunca Windows (`\`).
+- O `working_dir` do container e `/rails`, entao os caminhos sao relativos a raiz do projeto.
 - Se preferir comandos pontuais sem manter o container aberto, use `run --rm` no lugar de `exec`.
-- Caso o `bin/dev` nao suba por falta de dependencias (Node/Yarn), adicione as dependencias na imagem de dev ou crie uma `Dockerfile.dev`.
 
 ## Tailwind (CSS)
 
@@ -86,7 +108,7 @@ bin/rails tailwindcss:build
 ```
 
 Para assistir mudancas:
-<!--  -->
+
 ```bash
 bin/rails tailwindcss:watch
 ```
@@ -95,11 +117,6 @@ Com Docker (dev):
 
 ```bash
 docker compose -f docker-compose.dev.yml exec dev bin/rails tailwindcss:build
-```
-
-Para assistir mudancas:
-
-```bash
 docker compose -f docker-compose.dev.yml exec dev bin/rails tailwindcss:watch
 ```
 
@@ -118,3 +135,14 @@ Com Docker (dev):
 docker compose -f docker-compose.dev.yml exec dev bundle exec rspec
 docker compose -f docker-compose.dev.yml exec dev bundle exec rubocop
 ```
+
+## Migrations
+
+| Comando | Descricao |
+|---|---|
+| `bin/rails db:migrate` | Migra apenas o schema `public` (tabelas globais) |
+| `bin/rails db:migrate:tenants` | Migra os schemas de todas as escolas (tenants) |
+| `bin/rails db:rollback` | Reverte a ultima migration no schema `public` |
+| `bin/rails db:create` | Cria o banco de dados |
+
+Os tenants usam schemas separados no PostgreSQL. O `db:migrate` padrao so atinge o `public`. Use `db:migrate:tenants` para propagar as migracoes para todas as escolas existentes.
