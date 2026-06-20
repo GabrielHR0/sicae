@@ -10,9 +10,12 @@ Rails.application.routes.draw do
   scope :responsavel do
     get "cardapio", to: "cardapios#index", as: :cardapio_responsavel
     get "cardapio/produto/:produto_id", to: "cardapios#show", as: :cardapio_produto_responsavel
+
+    resources :bloqueios, only: %i[new create destroy]
+    resources :reservas, only: %i[create destroy]
   end
 
-  root "home#index"
+  # root "home#index"
   resources :redes
   resources :escolas
   # Defines the root path route ("/")
