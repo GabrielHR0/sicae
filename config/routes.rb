@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   resources :produtos
   resources :categorias
+  resources :tabela_precos
 
   scope :responsavel do
     get "cardapio", to: "cardapios#index", as: :cardapio_responsavel
@@ -15,7 +16,6 @@ Rails.application.routes.draw do
     resources :reservas, only: %i[create destroy]
   end
 
-  # root "home#index"
   resources :redes
   resources :escolas
   # Defines the root path route ("/")

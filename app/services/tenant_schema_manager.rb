@@ -30,21 +30,23 @@ class TenantSchemaManager
     end
   end
 
-def load_tenant_structure!
+  def load_tenant_structure!
     connection = ActiveRecord::Base.connection
     previous_search_path = connection.schema_search_path
-    connection.schema_search_path = "#{@schema_name},public"
+    connection.schema_search_path = @schema_name
 
-    tabelas_globais = ["escolas", "redes", "ar_internal_metadata", "schema_migrations"]
+    tabelas_globais = %w[escolas redes users roles permissions perfis responsaveis estudantes ar_internal_metadata schema_migrations]
 
     ActiveRecord::Migration.suppress_messages do
       schema_content = File.read(Rails.root.join("db", "schema.rb"))
 
       tabelas_globais.each do |tabela|
         schema_content.gsub!(/create_table "#{tabela}".*?end/m, "")
+        schema_content.gsub!(/^  add_foreign_key "#{tabela}".*$/, "")
+        schema_content.gsub!(/^  add_foreign_key .*, "#{tabela}"$/, "")
       end
 
-      eval(schema_content) 
+      eval(schema_content)
     end
   ensure
     connection.schema_search_path = previous_search_path

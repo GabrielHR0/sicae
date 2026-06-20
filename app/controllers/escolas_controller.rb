@@ -65,6 +65,6 @@ class EscolasController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def escola_params
-      params.expect(escola: [ :nome, :slug, :schema_name, :cnpj, :email, :telefone, :ativo, :metadata ])
+      params.expect(escola: [ :nome, :cnpj, :email, :telefone, :ativo, :metadata ])
     end
 end

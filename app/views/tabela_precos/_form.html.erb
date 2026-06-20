@@ -1,0 +1,47 @@
+<%= form_with(model: tabela_preco, class: "contents") do |form| %>
+  <% if tabela_preco.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
+      <h2><%= pluralize(tabela_preco.errors.count, "error") %> prohibited this tabela_preco from being saved:</h2>
+
+      <ul class="list-disc ml-6">
+        <% tabela_preco.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="my-5">
+    <%= form.label :nome %>
+    <%= form.text_field :nome, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": tabela_preco.errors[:nome].none?, "border-red-400 focus:outline-red-600": tabela_preco.errors[:nome].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :descricao %>
+    <%= form.text_field :descricao, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": tabela_preco.errors[:descricao].none?, "border-red-400 focus:outline-red-600": tabela_preco.errors[:descricao].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :tipo %>
+    <%= form.number_field :tipo, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": tabela_preco.errors[:tipo].none?, "border-red-400 focus:outline-red-600": tabela_preco.errors[:tipo].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :status %>
+    <%= form.number_field :status, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": tabela_preco.errors[:status].none?, "border-red-400 focus:outline-red-600": tabela_preco.errors[:status].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :inicioVigencia %>
+    <%= form.datetime_field :inicioVigencia, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": tabela_preco.errors[:inicioVigencia].none?, "border-red-400 focus:outline-red-600": tabela_preco.errors[:inicioVigencia].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :fimVigencia %>
+    <%= form.datetime_field :fimVigencia, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": tabela_preco.errors[:fimVigencia].none?, "border-red-400 focus:outline-red-600": tabela_preco.errors[:fimVigencia].any?}] %>
+  </div>
+
+  <div class="inline">
+    <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+  </div>
+<% end %>
