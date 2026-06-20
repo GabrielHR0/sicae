@@ -17,22 +17,26 @@
 
 # colocar inflections para palavras em português
 ActiveSupport::Inflector.inflections do |inflect|
-  inflect.plural(/$/, "s")
   inflect.plural(/(s|z|x|ch|sh|ss|o)$/, "\\1es")
   inflect.plural(/(al|el|ol|ul)$/, "\\1is")
   inflect.plural(/(r|n)$/, "\\1es")
   inflect.plural(/ão$/, "ões")
-
-  inflect.singular(/s$/, "")
-  inflect.singular(/(s|z|x|ch|sh|ss|o)es$/, "\\1")
-  inflect.singular(/(al|el|ol|ul)is$/, "\\1")
-  inflect.singular(/(r|n)es$/, "\\1")
-  inflect.singular(/ões$/, "ão")
+  inflect.plural(/$/, "s")
 
   inflect.irregular "perfil", "perfis"
+  inflect.irregular "produto", "produtos"
   inflect.irregular "user", "users"
   inflect.irregular "role", "roles"
   inflect.irregular "permission", "permissions"
   inflect.irregular "responsavel", "responsaveis"
   inflect.irregular "responsável", "responsáveis"
+  inflect.irregular "categoria", "categorias"
+  inflect.irregular "produto", "produtos"
+  inflect.irregular "estudante", "estudantes"
+  inflect.irregular "cardapio", "cardapios"
+  inflect.irregular "bloqueio", "bloqueios"
+  inflect.irregular "reserva",  "reservas"
+  inflect.irregular "cantina", "cantinas"
+  inflect.irregular "escola", "escolas"
+  inflect.irregular "item_preco", "item_precos"
 end

@@ -1,0 +1,4 @@
+<% attrs_str = (local_assigns[:attrs] || {}).map { |k, v| "#{k}=\"#{ERB::Util.html_escape(v)}\"" }.join(' ') %>
+<svg class="<%= classes %>" <%= attrs_str %> xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v13a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V7M16 3l-4 4-4-4" />
+</svg>

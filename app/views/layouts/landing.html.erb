@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title><%= content_for?(:title) ? yield(:title) : "SICAE - Cantina Escolar Inteligente" %></title>
+  <meta name="description" content="SICAE - Sistema inteligente para cantinas escolares. Gerencie vendas, estoque e permita que pais escolham a alimentação dos filhos." />
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags %>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+  <script>
+    (function(){
+      const stored = window.localStorage.getItem("theme");
+      const useDark = stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.classList.toggle("dark", useDark);
+    })();
+  </script>
+</head>
+<body data-controller="landing" class="bg-transparent text-slate-900 antialiased dark:text-white">
+  <%= yield %>
+</body>
+</html>

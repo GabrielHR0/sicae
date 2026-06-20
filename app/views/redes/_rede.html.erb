@@ -1,0 +1,22 @@
+<div id="<%= dom_id rede %>" class="w-full sm:w-auto my-5 space-y-5">
+  <div>
+    <strong class="block font-medium mb-1">Nome:</strong>
+    <%= rede.nome %>
+  </div>
+  <div>
+    <strong class="block font-medium mb-1">Slug:</strong>
+    <%= rede.slug %>
+  </div>
+  <div>
+    <strong class="block font-medium mb-1">Descricao:</strong>
+    <%= rede.descricao %>
+  </div>
+  <div>
+    <strong class="block font-medium mb-1">Metadata:</strong>
+    <%= rede.metadata %>
+  </div>
+  <div>
+    <strong class="block font-medium mb-1">Ativo:</strong>
+    <%= rede.ativo? ? "Yes" : "No" %>
+  </div>
+</div>

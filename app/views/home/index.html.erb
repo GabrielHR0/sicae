@@ -1,0 +1,165 @@
+<% content_for :title, "Dashboard" %>
+
+<%= render layout: 'layouts/admin' do %>
+  <% stats = [
+    { label: "Vendas hoje", value: "R$ 3.240", change: "+12%", icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6v12m-3-3h6m-8.25 4.5h10.5a1.5 1.5 0 0 0 1.5-1.5v-12a1.5 1.5 0 0 0-1.5-1.5H6.75a1.5 1.5 0 0 0-1.5 1.5v12a1.5 1.5 0 0 0 1.5 1.5Z"/>' },
+    { label: "Pedidos em fila", value: "18", change: "+4", icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.5 7.5h15M6 7.5l1.5 12h9l1.5-12M9 7.5V5.25A2.25 2.25 0 0 1 11.25 3h1.5A2.25 2.25 0 0 1 15 5.25V7.5"/>' },
+    { label: "Alunos atendidos", value: "246", change: "+9%", icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 19.128a9 9 0 0 0 2.625.372 9.004 9.004 0 0 0 4.902-1.43c.723-.44.596-1.464-.099-1.96A10.48 10.48 0 0 0 12 15.75a10.48 10.48 0 0 0-10.428 2.36c-.695.496-.823 1.52-.1 1.96A9.004 9.004 0 0 0 6.375 19.5c.892 0 1.767-.129 2.625-.372M15 19.128a3 3 0 0 1-6 0M15 19.128V18a3 3 0 0 0-6 0v1.128M15 19.128a9 9 0 1 0-6 0"/>' },
+    { label: "Estoque crítico", value: "7", change: "-2", icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 9v3.75m9.003 3.476A2.25 2.25 0 0 1 18.803 18H5.197a2.25 2.25 0 0 1-1.95-3.374L9.55 4.875a2.25 2.25 0 0 1 3.9 0l6.702 9.75a2.25 2.25 0 0 1 .851 1.851ZM12 15.75h.007v.008H12v-.008Z"/>' }
+  ] %>
+
+  <div class="space-y-6">
+    <section class="rounded-2xl border border-ruby-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-neutral-950">
+      <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <p class="text-sm font-medium uppercase tracking-[0.2em] text-ruby-600 dark:text-ruby-300">Painel administrativo</p>
+          <h1 class="mt-2 text-3xl font-semibold text-gray-900 dark:text-gray-50">Dashboard da cantina</h1>
+          <p class="mt-3 max-w-2xl text-sm text-gray-600 dark:text-gray-300">Resumo de vendas, estoque, pedidos e operação diária com visual Flowbite e paleta laranja.</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div class="rounded-xl bg-ruby-50 p-4 dark:bg-gradient-to-br dark:from-ruby-900 dark:to-ruby-950/40">
+            <p class="text-xs font-medium uppercase text-ruby-600 dark:text-ruby-300">Hoje</p>
+            <p class="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">08:40</p>
+          </div>
+          <div class="rounded-xl bg-gray-50 p-4 dark:bg-gray-900">
+            <p class="text-xs font-medium uppercase text-gray-500 dark:text-gray-400">Aberto</p>
+            <p class="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">12h</p>
+          </div>
+          <div class="rounded-xl bg-gray-50 p-4 dark:bg-gray-900">
+            <p class="text-xs font-medium uppercase text-gray-500 dark:text-gray-400">Meta</p>
+            <p class="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">85%</p>
+          </div>
+          <div class="rounded-xl bg-ruby-50 p-4 dark:bg-gradient-to-br dark:from-ruby-900 dark:to-ruby-950/40">
+            <p class="text-xs font-medium uppercase text-ruby-600 dark:text-ruby-300">Saldo</p>
+            <p class="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">R$ 9.420</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <% stats.each do |stat| %>
+        <article class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-neutral-950">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="text-sm font-medium text-gray-500 dark:text-gray-400"><%= stat[:label] %></p>
+              <p class="mt-2 text-3xl font-semibold text-gray-900 dark:text-gray-50"><%= stat[:value] %></p>
+              <p class="mt-1 text-sm text-ruby-600 dark:text-ruby-300"><%= stat[:change] %> vs ontem</p>
+            </div>
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-ruby-50 text-ruby-700 dark:bg-gradient-to-br dark:from-ruby-900 dark:to-ruby-950/40 dark:text-ruby-200">
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <%= raw(stat[:icon]) %>
+              </svg>
+            </div>
+          </div>
+        </article>
+      <% end %>
+    </section>
+
+    <section class="grid gap-6 xl:grid-cols-3">
+      <article class="xl:col-span-2 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-neutral-950">
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-50">Vendas da semana</h2>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Padrão Flowbite com destaque em laranja.</p>
+          </div>
+          <span class="rounded-full bg-ruby-50 px-3 py-1 text-xs font-semibold text-ruby-700 dark:bg-gradient-to-br dark:from-ruby-900 dark:to-ruby-950/40 dark:text-ruby-200">+18%</span>
+        </div>
+
+        <div class="mt-6 rounded-2xl bg-gray-50 p-5 dark:bg-gray-900">
+          <div class="mb-4 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+            <span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span><span>Dom</span>
+          </div>
+          <div class="grid grid-cols-7 gap-3 items-end h-56">
+            <div class="h-20 rounded-t-xl bg-ruby-300 dark:bg-ruby-800"></div>
+            <div class="h-32 rounded-t-xl bg-ruby-400 dark:bg-ruby-700"></div>
+            <div class="h-24 rounded-t-xl bg-ruby-500 dark:bg-ruby-500"></div>
+            <div class="h-40 rounded-t-xl bg-ruby-500 dark:bg-ruby-500"></div>
+            <div class="h-48 rounded-t-xl bg-ruby-700 dark:bg-ruby-400"></div>
+            <div class="h-28 rounded-t-xl bg-ruby-400 dark:bg-ruby-700"></div>
+            <div class="h-36 rounded-t-xl bg-ruby-500 dark:bg-ruby-500"></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-neutral-950">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-50">Ações rápidas</h2>
+        <div class="mt-5 space-y-3">
+          <% ["Novo pedido", "Baixar estoque", "Cadastrar aluno", "Fechar caixa"].each do |label| %>
+            <a href="#" class="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-sm text-gray-700 hover:bg-ruby-50 dark:border-gray-800 dark:text-gray-200 dark:hover:bg-gradient-to-br from-ruby-800/30 to-ruby-950/30">
+              <span><%= label %></span>
+              <svg class="h-4 w-4 text-ruby-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/></svg>
+            </a>
+          <% end %>
+        </div>
+
+        <div class="mt-6 rounded-xl bg-ruby-50 p-4 dark:bg-gradient-to-br dark:from-ruby-900 dark:to-ruby-950/30">
+          <p class="text-xs font-semibold uppercase tracking-wide text-ruby-700 dark:text-ruby-200">Aviso</p>
+          <p class="mt-2 text-sm text-gray-700 dark:text-gray-200">7 itens estão com estoque abaixo do ideal.</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="grid gap-6 xl:grid-cols-3">
+      <article class="xl:col-span-2 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-neutral-950">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-50">Pedidos recentes</h2>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Fila operacional com status e valor.</p>
+          </div>
+          <a href="#" class="text-sm font-medium text-ruby-600 hover:underline dark:text-ruby-300">Ver tudo</a>
+        </div>
+
+        <div class="relative mt-6 overflow-x-auto rounded-xl border border-gray-100 dark:border-gray-800">
+          <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+            <thead class="bg-gray-50 text-xs uppercase text-gray-600 dark:bg-gray-900 dark:text-gray-300">
+              <tr>
+                <th class="px-6 py-3">Pedido</th>
+                <th class="px-6 py-3">Aluno</th>
+                <th class="px-6 py-3">Status</th>
+                <th class="px-6 py-3 text-right">Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% [
+                ["#1042", "Ana Silva", "Preparando", "R$ 18,00"],
+                ["#1043", "Bruno Lima", "Pronto", "R$ 12,50"],
+                ["#1044", "Carla Souza", "Pago", "R$ 24,00"],
+                ["#1045", "Diego Alves", "Entregue", "R$ 15,00"]
+              ].each do |pedido| %>
+                <tr class="border-t border-gray-100 bg-white dark:border-gray-800 dark:bg-neutral-950">
+                  <td class="px-6 py-4 font-medium text-gray-900 dark:text-gray-50"><%= pedido[0] %></td>
+                  <td class="px-6 py-4"><%= pedido[1] %></td>
+                  <td class="px-6 py-4">
+                    <span class="rounded-full bg-ruby-50 px-3 py-1 text-xs font-semibold text-ruby-700 dark:bg-gradient-to-br dark:from-ruby-900 dark:to-ruby-950/40 dark:text-ruby-200"><%= pedido[2] %></span>
+                  </td>
+                  <td class="px-6 py-4 text-right font-medium text-gray-900 dark:text-gray-50"><%= pedido[3] %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-neutral-950">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-50">Atividade</h2>
+        <ol class="mt-6 space-y-5 border-l border-gray-200 pl-4 dark:border-gray-800">
+          <% [
+            ["08:10", "Caixa aberto", "R$ 1.250 inicializados"],
+            ["09:05", "Estoque baixado", "12 itens atualizados"],
+            ["10:30", "Novo pedido", "Almoço da turma 7A"],
+            ["11:15", "Relatório parcial", "Conferência enviada" ]
+          ].each do |item| %>
+            <li class="relative">
+              <span class="absolute -left-[1.38rem] mt-1.5 h-3 w-3 rounded-full bg-ruby-700 ring-4 ring-white dark:ring-neutral-950"></span>
+              <p class="text-xs font-semibold uppercase tracking-wide text-ruby-600 dark:text-ruby-300"><%= item[0] %></p>
+              <h3 class="mt-1 text-sm font-medium text-gray-900 dark:text-gray-50"><%= item[1] %></h3>
+              <p class="mt-1 text-sm text-gray-500 dark:text-gray-400"><%= item[2] %></p>
+            </li>
+          <% end %>
+        </ol>
+      </article>
+    </section>
+  </div>
+<% end %>

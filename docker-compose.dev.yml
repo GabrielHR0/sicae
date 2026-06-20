@@ -1,6 +1,19 @@
-version: "3.8"
-
 services:
+  db:
+    image: postgres:15-alpine
+    container_name: postgres-dev
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${SICAE_DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${SICAE_DATABASE_PASSWORD}
+      POSTGRES_DB: ${SICAE_DATABASE_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
   dev:
     build:
       context: .
@@ -21,10 +34,9 @@ services:
     # Use a regular bind mount (no :cached) so file changes are immediately visible
     volumes:
       - ./:/rails
-      - bundle_cache:/usr/local/bundle
     tty: true
     entrypoint: ["/bin/bash", "/rails/docker/dev-entrypoint.sh"]
     command: ["bin/dev"]
 
 volumes:
-  bundle_cache:
+  db_data:

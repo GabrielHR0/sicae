@@ -1,11 +1,11 @@
 class UserPolicy < ApplicationPolicy
   def index?
-    user.present? && user.has_role?(:admin)
+    user.present? && user.admin?
   end
 
   class Scope < ApplicationPolicy::Scope
     def resolve
-      return scope.all if user.present? && user.has_role?(:admin)
+      return scope.all if user.present? && user.admin?
 
       scope.none
     end

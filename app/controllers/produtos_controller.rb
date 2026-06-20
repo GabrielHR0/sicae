@@ -1,66 +1,99 @@
 class ProdutosController < ApplicationController
-  before_action :authenticate_user!
-  before_action :set_produto, only: %i[show edit update destroy]
-  after_action :verify_authorized
+  include DataTableable
 
-  include Pagy::Backend
+  SORTABLE_COLUMNS = %w[nome categoria estoque preco ativo].freeze
+  SEARCHABLE_COLUMNS = %w[nome descricao categoria].freeze
+
+  data_table default_sort: :nome,
+             sortable_columns: SORTABLE_COLUMNS,
+             searchable_columns: SEARCHABLE_COLUMNS,
+             default_limit: 20,
+             per_page_options: [ 10, 20, 50, 100 ]
+
+  # before_action :authenticate_user!
+  before_action :set_produto, only: %i[show edit update destroy]
+  # after_action :verify_authorized
 
   def index
-    authorize Produto
-    produtos = Produto.all
-    produtos = produtos.por_categoria(params[:categoria])
-    produtos = produtos.where(ativo: params[:ativo]) if params[:ativo].present?
-    produtos = produtos.order(:nome)
-    @pagy, @produtos = pagy(produtos, limit: 20)
+    @stats = Produto.stats
+
+    @pagy, @records = paginate_data_table(Produto.includes(:categoria)) do |scope|
+      scope = scope.por_nome_categoria(params[:categoria])
+      scope = scope.where(ativo: active_filter) if params[:ativo].present?
+      scope
+    end
   end
 
   def show
-    authorize @produto
+    if turbo_frame_request?
+      case params[:modal]
+      when "view"
+        render partial: "produtos/show_modal_content", locals: { produto: @produto }
+      when "edit"
+        @categorias = Categoria.order(:nome)
+        render partial: "produtos/edit_modal_content", locals: { produto: @produto, categorias: @categorias }
+      end
+
+      nil
+    end
   end
 
   def new
     @produto = Produto.new
-    authorize @produto
+    @categorias = Categoria.order(:nome)
+
+    if turbo_frame_request?
+      render partial: "produtos/create_modal_content", locals: { produto: @produto, categorias: @categorias }
+    end
   end
 
   def create
     @produto = Produto.new(produto_params)
-    authorize @produto
+    @categorias = Categoria.order(:nome)
 
     if @produto.save
-      redirect_to @produto, notice: "Produto cadastrado com sucesso."
+      redirect_to produtos_path, notice: "Produto cadastrado com sucesso."
     else
       render :new, status: :unprocessable_entity
     end
   end
 
   def edit
-    authorize @produto
+    @categorias = Categoria.order(:nome)
   end
 
   def update
-    authorize @produto
+    @categorias = Categoria.order(:nome)
 
     if @produto.update(produto_params)
-      redirect_to @produto, notice: "Produto atualizado com sucesso."
+      redirect_to produtos_path, notice: "Produto atualizado com sucesso."
     else
       render :edit, status: :unprocessable_entity
     end
   end
 
   def destroy
-    authorize @produto
     @produto.destroy
     redirect_to produtos_path, notice: "Produto removido com sucesso."
   end
 
   private
 
+  def data_table_search_scope(scope, search_field, term)
+    return [ scope.por_nome_categoria(term), true ] if search_field == "categoria"
+
+    [ scope, false ]
+  end
+
   def set_produto
-    @produto = Produto.find(params[:id])
+    @produto = Produto.includes(:categoria).find(params[:id])
   end
 
   def produto_params
-    params.require(:produto).permit(:nome, :descricao, :preco, :categoria, :estoque, :ativo)
+    params.require(:produto).permit(:nome, :descricao, :preco, :categoria_id, :estoque, :ativo)
+  end
+
+  def active_filter
+    ActiveModel::Type::Boolean.new.cast(params[:ativo])
   end
 end

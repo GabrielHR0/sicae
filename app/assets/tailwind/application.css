@@ -1,1 +1,148 @@
+@config "../../../tailwind.config.js";
 @import "tailwindcss";
+@plugin "@tailwindcss/forms";
+@import "flowbite/src/themes/default";
+@plugin "flowbite/plugin";
+@source "../../../node_modules/flowbite";
+
+@layer components {
+	.admin-modal-overlay {
+		@apply fixed inset-0 z-50 hidden w-full overflow-y-auto overflow-x-hidden bg-ruby-950/35 px-4 pb-6 pt-24 backdrop-blur-sm dark:bg-black/55;
+	}
+
+	.admin-modal-dialog {
+		@apply relative flex min-h-full w-full items-start justify-center;
+	}
+
+	.admin-modal-card {
+		@apply relative w-full max-h-[calc(100vh-7rem)] overflow-y-auto overflow-x-hidden rounded-xl border border-gray-300 bg-gray-150 shadow-xl dark:border-gray-800 dark:bg-gray-900;
+	}
+
+	.admin-modal-header {
+		@apply flex items-start justify-between border-b border-gray-300 bg-ruby-750 px-5 py-4 text-white dark:border-gray-800 dark:bg-ruby-750;
+	}
+
+	.admin-modal-title {
+		@apply text-lg font-semibold text-white dark:text-white;
+	}
+
+	.admin-modal-subtitle {
+		@apply mt-1 text-sm text-ruby-100 dark:text-ruby-100;
+	}
+
+	.admin-modal-close {
+		@apply ms-3 inline-flex h-8 w-8 items-center justify-center rounded-lg text-ruby-100 hover:bg-white/15 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/40;
+	}
+
+	.admin-modal-body {
+		@apply space-y-4 px-5 py-5 text-sm text-gray-700 dark:text-gray-200;
+	}
+
+	.admin-modal-footer {
+		@apply flex items-center justify-end gap-3 border-t border-gray-200 px-5 py-4 dark:border-gray-800;
+	}
+
+	.admin-modal-panel {
+		@apply rounded-2xl border border-gray-200 bg-gray-200 p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900;
+	}
+
+	.admin-modal-panel-soft {
+		@apply rounded-2xl border border-gray-200 bg-gray-200 p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900;
+	}
+
+	.admin-modal-panel-head {
+		@apply mb-5 border-b border-gray-200 pb-4 dark:border-gray-800;
+	}
+
+	.admin-modal-panel-head-row {
+		@apply mb-5 flex items-center justify-between gap-3 border-b border-gray-200 pb-4 dark:border-gray-800;
+	}
+
+	.admin-modal-kicker {
+		@apply text-sm font-semibold uppercase tracking-wide text-ruby-750 dark:text-ruby-750;
+	}
+
+	.admin-modal-secondary-text {
+		@apply mt-1 text-sm text-gray-700 dark:text-gray-300;
+	}
+
+	.admin-modal-label {
+		@apply mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100;
+	}
+
+	.admin-modal-input {
+		@apply block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 shadow-xs placeholder:text-gray-600 focus:border-ruby-750 focus:ring-2 focus:ring-ruby-750 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500;
+	}
+
+	.admin-modal-input-group-addon {
+		@apply inline-flex items-center border border-gray-300 bg-gray-50 px-3 text-sm font-medium text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300;
+	}
+
+	.admin-modal-select-trigger {
+		@apply flex w-full items-center justify-between gap-3 rounded-xl border border-gray-300 bg-gray-50 px-3 py-2.5 text-left text-sm text-gray-900 shadow-xs focus:border-ruby-750 focus:ring-2 focus:ring-ruby-750 dark:border-gray-700 dark:bg-gray-800 dark:text-white;
+	}
+
+	.admin-modal-select-panel {
+		@apply absolute z-20 mt-2 hidden w-full overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 p-2 shadow-xl dark:border-gray-700 dark:bg-gray-800;
+	}
+
+	.admin-modal-select-option {
+		@apply flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm text-gray-700 hover:bg-ruby-50 hover:text-ruby-900 dark:text-gray-200 dark:hover:bg-ruby-950/40 dark:hover:text-white;
+	}
+
+	.admin-modal-toggle-shell {
+		@apply inline-flex cursor-pointer items-center rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 shadow-xs dark:border-gray-800 dark:bg-gray-800;
+	}
+
+	.admin-modal-toggle-track {
+		@apply relative h-5 w-9 rounded-full bg-gray-300 transition peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-ruby-300 dark:bg-gray-700 dark:peer-focus:ring-ruby-900/40 peer-checked:bg-ruby-750 dark:peer-checked:bg-ruby-750 after:absolute after:inset-s-0.5 after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full;
+	}
+
+	.admin-modal-toggle-title {
+		@apply block text-sm font-medium text-gray-800 dark:text-gray-100;
+	}
+
+	.admin-modal-toggle-help {
+		@apply block text-xs text-gray-700 dark:text-gray-400;
+	}
+
+	.admin-modal-actions {
+		@apply flex items-center justify-end gap-3 border-t border-gray-200 pt-4 dark:border-gray-700;
+	}
+
+	.admin-form-panel-primary {
+		@apply rounded-2xl border border-gray-200 bg-ruby-100/20 p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900;
+	}
+
+	.admin-form-panel-secondary {
+		@apply rounded-2xl border border-gray-200 bg-ruby-100/20 p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900;
+	}
+
+	.admin-form-input {
+		@apply block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 shadow-xs placeholder:text-gray-600 focus:border-ruby-750 focus:ring-2 focus:ring-ruby-750 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500;
+	}
+
+	.admin-form-input-addon {
+		@apply inline-flex items-center border border-gray-300 bg-gray-50 px-3 text-sm font-medium text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300;
+	}
+
+	.admin-form-select-trigger {
+		@apply flex w-full items-center justify-between gap-3 rounded-xl border border-gray-300 bg-gray-50 px-3 py-2.5 text-left text-sm text-gray-900 shadow-xs focus:border-ruby-750 focus:ring-2 focus:ring-ruby-750 dark:border-gray-700 dark:bg-gray-800 dark:text-white;
+	}
+
+	.admin-form-select-panel {
+		@apply absolute z-20 mt-2 w-full overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 p-2 shadow-xl dark:border-gray-700 dark:bg-gray-800;
+	}
+
+	.admin-form-toggle-shell {
+		@apply inline-flex items-center cursor-pointer rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 shadow-xs dark:border-gray-800 dark:bg-gray-800;
+	}
+}
+
+@layer utilities {
+  .sidebar-collapsed .sidebar-label,
+  .sidebar-collapsed .sidebar-chevron,
+  .sidebar-collapsed .sidebar-submenu {
+    display: none;
+  }
+}

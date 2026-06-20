@@ -1,0 +1,17 @@
+<%
+  label = local_assigns[:label].presence || "Carregando..."
+  size_class = local_assigns[:size_class].presence || "h-6 w-6"
+  label_class = local_assigns[:label_class].presence || "text-sm font-medium text-gray-600 dark:text-gray-300"
+  wrapper_class = local_assigns[:wrapper_class].presence
+  hide_label = local_assigns[:hide_label] == true
+%>
+
+<div class="flex flex-col items-center justify-center gap-3 text-center <%= wrapper_class %>">
+  <svg class="<%= size_class %> animate-spin text-ruby-800 dark:text-ruby-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+    <path class="opacity-75" fill="currentColor" d="M12 2a10 10 0 1 0 10 10h-3a7 7 0 1 1-7-7V2Z"></path>
+  </svg>
+  <% unless hide_label %>
+    <p class="<%= label_class %>"><%= label %></p>
+  <% end %>
+</div>

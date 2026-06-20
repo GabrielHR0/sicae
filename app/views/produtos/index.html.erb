@@ -1,0 +1,152 @@
+<% content_for :title, "Produtos" %>
+<% columns = [
+  { key: :nome, label: "Nome", sortable: true, row_header: true, width: "30%" },
+  {
+    key: :categoria,
+    label: "Categoria",
+    sortable: true,
+    width: "18%",
+    render: ->(record, _view) { record.categoria&.nome || record[:categoria].presence || "-" }
+  },
+  { key: :estoque, label: "Estoque", sortable: true, width: "12%" },
+  {
+    key: :preco,
+    label: "Preço",
+    sortable: true,
+    width: "14%",
+    render: ->(record, view) { view.number_to_currency(record.preco) }
+  },
+  {
+    key: :status,
+    label: "Status",
+    width: "10%",
+    render: ->(record, view) do
+      badge_class = "ml-auto inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium"
+
+      if record.disponivel?
+        view.tag.span(
+          "Disponível",
+          class: "#{badge_class} bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200"
+        )
+      elsif record.ativo?
+        view.tag.span(
+          "Sem estoque",
+          class: "#{badge_class} bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200"
+        )
+      else
+        view.tag.span(
+          "Inativo",
+          class: "#{badge_class} bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+        )
+      end
+    end
+  },
+  {
+    key: :actions,
+    label: "Ações",
+    width: "16%",
+    actions: true
+  }
+] %>
+
+<% cards = [
+  {
+    title: "Total de produtos",
+    value: @stats["total_count"].to_i,
+    description: "Quantidade de registros cadastrados",
+    icon: icon_svg("box")
+  },
+  {
+    title: "Produtos ativos",
+    value: @stats["active_count"].to_i,
+    description: "Itens disponíveis no catálogo",
+    icon: icon_svg("check")
+  },
+  {
+    title: "Sem estoque",
+    value: @stats["out_of_stock_count"].to_i,
+    description: "Produtos que precisam reposição",
+    icon: icon_svg("alert")
+  },
+  {
+    title: "Categorias usadas",
+    value: @stats["categories_count"].to_i,
+    description: "Categorias com produtos vinculados",
+    icon: icon_svg("grid")
+  }
+] %>
+
+<%= render layout: "layouts/admin" do %>
+  <div class="space-y-6" data-controller="modal-loader">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div>
+        <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Produtos</h1>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gerencie os itens cadastrados no sistema.</p>
+      </div>
+
+      <%= link_to new_produto_path(modal: "create"),
+          class: "inline-flex items-center justify-center rounded-lg bg-ruby-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-ruby-800 focus:outline-none focus:ring-2 focus:ring-gray-400",
+          data: {
+            action: "click->modal-loader#open",
+            modal_loader_modal_id: "produto-modal-criar",
+            turbo_frame: "produto-modal-criar-frame"
+          } do %>
+        Novo produto
+      <% end %>
+    </div>
+
+    <%= render "shared/admin/modal",
+      modal_id: "produto-modal-criar",
+      mode: :create,
+      resource_name: "produto",
+      subtitle: "Cadastre um novo produto sem sair da listagem." do %>
+      <template data-modal-loader-loading-template>
+        <%= render "shared/admin/modal_loading_state", label: "Carregando formulário de novo produto" %>
+      </template>
+      <%= turbo_frame_tag "produto-modal-criar-frame" do %>
+        <%= render "shared/admin/modal_loading_state",
+          label: "Carregando formulário de novo produto" %>
+      <% end %>
+    <% end %>
+
+    <%= render "shared/admin/modal",
+      modal_id: "produto-modal-editar",
+      mode: :edit,
+      resource_name: "produto",
+      subtitle: "Os dados são carregados dinamicamente ao clicar em editar." do %>
+      <template data-modal-loader-loading-template>
+        <%= render "shared/admin/modal_loading_state", label: "Carregando formulário de edição do produto" %>
+      </template>
+      <%= turbo_frame_tag "produto-modal-editar-frame" do %>
+        <%= render "shared/admin/modal_loading_state",
+          label: "Carregando formulário de edição do produto" %>
+      <% end %>
+    <% end %>
+
+    <%= render "shared/admin/modal",
+      modal_id: "produto-modal-visualizar",
+      title: "Visualizar produto",
+      subtitle: "Veja os detalhes do produto sem sair da listagem." do %>
+      <template data-modal-loader-loading-template>
+        <%= render "shared/admin/modal_loading_state", label: "Carregando detalhes do produto" %>
+      </template>
+      <%= turbo_frame_tag "produto-modal-visualizar-frame" do %>
+        <%= render "shared/admin/modal_loading_state",
+          label: "Carregando detalhes do produto" %>
+      <% end %>
+    <% end %>
+
+    <%= render "shared/admin/summary_cards", cards: cards %>
+
+    <%= render "shared/admin/data_table", 
+      pagy: @pagy,
+      records: @records,
+      columns: columns,
+      search_fields: [
+        { value: "nome", label: "Nome" },
+        { value: "categoria", label: "Categoria" }
+      ],
+      title: content_for(:title)
+    %>
+  </div>
+<% end %>

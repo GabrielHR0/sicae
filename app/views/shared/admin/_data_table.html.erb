@@ -1,0 +1,295 @@
+<% current_limit = params[:limit].presence&.to_i || 20 %>
+<% current_query = params[:q].to_s %>
+<% current_search_field = params[:search_field].presence || (search_fields&.first&.fetch(:value, nil)) %>
+<% clear_search_params = request.query_parameters.except("q", "page").merge(page: 1) %>
+
+<div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+  <div class="flex flex-col gap-4 border-b border-gray-200 bg-white px-6 py-4 md:flex-row md:items-center md:justify-between dark:border-gray-800 dark:bg-gray-800">
+    <div>
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white"><%= title %></h2>
+      <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Lista com paginação, seleção de itens por página e ações rápidas.</p>
+    </div>
+
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+      <form action="<%= request.path %>" method="get" class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+        <input type="hidden" name="limit" value="<%= current_limit %>">
+        <% if current_search_field.present? %>
+          <input type="hidden" name="search_field" value="<%= current_search_field %>">
+        <% end %>
+        <div class="relative w-full sm:w-80">
+          <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3 text-gray-600">
+            <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 5 8a7 7 0 0 1 10 0Z"/>
+            </svg>
+          </div>
+          <input
+            type="search"
+            name="q"
+            value="<%= current_query %>"
+            placeholder="Pesquisar produtos..."
+            class="block w-full rounded-lg [&::-webkit-search-cancel-button]:appearance-none border border-gray-300 bg-white p-2.5 ps-10 pe-10 text-sm text-gray-900 focus:border-gray-800 focus:ring-2 focus:ring-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+          >
+          <% if current_query.present? %>
+            <%= link_to url_for(clear_search_params), class: "absolute inset-y-0 end-0 flex items-center pe-3 text-gray-500 transition hover:text-gray-700", title: "Limpar busca", aria: { label: "Limpar busca" } do %>
+              <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6M6 6l12 12"/>
+              </svg>
+            <% end %>
+          <% end %>
+        </div>
+        <% if search_fields.present? %>
+          <select
+            name="search_field"
+            class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-gray-800 focus:ring-2 focus:ring-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+          >
+            <% search_fields.each do |field| %>
+              <option value="<%= field[:value] %>" <%= "selected" if current_search_field == field[:value] %>><%= field[:label] %></option>
+            <% end %>
+          </select>
+        <% end %>
+        <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-ruby-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-ruby-800">
+          Pesquisar
+        </button>
+      </form>
+
+      <div class="flex items-center gap-3">
+        <label for="limit" class="text-sm font-medium text-gray-800 dark:text-gray-300">Itens por página</label>
+        <select
+          id="limit"
+          onchange="window.location.href = this.value"
+          class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-gray-800 focus:ring-2 focus:ring-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+        >
+          <% [10, 20, 50, 100].each do |limit| %>
+            <option value="<%= url_for(request.query_parameters.merge(limit: limit, page: 1)) %>" <%= "selected" if current_limit == limit %>>
+              <%= limit %>
+            </option>
+          <% end %>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table id="selection-table" class="w-full table-fixed text-left text-sm text-gray-700 dark:text-gray-400">
+      <colgroup>
+        <% columns.each do |col| %>
+          <%= tag.col(style: "width: #{col[:width]};") if col[:width].present? %>
+          <%= tag.col unless col[:width].present? %>
+        <% end %>
+      </colgroup>
+      <thead class="bg-gray-100 text-xs uppercase text-gray-800 dark:bg-gray-800 dark:text-gray-300">
+        <tr>
+          <% columns.each do |col| %>
+            <% header_classes = [
+              "px-6 py-3 align-middle",
+              col[:class],
+              (col[:align] == "right" ? "text-right" : nil)
+            ].compact.join(" ") %>
+            <% header_content_classes = [
+              "flex w-full items-center gap-1",
+              (col[:align] == "right" ? "justify-end" : nil)
+            ].compact.join(" ") %>
+            <th scope="col" class="<%= header_classes %>">
+              <div class="<%= header_content_classes %>">
+                <% if col[:sortable] == true && col[:key].is_a?(Symbol) %>
+                  <% sort_direction = params[:sort] == col[:key].to_s && params[:direction] == "asc" ? "desc" : "asc" %>
+                  <%= link_to url_for(
+                        request.query_parameters.merge(
+                          sort: col[:key],
+                          direction: sort_direction,
+                          page: 1
+                        )
+                      ),
+                      class: [
+                        "inline-flex items-center gap-1 text-gray-900 dark:text-white",
+                        (col[:align] == "right" ? "justify-end" : nil)
+                      ].compact.join(" ") do %>
+                    <%= col[:label] || col[:key].to_s.humanize %>
+                    <svg class="h-4 w-4" aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24">
+                      <path stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                  <% end %>
+                <% else %>
+                  <%= col[:label] || (col[:key].is_a?(Symbol) ? col[:key].to_s.humanize : "•") %>
+                <% end %>
+              </div>
+            </th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <% records.each do |record| %>
+          <tr class="cursor-pointer border-b border-gray-100 hover:bg-gradient-to-br from-gray-600/20 to-gray-800/10 dark:border-gray-800 dark:hover:bg-gray-800">
+            <% resource_modal_prefix = record.model_name.singular %>
+            <% view_modal_id = "#{resource_modal_prefix}-modal-visualizar" %>
+            <% edit_modal_id = "#{resource_modal_prefix}-modal-editar" %>
+            <% view_frame_id = "#{view_modal_id}-frame" %>
+            <% edit_frame_id = "#{edit_modal_id}-frame" %>
+            <% columns.each_with_index do |col, index| %>
+              <% cell_value = if col[:render].respond_to?(:call)
+                col[:render].call(record, self)
+              elsif col[:partial].present?
+                render(col[:partial], record: record, column: col)
+              elsif col[:key].is_a?(Symbol) && col[:actions] != true
+                record.public_send(col[:key])
+              end %>
+              <% is_row_header = index.zero? || col[:row_header] == true %>
+              <% tag_name = is_row_header ? :th : :td %>
+              <% tag_options = {
+                class: [
+                  "px-6 py-4 align-middle",
+                  col[:class],
+                  (is_row_header ? "whitespace-nowrap font-medium text-gray-900 dark:text-white" : nil),
+                  col[:align] == "right" ? "text-right" : nil
+                ].compact.join(" "),
+                style: (col[:width].present? ? "width: #{col[:width]};" : nil)
+              } %>
+              <% tag_options[:scope] = "row" if is_row_header %>
+
+              <%= tag.public_send(tag_name, **tag_options) do %>
+                <% if col[:actions] == true %>
+                  <div class="flex w-full items-center gap-2">
+                    <% action_buttons = col[:buttons].presence || [
+                      {
+                        title: "Ver",
+                        href: ->(row) { polymorphic_path(row, modal: "view") },
+                        data: {
+                          action: "click->modal-loader#open",
+                          modal_loader_modal_id: view_modal_id,
+                          turbo_frame: view_frame_id
+                        },
+                        class: "rounded-lg border border-gray-300 px-3 py-2 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800",
+                        icon: ->(view) do
+                          view.raw('<svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1.5 12s3.75-7.5 10.5-7.5S22.5 12 22.5 12s-3.75 7.5-10.5 7.5S1.5 12 1.5 12Zm10.5 4.5a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Z"/></svg>')
+                        end
+                      },
+                      {
+                        title: "Editar",
+                        href: ->(row) { polymorphic_path(row, modal: "edit") },
+                        data: {
+                          action: "click->modal-loader#open",
+                          modal_loader_modal_id: edit_modal_id,
+                          turbo_frame: edit_frame_id
+                        },
+                        class: "rounded-lg bg-ruby-700 px-3 py-2 text-white hover:bg-ruby-800",
+                        icon: ->(view) do
+                          view.raw('<svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16.862 4.487 1.687-1.687a1.875 1.875 0 1 1 2.652 2.652L7.875 18.778a4.5 4.5 0 0 1-1.897 1.13L3 21l1.092-2.978a4.5 4.5 0 0 1 1.13-1.897l11.64-11.638ZM19.5 7.125 16.875 4.5"/></svg>')
+                        end
+                      }
+                    ] %>
+
+                    <% action_buttons.each do |button| %>
+                      <% next if button[:if].respond_to?(:call) && !button[:if].call(record, self) %>
+                      <% href = button[:href].respond_to?(:call) ? button[:href].call(record) : button[:href] %>
+                      <% link_options = {
+                        title: button[:title],
+                        aria: { label: button[:title] },
+                        class: button[:class]
+                      } %>
+                      <% if button[:data].present? %>
+                        <% link_options[:data] = button[:data].each_with_object({}) do |(key, value), data|
+                          data[key] = value.respond_to?(:call) ? value.call(record) : value
+                        end %>
+                      <% end %>
+                      <% link_options[:target] = button[:target] if button[:target].present? %>
+
+                      <%= link_to href,
+                                  **link_options do %>
+                        <% if button[:icon].respond_to?(:call) %>
+                          <%= button[:icon].call(self) %>
+                        <% else %>
+                          <%= button[:title] %>
+                        <% end %>
+                      <% end %>
+                    <% end %>
+                  </div>
+                <% elsif col[:render].respond_to?(:call) || col[:partial].present? %>
+                  <% if col[:align] == "right" %>
+                    <div class="flex w-full items-center justify-end">
+                      <%= cell_value %>
+                    </div>
+                  <% else %>
+                    <%= cell_value %>
+                  <% end %>
+                <% elsif col[:key].is_a?(Symbol) %>
+                  <% if col[:align] == "right" %>
+                    <div class="flex w-full items-center justify-end">
+                      <%= cell_value.presence || "-" %>
+                    </div>
+                  <% else %>
+                    <%= cell_value.presence || "-" %>
+                  <% end %>
+                <% end %>
+              <% end %>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="flex flex-col gap-4 border-t border-gray-200 px-6 py-4 md:flex-row md:items-center md:justify-between dark:border-gray-800">
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      Mostrando <span class="font-medium text-gray-900 dark:text-white"><%= pagy.from %></span> até
+      <span class="font-medium text-gray-900 dark:text-white"><%= pagy.to %></span> de
+      <span class="font-medium text-gray-900 dark:text-white"><%= pagy.count %></span> registros
+    </p>
+
+    <div class="flex flex-wrap items-center gap-2">
+      <% if pagy.page > 1 %>
+        <%= link_to url_for(request.query_parameters.merge(page: 1)), class: "inline-flex items-center rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800", title: "Primeira página", aria: { label: "Primeira página" } do %>
+          <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m11 17-5-5 5-5m6 10-5-5 5-5"/>
+          </svg>
+        <% end %>
+      <% end %>
+
+      <% if pagy.previous %>
+        <%= link_to url_for(request.query_parameters.merge(page: pagy.previous)), class: "inline-flex items-center rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800" do %>
+          <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7"/>
+          </svg>
+        <% end %>
+      <% end %>
+
+      <% pagy_page_items(pagy).each do |item| %>
+        <% if item == :gap %>
+          <span class="inline-flex items-center px-2 text-sm font-medium text-gray-400">...</span>
+        <% else %>
+          <% page_number = item.to_i %>
+          <% if page_number == pagy.page %>
+            <span class="inline-flex items-center rounded-lg bg-ruby-700 px-4 py-2 text-sm font-medium text-white"><%= page_number %></span>
+          <% else %>
+            <%= link_to url_for(request.query_parameters.merge(page: page_number)), class: "inline-flex items-center rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800" do %>
+              <%= page_number %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% if pagy.next %>
+        <%= link_to url_for(request.query_parameters.merge(page: pagy.next)), class: "inline-flex items-center rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800" do %>
+          
+          <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
+          </svg>
+        <% end %>
+      <% end %>
+
+      <% if pagy.page < pagy.pages %>
+        <%= link_to url_for(request.query_parameters.merge(page: pagy.pages)), class: "inline-flex items-center rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800", title: "Última página", aria: { label: "Última página" } do %>
+          <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m13 17 5-5-5-5m-6 10 5-5-5-5"/>
+          </svg>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>
