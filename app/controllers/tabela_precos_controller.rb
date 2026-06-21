@@ -1,70 +1,78 @@
 class TabelaPrecosController < ApplicationController
   before_action :set_tabela_preco, only: %i[ show edit update destroy ]
 
-  # GET /tabela_precos or /tabela_precos.json
   def index
-    @tabela_precos = TabelaPreco.all
+    @pagy, @tabela_precos = pagy(TabelaPreco.all, limit: 8)
   end
 
-  # GET /tabela_precos/1 or /tabela_precos/1.json
   def show
+    if turbo_frame_request? && params[:modal] == "edit"
+      render partial: "tabela_precos/edit_modal_content", locals: { tabela_preco: @tabela_preco }
+    end
   end
 
-  # GET /tabela_precos/new
   def new
     @tabela_preco = TabelaPreco.new
+    render partial: "tabela_precos/create_modal_content", locals: { tabela_preco: @tabela_preco }
   end
 
-  # GET /tabela_precos/1/edit
   def edit
+    render partial: "tabela_precos/edit_modal_content", locals: { tabela_preco: @tabela_preco }
   end
 
-  # POST /tabela_precos or /tabela_precos.json
   def create
-    @tabela_preco = TabelaPreco.new(tabela_preco_params)
+    @tabela_preco = TabelaPreco.new(tabela_preco_params.except(:ativo))
+    @tabela_preco.status = params.dig(:tabela_preco, :ativo) == "1" ? :ativo : :rascunho
 
-    respond_to do |format|
-      if @tabela_preco.save
-        format.html { redirect_to @tabela_preco, notice: "Tabela preco was successfully created." }
-        format.json { render :show, status: :created, location: @tabela_preco }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @tabela_preco.errors, status: :unprocessable_entity }
-      end
+    if @tabela_preco.save
+      redirect_to tabela_precos_path, notice: "Tabela cadastrada com sucesso."
+    else
+      render partial: "tabela_precos/create_modal_content",
+             locals: { tabela_preco: @tabela_preco },
+             status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /tabela_precos/1 or /tabela_precos/1.json
   def update
-    respond_to do |format|
-      if @tabela_preco.update(tabela_preco_params)
-        format.html { redirect_to @tabela_preco, notice: "Tabela preco was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @tabela_preco }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @tabela_preco.errors, status: :unprocessable_entity }
-      end
+    if @tabela_preco.base?
+      redirect_to tabela_precos_path, alert: "Tabelas base não podem ser editadas."
+      return
+    end
+
+    @tabela_preco.assign_attributes(tabela_preco_params.except(:ativo))
+
+    if params.dig(:tabela_preco, :ativo) == "1"
+      @tabela_preco.status = :ativo
+    elsif params.dig(:tabela_preco, :ativo) == "0"
+      @tabela_preco.status = :inativo
+    end
+
+    if @tabela_preco.save
+      redirect_to tabela_precos_path, notice: "Tabela atualizada com sucesso."
+    else
+      render partial: "tabela_precos/edit_modal_content",
+             locals: { tabela_preco: @tabela_preco },
+             status: :unprocessable_entity
     end
   end
 
-  # DELETE /tabela_precos/1 or /tabela_precos/1.json
   def destroy
-    @tabela_preco.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to tabela_precos_path, notice: "Tabela preco was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
+    if @tabela_preco.base?
+      redirect_to tabela_precos_path, alert: "Tabelas base não podem ser removidas.", status: :see_other
+      return
     end
+
+    @tabela_preco.destroy!
+    redirect_to tabela_precos_path, notice: "Tabela removida com sucesso.", status: :see_other
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_tabela_preco
-      @tabela_preco = TabelaPreco.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def tabela_preco_params
-      params.expect(tabela_preco: [ :nome, :descricao, :tipo, :status, :inicioVigencia, :fimVigencia ])
-    end
+  def set_tabela_preco
+    @tabela_preco = TabelaPreco.find(params.expect(:id))
+  end
+
+  def tabela_preco_params
+    params.expect(tabela_preco: [ :nome, :descricao, :tipo, :inicioVigencia, :fimVigencia, :ativo ])
+  end
 end
