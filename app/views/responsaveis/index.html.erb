@@ -1,0 +1,131 @@
+<% content_for :title, "Responsáveis" %>
+
+<% columns = [
+  {
+    key: :nome,
+    label: "Nome",
+    sortable: true,
+    row_header: true,
+    width: "28%",
+    render: ->(record, _view) { record[:nome].presence || "-" }
+  },
+  {
+    key: :email,
+    label: "Email",
+    sortable: false,
+    width: "22%",
+    render: ->(record, _view) { record[:email].presence || "-" }
+  },
+  {
+    key: :relacao_parental,
+    label: "Relação",
+    sortable: true,
+    width: "14%",
+    render: ->(record, view) do
+      map = { "pai" => "Pai", "mae" => "Mãe", "tutor" => "Tutor(a)", "outro" => "Outro" }
+      view.tag.span(
+        map[record.relacao_parental] || record.relacao_parental.humanize,
+        class: "inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+      )
+    end
+  },
+  {
+    key: :estudantes_count,
+    label: "Estudantes",
+    sortable: true,
+    width: "12%",
+    align: "right",
+    render: ->(record, view) do
+      count = record[:estudantes_count].to_i
+      color = count > 0 ? "text-gray-900 dark:text-white" : "text-gray-400 dark:text-gray-500"
+      view.tag.span(count.to_s, class: "font-medium #{color}")
+    end
+  },
+  {
+    key: :actions,
+    label: "Ações",
+    width: "24%",
+    actions: true
+  }
+] %>
+
+<% cards = [
+  {
+    title: "Total de responsáveis",
+    value: Responsavel.count,
+    description: "Quantidade de registros cadastrados",
+    icon: icon_svg("users")
+  },
+  {
+    title: "Com estudantes",
+    value: Responsavel.joins(:estudantes).distinct.count,
+    description: "Responsáveis com ao menos um estudante vinculado",
+    icon: icon_svg("check")
+  },
+  {
+    title: "Tipos de relação",
+    value: Responsavel.distinct.count(:relacao_parental),
+    description: "Quantidade de categorias de relação familiar",
+    icon: icon_svg("grid")
+  }
+] %>
+
+<%= render layout: "layouts/admin" do %>
+  <div class="space-y-6" data-controller="modal-loader">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div>
+        <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Responsáveis</h1>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gerencie os responsáveis e suas contas de acesso.</p>
+      </div>
+
+      <%= link_to new_responsavel_path(modal: "create"),
+          class: "inline-flex items-center justify-center rounded-lg bg-ruby-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-ruby-800 focus:outline-none focus:ring-2 focus:ring-gray-400",
+          data: {
+            action: "click->modal-loader#open",
+            modal_loader_modal_id: "responsavel-modal-criar",
+            turbo_frame: "responsavel-modal-criar-frame"
+          } do %>
+        Novo responsável
+      <% end %>
+    </div>
+
+    <%= render "shared/admin/modal",
+      modal_id: "responsavel-modal-criar",
+      mode: :create,
+      resource_name: "responsavel",
+      subtitle: "Cadastre um novo responsável com conta de acesso." do %>
+      <template data-modal-loader-loading-template>
+        <%= render "shared/admin/modal_loading_state", label: "Carregando formulário" %>
+      </template>
+      <%= turbo_frame_tag "responsavel-modal-criar-frame" do %>
+        <%= render "shared/admin/modal_loading_state", label: "Carregando formulário" %>
+      <% end %>
+    <% end %>
+
+    <%= render "shared/admin/modal",
+      modal_id: "responsavel-modal-editar",
+      mode: :edit,
+      resource_name: "responsavel",
+      subtitle: "Os dados são carregados dinamicamente ao clicar em editar." do %>
+      <template data-modal-loader-loading-template>
+        <%= render "shared/admin/modal_loading_state", label: "Carregando formulário de edição" %>
+      </template>
+      <%= turbo_frame_tag "responsavel-modal-editar-frame" do %>
+        <%= render "shared/admin/modal_loading_state", label: "Carregando formulário de edição" %>
+      <% end %>
+    <% end %>
+
+    <%= render "shared/admin/summary_cards", cards: cards %>
+
+    <%= render "shared/admin/data_table",
+      pagy: @pagy,
+      records: @records,
+      columns: columns,
+      search_fields: [
+        { value: "nome", label: "Nome" },
+        { value: "email", label: "Email" }
+      ],
+      title: content_for(:title)
+    %>
+  </div>
+<% end %>

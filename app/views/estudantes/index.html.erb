@@ -1,0 +1,143 @@
+<% content_for :title, "Estudantes" %>
+
+<% columns = [
+  {
+    key: :nome,
+    label: "Nome",
+    sortable: true,
+    row_header: true,
+    width: "24%"
+  },
+  {
+    key: :matricula,
+    label: "Matrícula",
+    sortable: true,
+    width: "14%"
+  },
+  {
+    key: :turma,
+    label: "Turma",
+    sortable: true,
+    width: "10%"
+  },
+  {
+    key: :serie,
+    label: "Série",
+    sortable: true,
+    width: "8%"
+  },
+  {
+    key: :nivel_escolaridade,
+    label: "Nível",
+    sortable: true,
+    width: "12%",
+    render: ->(record, view) do
+      map = { 0 => "Fundamental", 1 => "Médio" }
+      classe = { 0 => "bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-200", 1 => "bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-200" }
+      view.tag.span(
+        map[record.nivel_escolaridade] || "-",
+        class: "inline-flex items-center rounded-full #{classe[record.nivel_escolaridade] || 'bg-gray-100 text-gray-800'} px-2.5 py-1 text-xs font-medium"
+      )
+    end
+  },
+  {
+    key: :responsavel,
+    label: "Responsável",
+    width: "20%",
+    render: ->(record, _view) do
+      nome = record.responsavel&.user&.perfil&.nome
+      nome.presence || "-"
+    end
+  },
+  {
+    key: :actions,
+    label: "Ações",
+    width: "12%",
+    actions: true
+  }
+] %>
+
+<% nivel_fundamental = @stats["nivel_fundamental"].to_i %>
+<% nivel_medio = @stats["nivel_medio"].to_i %>
+
+<% cards = [
+  {
+    title: "Total de estudantes",
+    value: @stats["total_count"].to_i,
+    description: "Quantidade de registros cadastrados",
+    icon: icon_svg("users")
+  },
+  {
+    title: "Ensino Fundamental",
+    value: nivel_fundamental,
+    description: "Estudantes do ensino fundamental",
+    icon: icon_svg("book")
+  },
+  {
+    title: "Ensino Médio",
+    value: nivel_medio,
+    description: "Estudantes do ensino médio",
+    icon: icon_svg("book")
+  }
+] %>
+
+<%= render layout: "layouts/admin" do %>
+  <div class="space-y-6" data-controller="modal-loader">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div>
+        <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Estudantes</h1>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gerencie os estudantes cadastrados no sistema.</p>
+      </div>
+
+      <%= link_to new_estudante_path(modal: "create"),
+          class: "inline-flex items-center justify-center rounded-lg bg-ruby-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-ruby-800 focus:outline-none focus:ring-2 focus:ring-gray-400",
+          data: {
+            action: "click->modal-loader#open",
+            modal_loader_modal_id: "estudante-modal-criar",
+            turbo_frame: "estudante-modal-criar-frame"
+          } do %>
+        Novo estudante
+      <% end %>
+    </div>
+
+    <%= render "shared/admin/modal",
+      modal_id: "estudante-modal-criar",
+      mode: :create,
+      resource_name: "estudante",
+      subtitle: "Cadastre um novo estudante sem sair da listagem." do %>
+      <template data-modal-loader-loading-template>
+        <%= render "shared/admin/modal_loading_state", label: "Carregando formulário" %>
+      </template>
+      <%= turbo_frame_tag "estudante-modal-criar-frame" do %>
+        <%= render "shared/admin/modal_loading_state", label: "Carregando formulário" %>
+      <% end %>
+    <% end %>
+
+    <%= render "shared/admin/modal",
+      modal_id: "estudante-modal-editar",
+      mode: :edit,
+      resource_name: "estudante",
+      subtitle: "Os dados são carregados dinamicamente ao clicar em editar." do %>
+      <template data-modal-loader-loading-template>
+        <%= render "shared/admin/modal_loading_state", label: "Carregando formulário de edição" %>
+      </template>
+      <%= turbo_frame_tag "estudante-modal-editar-frame" do %>
+        <%= render "shared/admin/modal_loading_state", label: "Carregando formulário de edição" %>
+      <% end %>
+    <% end %>
+
+    <%= render "shared/admin/summary_cards", cards: cards %>
+
+    <%= render "shared/admin/data_table",
+      pagy: @pagy,
+      records: @records,
+      columns: columns,
+      search_fields: [
+        { value: "nome", label: "Nome" },
+        { value: "matricula", label: "Matrícula" },
+        { value: "responsavel_nome", label: "Responsável" }
+      ],
+      title: content_for(:title)
+    %>
+  </div>
+<% end %>
