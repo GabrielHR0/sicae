@@ -1,0 +1,6 @@
+<%= turbo_frame_tag "tabela-preco-modal-editar-frame" do %>
+  <%= render "tabela_precos/form",
+    tabela_preco: tabela_preco,
+    submit_label: "Salvar alterações",
+    modal_id: "tabela-preco-modal-editar" %>
+<% end %>

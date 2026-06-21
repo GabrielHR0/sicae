@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ItensprecoController, type: :routing do
+RSpec.describe ItemPrecosController, type: :routing do
   describe "routing" do
     it "routes to #index" do
       expect(get: "/item_precos").to route_to("item_precos#index")

@@ -1,0 +1,8 @@
+<%= turbo_frame_tag "item_preco-modal-criar-frame" do %>
+  <%= render "item_precos/form",
+    item_preco: item_preco,
+    tabela_preco: tabela_preco,
+    produtos: produtos,
+    submit_label: "Adicionar item",
+    modal_id: "item_preco-modal-criar" %>
+<% end %>
