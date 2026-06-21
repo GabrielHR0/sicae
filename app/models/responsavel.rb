@@ -1,4 +1,6 @@
 class Responsavel < ApplicationRecord
+  attr_accessor :nome, :email, :username, :password, :cpf, :telefone, :data_nascimento
+
   belongs_to :user
   has_many :bloqueios, dependent: :destroy
   has_many :reservas, dependent: :destroy
@@ -10,5 +12,5 @@ class Responsavel < ApplicationRecord
     tutor: 2,
     outro: 3
   }
-  
+
 end

@@ -6,6 +6,8 @@ Rails.application.routes.draw do
 
   resources :produtos
   resources :categorias
+  resources :responsaveis
+  resources :estudantes
   resources :tabela_precos do
     resources :item_precos
   end
@@ -20,3 +22,4 @@ Rails.application.routes.draw do
   root "landing#index"
   get "dashboard", to: "home#index"
 end
+
