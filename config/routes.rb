@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  devise_for :users, controllers: { registrations: "users/registrations" }
+  devise_for :users, controllers: { registrations: "users/registrations", sessions: "users/sessions" }
   get "up" => "rails/health#show", as: :rails_health_check
 
   match "/404", to: "errors#not_found", via: :all
@@ -22,4 +22,5 @@ Rails.application.routes.draw do
   root "landing#index"
   get "dashboard", to: "home#index"
 end
+
 

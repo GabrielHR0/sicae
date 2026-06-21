@@ -34,13 +34,10 @@ export default class extends Controller {
                 el.classList.add("hidden");
             }
         });
-        // update header icons and connecting lines
         const headerItems = Array.from(this.element.querySelectorAll("ol > li"));
         headerItems.forEach((li, index) => {
             const circle = li.querySelector('span');
-            // classes for highlighted (current)
-            const rubyClasses = ['border-red-800','bg-gradient-to-br from-red-700 to-red-900','text-white','dark:border-red-800','dark:bg-gradient-to-br dark:from-red-800 dark:to-red-950'];
-            // classes for neutral (upcoming/completed without highlight)
+            const rubyClasses = ['border-ruby-500','bg-ruby-500','text-white','dark:border-ruby-500','dark:bg-ruby-500'];
             const neutralClasses = ['border-gray-300','bg-white','text-gray-600','dark:border-gray-600','dark:bg-gray-800','dark:text-gray-300'];
 
             if (circle) {
@@ -53,18 +50,15 @@ export default class extends Controller {
                 }
             }
 
-            // update connecting line color via pseudo-class helper classes on the li
-            const completedLineClass = 'after:border-red-800';
-            const completedLineDark = 'dark:after:border-red-800';
+            const completedLineClass = 'after:border-ruby-500';
+            const completedLineDark = 'dark:after:border-ruby-500';
             const pendingLineClass = 'after:border-gray-300';
             const pendingLineDark = 'dark:after:border-gray-600';
 
-            // remove all four then add appropriate ones
             li.classList.remove(completedLineClass, completedLineDark, pendingLineClass, pendingLineDark);
             if (index < current) {
                 li.classList.add(completedLineClass, completedLineDark);
             } else if (index < headerItems.length - 1) {
-                // only add pending if not the last item (last has no after element)
                 li.classList.add(pendingLineClass, pendingLineDark);
             }
         });

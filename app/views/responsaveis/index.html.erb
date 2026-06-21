@@ -45,7 +45,30 @@
     key: :actions,
     label: "Ações",
     width: "24%",
-    actions: true
+    actions: true,
+    buttons: [
+      {
+        title: "Ver",
+        href: ->(row) { responsavel_path(row) },
+        class: "rounded-lg border border-gray-300 px-3 py-2 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800",
+        icon: ->(view) do
+          view.raw('<svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1.5 12s3.75-7.5 10.5-7.5S22.5 12 22.5 12s-3.75 7.5-10.5 7.5S1.5 12 1.5 12Zm10.5 4.5a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Z"/></svg>')
+        end
+      },
+      {
+        title: "Editar",
+        href: ->(row) { polymorphic_path(row, modal: "edit") },
+        data: {
+          action: "click->modal-loader#open",
+          modal_loader_modal_id: "responsavel-modal-editar",
+          turbo_frame: "responsavel-modal-editar-frame"
+        },
+        class: "rounded-lg bg-ruby-700 px-3 py-2 text-white hover:bg-ruby-800",
+        icon: ->(view) do
+          view.raw('<svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16.862 4.487 1.687-1.687a1.875 1.875 0 1 1 2.652 2.652L7.875 18.778a4.5 4.5 0 0 1-1.897 1.13L3 21l1.092-2.978a4.5 4.5 0 0 1 1.13-1.897l11.64-11.638ZM19.5 7.125 16.875 4.5"/></svg>')
+        end
+      }
+    ]
   }
 ] %>
 
@@ -129,3 +152,4 @@
     %>
   </div>
 <% end %>
+

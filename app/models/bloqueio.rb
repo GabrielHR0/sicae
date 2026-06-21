@@ -4,7 +4,7 @@ class Bloqueio < ApplicationRecord
   belongs_to :estudante
   belongs_to :produto
 
-  enum tipo_periodo: {
+  enum :tipo_periodo, {
     apenas_hoje: 0,
     ate_sexta: 1,
     indefinido: 2,

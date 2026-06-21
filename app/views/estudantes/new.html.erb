@@ -1,0 +1,16 @@
+<% content_for :title, "Novo estudante" %>
+
+<%= render layout: "layouts/admin" do %>
+  <div class="space-y-6" data-controller="modal-loader">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div>
+        <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Novo estudante</h1>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Cadastre um novo estudante.</p>
+      </div>
+    </div>
+
+    <%= turbo_frame_tag "estudante-modal-criar-frame" do %>
+      <%= render "estudantes/form", estudante: @estudante, responsaveis: @responsaveis || [], modal_id: "estudante-modal-criar" %>
+    <% end %>
+  </div>
+<% end %>

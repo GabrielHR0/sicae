@@ -25,6 +25,9 @@ class EstudantesController < ApplicationController
   end
 
   def show
+    @bloqueios = @estudante.bloqueios.ativos.includes(:produto, :responsavel).order(created_at: :desc)
+    @reservas = @estudante.reservas.includes(:produto, :responsavel).order(data: :desc).limit(20)
+
     if turbo_frame_request?
       render partial: "estudantes/edit_modal_content", locals: { estudante: @estudante }
     end
@@ -69,7 +72,7 @@ class EstudantesController < ApplicationController
   private
 
   def set_estudante
-    @estudante = Estudante.find(params[:id])
+    @estudante = Estudante.includes(responsavel: { user: :perfil }).find(params[:id])
   end
 
   def estudante_params
@@ -89,3 +92,5 @@ class EstudantesController < ApplicationController
     ActiveModel::Type::Boolean.new.cast(params[:ativo])
   end
 end
+
+
