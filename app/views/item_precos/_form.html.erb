@@ -1,0 +1,82 @@
+<%
+  submit_label = local_assigns[:submit_label].presence || (item_preco.persisted? ? "Salvar alterações" : "Adicionar item")
+  modal_id = local_assigns[:modal_id]
+%>
+
+<%= form_with model: [tabela_preco, item_preco],
+              class: "space-y-6",
+              data: (modal_id.present? ? {
+                controller: "modal-form",
+                action: "turbo:submit-start->modal-form#start turbo:submit-end->modal-form#end"
+              } : {}) do |form| %>
+
+  <% if item_preco.errors.any? %>
+    <div class="rounded-xl border border-red-300 bg-red-50 p-4 text-sm text-red-800 shadow-sm dark:border-red-900/40 dark:bg-red-950/35 dark:text-red-200">
+      <p class="font-semibold"><%= pluralize(item_preco.errors.count, "erro") %> impediram o salvamento</p>
+      <ul class="mt-3 list-disc space-y-1 ps-5">
+        <% item_preco.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="admin-form-panel-primary">
+    <div class="mb-5 flex items-center justify-between gap-3 border-b border-gray-200 pb-4 dark:border-gray-800">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-wide text-gray-800 dark:text-white">Produto</p>
+        <p class="mt-1 text-sm text-gray-700 dark:text-gray-300">Selecione o produto e defina o preço para esta tabela.</p>
+      </div>
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-2">
+      <div>
+        <%= form.label :produto_id, class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <%= form.collection_select :produto_id,
+                produtos,
+                :id, :nome,
+                { prompt: "Selecione um produto" },
+                required: true,
+                disabled: item_preco.persisted?,
+                class: "admin-form-input" %>
+        <p class="mt-2 text-xs text-gray-700 dark:text-gray-400">Produto que será vinculado a esta tabela.</p>
+      </div>
+
+      <div>
+        <%= form.label :preco, class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <div class="flex rounded-lg shadow-xs">
+          <span class="admin-form-input-addon rounded-s-lg rounded-e-none border-e-0">R$</span>
+          <%= form.number_field :preco,
+                  step: 0.01,
+                  min: 0.01,
+                  required: true,
+                  placeholder: "0,00",
+                  class: "admin-form-input rounded-none rounded-e-lg" %>
+        </div>
+        <p class="mt-2 text-xs text-gray-700 dark:text-gray-400">Preço do produto nesta tabela.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex items-center justify-end gap-3 border-t border-gray-200 pt-4 dark:border-gray-700">
+    <% if modal_id.present? %>
+      <button type="button"
+              data-action="click->modal-loader#close"
+              class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">
+        Cancelar
+      </button>
+    <% else %>
+      <%= link_to "Cancelar", tabela_preco_item_precos_path(tabela_preco), class: "rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800" %>
+    <% end %>
+
+    <%= form.button type: :submit,
+                    data: { modal_form_target: "submitButton" },
+                    class: "inline-flex items-center justify-center gap-2 rounded-lg bg-ruby-700 px-4 py-2 text-sm font-medium text-white hover:bg-ruby-800" do %>
+      <span data-modal-form-target="submitLabel"><%= submit_label %></span>
+      <svg data-modal-form-target="submitSpinner" class="hidden h-4 w-4 animate-spin" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M12 2a10 10 0 1 0 10 10h-3a7 7 0 1 1-7-7V2Z"></path>
+      </svg>
+    <% end %>
+  </div>
+<% end %>
