@@ -23,6 +23,10 @@ class ResponsaveisController < ApplicationController
   end
 
   def show
+    @estudantes = @responsavel.estudantes.order(:nome)
+    @bloqueios = @responsavel.bloqueios.ativos.includes(:produto, :estudante).order(created_at: :desc)
+    @reservas = @responsavel.reservas.includes(:produto, :estudante).order(data: :desc).limit(20)
+
     if turbo_frame_request?
       render partial: "responsaveis/edit_modal_content", locals: { responsavel: @responsavel }
     end
@@ -55,7 +59,11 @@ class ResponsaveisController < ApplicationController
       )
       perfil.save!
 
-      role = Role.find_by!(nome: "responsavel")
+      role = Role.find_by(nome: "responsavel")
+      if role.nil?
+        @responsavel.errors.add(:base, "Role 'responsavel' não encontrada no sistema. Contate o administrador.")
+        raise ActiveRecord::RecordInvalid.new(@responsavel)
+      end
       user.roles << role
 
       @responsavel.user = user
@@ -64,12 +72,16 @@ class ResponsaveisController < ApplicationController
     end
 
     redirect_to responsaveis_path, notice: "Responsável cadastrado com sucesso."
-  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved
+  rescue ActiveRecord::RecordInvalid => e
     assign_virtual_attrs
+    record = e.record
+    if record.is_a?(User) || record.is_a?(Perfil)
+      record.errors.full_messages.each { |msg| @responsavel.errors.add(:base, msg) }
+    end
     render :new, status: :unprocessable_entity
-  rescue ActiveRecord::RecordNotFound
-    flash[:alert] = "Role 'responsavel' não encontrada."
+  rescue ActiveRecord::RecordNotSaved
     assign_virtual_attrs
+    @responsavel.errors.add(:base, "Erro ao salvar. Verifique os dados e tente novamente.")
     render :new, status: :unprocessable_entity
   end
 
@@ -156,3 +168,6 @@ class ResponsaveisController < ApplicationController
     end
   end
 end
+
+
+
