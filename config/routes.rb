@@ -4,6 +4,7 @@ Rails.application.routes.draw do
 
   match "/404", to: "errors#not_found", via: :all
 
+  get "vendas", to: "vendas#new"
   resources :produtos
   resources :categorias
   resources :responsaveis
@@ -22,5 +23,3 @@ Rails.application.routes.draw do
   root "landing#index"
   get "dashboard", to: "home#index"
 end
-
-

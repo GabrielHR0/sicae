@@ -6,6 +6,8 @@ class Produto < ApplicationRecord
   has_many :cardapio_produtos, dependent: :destroy
   has_many :cardapios, through: :cardapio_produtos
 
+  attr_writer :preco
+
   after_create :criar_preco_base
   after_update :atualizar_preco_base
 
@@ -27,10 +29,6 @@ class Produto < ApplicationRecord
       .where(tabela_precos: { tipo: :base, status: :ativo })
       .find_by(produto_id: id)
       &.preco
-  end
-
-  def preco=(valor)
-    @preco = valor
   end
 
   def disponivel?
@@ -56,7 +54,7 @@ class Produto < ApplicationRecord
     base = TabelaPreco.find_by(tipo: :base, status: :ativo)
     return unless base
 
-    item = ItemPreco.create!(tabela_preco_id: base.id, produto_id: id, preco: @preco)
+    ItemPreco.create!(tabela_preco_id: base.id, produto_id: id, preco: @preco)
   end
 
   def atualizar_preco_base

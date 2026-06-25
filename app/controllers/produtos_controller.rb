@@ -1,5 +1,8 @@
 class ProdutosController < ApplicationController
   include DataTableable
+  include Combobox
+
+  combobox_for Produto.ativos, search: [ :nome, :codigo ], represent: [ :id, :nome, :preco ]
 
   SORTABLE_COLUMNS = %w[nome categoria estoque preco ativo].freeze
   SEARCHABLE_COLUMNS = %w[nome descricao categoria].freeze
@@ -36,6 +39,10 @@ class ProdutosController < ApplicationController
 
       nil
     end
+  end
+
+  def busca
+    @produtos = Produto.ativos
   end
 
   def new

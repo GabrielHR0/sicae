@@ -1,8 +1,4 @@
-require 'bcrypt'
-require 'faker'
 return unless Rails.env.development? || Rails.env.test?
-
-encrypted_password = BCrypt::Password.create("123456")
 
 escola_estrela = {
   ativo: true,
@@ -15,7 +11,7 @@ escola_estrela = {
 user_base = {
   email: "teste@exemplo.com",
   username: "teste123",
-  password: encrypted_password
+  password: "123456"
 }
 
 user = User.find_or_initialize_by(username: user_base[:username])

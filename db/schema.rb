@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_25_173853) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_25_193807) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -149,6 +149,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_173853) do
     t.index ["token"], name: "index_lancamentos_on_token", unique: true
   end
 
+  create_table "pagamentos", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "forma_pagamento_id", null: false
+    t.bigint "lancamento_id", null: false
+    t.string "lancamento_type", null: false
+    t.decimal "troco", precision: 10, scale: 2
+    t.datetime "updated_at", null: false
+    t.decimal "valor", precision: 10, scale: 2
+    t.index ["forma_pagamento_id"], name: "index_pagamentos_on_forma_pagamento_id"
+    t.index ["lancamento_type", "lancamento_id"], name: "index_pagamentos_on_lancamento"
+  end
+
   create_table "perfis", force: :cascade do |t|
     t.string "cpf"
     t.datetime "created_at", null: false
@@ -174,6 +186,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_173853) do
   create_table "produtos", force: :cascade do |t|
     t.boolean "ativo", default: true, null: false
     t.bigint "categoria_id", null: false
+    t.string "codigo", null: false
     t.datetime "created_at", null: false
     t.text "descricao"
     t.integer "estoque", default: 0, null: false
@@ -181,6 +194,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_173853) do
     t.datetime "updated_at", null: false
     t.index ["ativo"], name: "index_produtos_on_ativo"
     t.index ["categoria_id"], name: "index_produtos_on_categoria_id"
+    t.index ["codigo"], name: "index_produtos_on_codigo", unique: true
     t.index ["nome"], name: "index_produtos_on_nome"
   end
 
@@ -278,6 +292,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_173853) do
   add_foreign_key "item_precos", "tabela_precos"
   add_foreign_key "itens_lancamento", "produtos"
   add_foreign_key "lancamentos", "cantinas"
+  add_foreign_key "pagamentos", "formas_pagamento", column: "forma_pagamento_id"
   add_foreign_key "perfis", "users"
   add_foreign_key "produtos", "categorias"
   add_foreign_key "reservas", "estudantes"
