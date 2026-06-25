@@ -1,5 +1,5 @@
 class Cantina < ApplicationRecord
-  has_many :compras
+  has_many :lancamentos
   has_many :cardapios
 
   validates :codigo, presence: true, uniqueness: true
