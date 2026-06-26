@@ -1,0 +1,9 @@
+<%= render "shared/combobox",
+    placeholder: "Digite o código ou nome do produto",
+    url: "/produtos/busca",
+    selected: nil
+%>
+
+<div class="bg-white/60 dark:bg-gray-900/60 rounded-2xl p-4 mt-4 flex-1 min-h-0 border border-gray-200 dark:border-gray-700 shadow-sm backdrop-blur-sm">
+  <div id="produtos-lista" class="space-y-2"></div>
+</div>

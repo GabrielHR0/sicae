@@ -24,7 +24,9 @@
   </head>
 
   <body>
-    <%= render "shared/flash" %>
+    <% flash.each do |tipo, mensagem| %>
+      <%= render "shared/toast", tipo: tipo, mensagem: mensagem %>
+    <% end %>
 
     <%= yield %>
 

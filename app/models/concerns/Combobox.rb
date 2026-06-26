@@ -24,7 +24,7 @@ module Combobox
     }.join(" OR ")
 
     results = config[:model]
-      .where(conditions, q: query)
+      .where(conditions, q: "%#{query}%")
       .limit(10)
 
     render json: results.map { |item|

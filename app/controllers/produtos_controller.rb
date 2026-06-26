@@ -41,10 +41,6 @@ class ProdutosController < ApplicationController
     end
   end
 
-  def busca
-    @produtos = Produto.ativos
-  end
-
   def new
     @produto = Produto.new
     @categorias = Categoria.order(:nome)

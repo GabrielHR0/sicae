@@ -1,0 +1,23 @@
+<div class="bg-white/60 dark:bg-gray-900/60 rounded-2xl p-4 flex-1 min-h-0 border border-gray-200 dark:border-gray-700 shadow-sm backdrop-blur-sm flex flex-col">
+  <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">Itens</h3>
+
+  <div id="carrinho" class="flex-1 overflow-y-auto space-y-3 scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden bg-gray-100/50 dark:bg-gray-800/50 rounded-lg p-3">
+    <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-8">
+      Nenhum item no carrinho
+    </p>
+  </div>
+
+  <div id="carrinho-resumo" class="mt-4 pt-4 border-t-2 border-gray-300 dark:border-gray-600">
+    <div class="flex justify-between text-sm mb-2">
+      <span class="text-gray-600 dark:text-gray-400">Subtotal</span>
+      <span id="subtotal" class="font-medium text-gray-900 dark:text-gray-100">R$ 0,00</span>
+    </div>
+    <button type="button"
+            class="w-full mt-4 rounded-lg bg-ruby-600 px-4 py-2.5 text-sm font-medium text-white
+                   hover:bg-ruby-700 focus:ring-2 focus:ring-ruby-500/20 transition-colors duration-150
+                   disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled>
+      Finalizar Venda
+    </button>
+  </div>
+</div>
