@@ -5,7 +5,9 @@ Rails.application.routes.draw do
   match "/404", to: "errors#not_found", via: :all
 
   get "vendas", to: "vendas#new"
-  resources :produtos
+  resources :produtos do
+    get :busca, on: :collection
+  end
   resources :categorias
   resources :responsaveis
   resources :estudantes
