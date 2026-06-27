@@ -1,5 +1,8 @@
 class EstudantesController < ApplicationController
   include DataTableable
+  include Combobox
+
+  combobox_for Estudante.all, search: [:matricula], represent: [:id, :nome, :matricula]
 
   SORTABLE_COLUMNS = %w[nome matricula turma serie data_nascimento nivel_escolaridade].freeze
   SEARCHABLE_COLUMNS = %w[nome matricula responsavel_nome].freeze

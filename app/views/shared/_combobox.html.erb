@@ -1,5 +1,7 @@
 <div data-controller="combobox"
      data-combobox-url-value="<%= url %>"
+     data-combobox-display-value='<%= local_assigns[:display] || "${nome}" %>'
+     data-combobox-text-field-value="<%= local_assigns[:text_field] || "nome" %>"
      class="relative">
 
   <% if local_assigns[:titulo] %>

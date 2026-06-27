@@ -2,7 +2,11 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
     static targets = ["input", "results"]
-    static values = { url: String }
+    static values = {
+        url: String,
+        display: { type: String, default: "${nome}" },
+        textField: { type: String, default: "nome" }
+    }
 
     connect() {
         this.timeout = null
@@ -25,27 +29,30 @@ export default class extends Controller {
                         this.resultsTarget.classList.add("hidden")
                         return
                     }
-                    this.resultsTarget.innerHTML = dados.map(item =>
-                        `<li data-action="click->combobox#select"
-                            data-id="${item.id}"
-                            class="px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer
-                                   text-sm flex justify-between items-center transition-colors duration-150">
-                            <span class="text-gray-800 dark:text-gray-200 font-medium">${item.nome}</span>
-                            <span class="text-gray-900 dark:text-gray-100 font-semibold tabular-nums">R$ ${item.preco}</span>
-                        </li>`
-                    ).join("")
+                    this.resultsTarget.innerHTML = dados.map(item => {
+                        const html = this.displayValue.replace(
+                            /\$\{(\w+)\}/g,
+                            (_, field) => item[field] ?? ""
+                        )
+                        return `<li data-action="click->combobox#select"
+                                    data-id="${item.id}"
+                                    class="px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer
+                                           text-sm flex justify-between items-center transition-colors duration-150"
+                                    data-fields='${JSON.stringify(item).replace(/'/g, "'")}'>
+                                    ${html}
+                                </li>`
+                    }).join("")
                     this.resultsTarget.classList.remove("hidden")
                 })
         }, 300)
     }
 
     select(event) {
-        const item = event.currentTarget
-        const nome = item.querySelector("span:first-child").textContent
-        this.inputTarget.value = nome
+        const li = event.currentTarget
+        const fields = JSON.parse(li.dataset.fields)
+        this.inputTarget.value = fields[this.textFieldValue] ?? ""
         this.resultsTarget.classList.add("hidden")
-
-        this.dispatch("selected", { detail: { id: item.dataset.id, nome } })
+        this.dispatch("selected", { detail: fields })
     }
 
     limpar() {

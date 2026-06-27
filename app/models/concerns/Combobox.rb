@@ -27,8 +27,12 @@ module Combobox
       .where(conditions, q: "%#{query}%")
       .limit(10)
 
-    render json: results.map { |item|
-      config[:represent_fields].index_with { |field| item.send(field) }
-    }
+    if results
+      render json: results.map { |item|
+        config[:represent_fields].index_with { |field| item.send(field) }
+      }
+    else
+      raise "Erro ao buscar estudante"
+    end
   end
 end
