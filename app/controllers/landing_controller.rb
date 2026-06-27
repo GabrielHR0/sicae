@@ -1,4 +1,5 @@
 class LandingController < ApplicationController
+  skip_before_action :authenticate_user!
   layout "landing"
 
   before_action :redirect_if_signed_in
