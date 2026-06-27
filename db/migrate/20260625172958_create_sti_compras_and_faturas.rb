@@ -10,6 +10,8 @@ class CreateStiComprasAndFaturas < ActiveRecord::Migration[8.1]
     add_column :lancamentos, :data_vencimento, :datetime
 
     rename_table :item_compras, :itens_lancamento
-    rename_column :itens_lancamento, :compra_id, :lancamento_id
+    if column_exists?(:itens_lancamento, :compra_id)
+      rename_column :itens_lancamento, :compra_id, :lancamento_id
+    end
   end
 end
