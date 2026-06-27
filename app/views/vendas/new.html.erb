@@ -1,6 +1,9 @@
 <%= render "vendas/topbar" %>
 
-<div class="flex h-[calc(100vh-4rem)]">
+<div data-controller="vendas",
+  data-action="combobox:selected->vendas#selecionaProduto"
+  class="flex h-[calc(100vh-4rem)]"
+>
   <div class="w-2/3 p-4 overflow-y-auto flex flex-col">
     <%= render "vendas/painel_esquerdo" %>
   </div>

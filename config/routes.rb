@@ -5,12 +5,15 @@ Rails.application.routes.draw do
   match "/404", to: "errors#not_found", via: :all
 
   get "vendas", to: "vendas#new"
+  get "vendas/produtos/:id/card", to: "vendas#produto_card"
   resources :produtos do
     get :busca, on: :collection
   end
   resources :categorias
   resources :responsaveis
-  resources :estudantes
+  resources :estudantes do
+    get :busca, on: :collection
+  end
   resources :tabela_precos do
     resources :item_precos
   end
