@@ -122,14 +122,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_193807) do
 
   create_table "itens_lancamento", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.bigint "lancamento_id"
     t.bigint "produto_id", null: false
+    t.bigint "produtos_id"
     t.integer "quantidade"
     t.decimal "sub_total", precision: 10, scale: 2, default: "0.0", null: false
     t.datetime "updated_at", null: false
     t.decimal "valor_unitario", precision: 10, scale: 2, default: "0.0", null: false
-    t.index ["lancamento_id"], name: "index_itens_lancamento_on_lancamento_id"
     t.index ["produto_id"], name: "index_itens_lancamento_on_produto_id"
+    t.index ["produtos_id"], name: "index_itens_lancamento_on_produtos_id"
   end
 
   create_table "lancamentos", force: :cascade do |t|
@@ -292,6 +292,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_193807) do
   add_foreign_key "item_precos", "tabela_precos"
   add_foreign_key "itens_lancamento", "produtos"
   add_foreign_key "lancamentos", "cantinas"
+  add_foreign_key "lancamentos", "responsaveis"
   add_foreign_key "pagamentos", "formas_pagamento", column: "forma_pagamento_id"
   add_foreign_key "perfis", "users"
   add_foreign_key "produtos", "categorias"

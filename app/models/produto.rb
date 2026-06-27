@@ -12,9 +12,13 @@ class Produto < ApplicationRecord
   after_update :atualizar_preco_base
 
   validates :nome, presence: true, length: { maximum: 100 }
+  validates :codigo, uniqueness: true, allow_blank: true
   validates :estoque, numericality: { greater_than_or_equal_to: 0, only_integer: true }
 
+  before_validation :gerar_codigo, on: :create
+
   scope :ativos, -> { where(ativo: true) }
+  scope :disponivel, -> { where("estoque > ?", 0) }
   scope :inativos, -> { where(ativo: false) }
   scope :por_nome_categoria, ->(nome_cat) {
     return all if nome_cat.blank?
@@ -47,6 +51,13 @@ class Produto < ApplicationRecord
   end
 
   private
+
+  def gerar_codigo
+    return if codigo.present?
+
+    max_id = Produto.maximum(:id) || 0
+    self.codigo = format('COD-%05d', max_id + 1)
+  end
 
   def criar_preco_base
     return unless @preco.present?
