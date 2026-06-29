@@ -4,7 +4,18 @@ Rails.application.routes.draw do
 
   match "/404", to: "errors#not_found", via: :all
 
+<<<<<<< Updated upstream
   resources :produtos
+=======
+  get "vendas", to: "vendas#new"
+  get "vendas/produtos/:id/card", to: "vendas#produto_card"
+  get "vendas/estudantes/:id/card", to: "vendas#estudante_card"
+  post "vendas", to: "vendas#create"
+  patch "vendas/:id/cancelar", to: "vendas#cancelar"
+  resources :produtos do
+    get :busca, on: :collection
+  end
+>>>>>>> Stashed changes
   resources :categorias
   resources :tabela_precos
 

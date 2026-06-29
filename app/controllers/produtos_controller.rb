@@ -1,8 +1,15 @@
 class ProdutosController < ApplicationController
   include DataTableable
 
+<<<<<<< Updated upstream
   SORTABLE_COLUMNS = %w[nome categoria estoque preco ativo].freeze
   SEARCHABLE_COLUMNS = %w[nome descricao categoria].freeze
+=======
+  combobox_for Produto.ativos.disponivel, search: [ :nome, :codigo ], represent: [ :id, :nome, :preco, :codigo ]
+
+  SORTABLE_COLUMNS = %w[nome codigo categoria estoque preco ativo].freeze
+  SEARCHABLE_COLUMNS = %w[nome codigo descricao categoria].freeze
+>>>>>>> Stashed changes
 
   data_table default_sort: :nome,
              sortable_columns: SORTABLE_COLUMNS,
