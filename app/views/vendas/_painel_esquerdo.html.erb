@@ -1,0 +1,20 @@
+<div class="grid grid-cols-2 gap-3">
+  <%= render "shared/combobox",
+      placeholder: "Digite o código ou nome do produto",
+      url: "/produtos/busca",
+      display: '<span class="text-gray-800 dark:text-gray-200 font-medium">${codigo} — ${nome}</span><span class="text-gray-900 dark:text-gray-100 font-semibold tabular-nums">R$ ${preco}</span>',
+      text_field: "nome"
+  %>
+
+  <%= render "shared/combobox",
+      placeholder: "Buscar aluno por matrícula",
+      url: "/estudantes/busca",
+      display: '<span class="text-gray-800 dark:text-gray-200 font-medium">${matricula} — ${nome}</span>',
+      text_field: "nome"
+  %>
+</div>
+
+<div class="bg-white/60 dark:bg-gray-900/60 rounded-2xl p-4 mt-4 flex-1 min-h-0 border border-gray-200 dark:border-gray-700 shadow-sm backdrop-blur-sm space-y-4">
+  <div data-vendas-target="selecaoProduto" class="space-y-2"></div>
+  <div data-vendas-target="selecaoEstudante" class="space-y-2"></div>
+</div>
