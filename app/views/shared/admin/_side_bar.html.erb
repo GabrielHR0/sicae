@@ -1,6 +1,6 @@
-<div class="h-screen px-3 py-4 overflow-y-auto bg-gray-100 dark:bg-neutral-950">
+<div class="h-full px-3 py-4 overflow-y-auto bg-gray-100 dark:bg-gray-950">
   <a href="<%= root_path %>" class="flex items-center pl-2.5 mb-6">
-    <img src="/icon.png" class="h-6 mr-3 sm:h-7" alt="Sicae Logo">
+    <img src="/logo.png" class="h-6 mr-3 sm:h-7" alt="Sicae Logo">
     <span class="sidebar-label self-center text-xl font-semibold whitespace-nowrap text-gray-900 dark:text-gray-50">SICAE</span>
   </a>
 
@@ -16,8 +16,8 @@
       title: "Cadastros",
       icon: '<svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v9m-9-9v9m-3-9h12M6 4.5h12a1.5 1.5 0 0 1 1.5 1.5v12A1.5 1.5 0 0 1 18 19.5H6A1.5 1.5 0 0 1 4.5 18V6a1.5 1.5 0 0 1 1.5-1.5Z"/></svg>',
       items: [
-        { label: "Alunos", href: "#" },
-        { label: "Responsáveis", href: "#" },
+        { label: "Alunos", href: estudantes_path },
+        { label: "Responsáveis", href: responsaveis_path },
         { label: "Usuários", href: show_users ? admin_users_path : "#", visible: show_users }
       ]
     },
@@ -28,6 +28,7 @@
       items: [
         { label: "Produtos", href: produtos_path },
         { label: "Vendas", href: vendas_path },
+        { label: "Tabelas de Preço", href: tabela_precos_path },
         { label: "Estoque", href: "#" },
         { label: "Compras", href: "#" }
       ]
@@ -84,3 +85,6 @@
     <% end %>
   </ul>
 </div>
+
+
+

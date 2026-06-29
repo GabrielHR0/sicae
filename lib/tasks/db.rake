@@ -14,8 +14,7 @@ namespace :db do
           puts "-> Migrating #{schema}"
           conn.schema_search_path = schema
           ActiveRecord::MigrationContext.new(
-            ActiveRecord::Tasks::DatabaseTasks.migrations_paths,
-            ActiveRecord::SchemaMigration
+            ActiveRecord::Tasks::DatabaseTasks.migrations_paths
           ).migrate
         end
       end

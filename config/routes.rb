@@ -1,23 +1,26 @@
 Rails.application.routes.draw do
-  devise_for :users, controllers: { registrations: "users/registrations" }
+  devise_for :users, controllers: { registrations: "users/registrations", sessions: "users/sessions" }
   get "up" => "rails/health#show", as: :rails_health_check
 
   match "/404", to: "errors#not_found", via: :all
 
-<<<<<<< Updated upstream
-  resources :produtos
-=======
   get "vendas", to: "vendas#new"
   get "vendas/produtos/:id/card", to: "vendas#produto_card"
   get "vendas/estudantes/:id/card", to: "vendas#estudante_card"
   post "vendas", to: "vendas#create"
   patch "vendas/:id/cancelar", to: "vendas#cancelar"
+
   resources :produtos do
     get :busca, on: :collection
   end
->>>>>>> Stashed changes
   resources :categorias
-  resources :tabela_precos
+  resources :responsaveis
+  resources :estudantes do
+    get :busca, on: :collection
+  end
+  resources :tabela_precos do
+    resources :item_precos
+  end
 
   scope :responsavel do
     get "cardapio", to: "cardapios#index", as: :cardapio_responsavel
@@ -26,7 +29,6 @@ Rails.application.routes.draw do
 
   resources :redes
   resources :escolas
-  # Defines the root path route ("/")
   root "landing#index"
   get "dashboard", to: "home#index"
 end

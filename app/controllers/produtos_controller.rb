@@ -1,15 +1,11 @@
 class ProdutosController < ApplicationController
   include DataTableable
+  include Combobox
 
-<<<<<<< Updated upstream
-  SORTABLE_COLUMNS = %w[nome categoria estoque preco ativo].freeze
-  SEARCHABLE_COLUMNS = %w[nome descricao categoria].freeze
-=======
   combobox_for Produto.ativos.disponivel, search: [ :nome, :codigo ], represent: [ :id, :nome, :preco, :codigo ]
 
   SORTABLE_COLUMNS = %w[nome codigo categoria estoque preco ativo].freeze
   SEARCHABLE_COLUMNS = %w[nome codigo descricao categoria].freeze
->>>>>>> Stashed changes
 
   data_table default_sort: :nome,
              sortable_columns: SORTABLE_COLUMNS,
@@ -17,7 +13,6 @@ class ProdutosController < ApplicationController
              default_limit: 20,
              per_page_options: [ 10, 20, 50, 100 ]
 
-  # before_action :authenticate_user!
   before_action :set_produto, only: %i[show edit update destroy]
   # after_action :verify_authorized
 
@@ -97,7 +92,7 @@ class ProdutosController < ApplicationController
   end
 
   def produto_params
-    params.require(:produto).permit(:nome, :descricao, :preco, :categoria_id, :estoque, :ativo)
+    params.require(:produto).permit(:nome, :codigo, :descricao, :preco, :categoria_id, :estoque, :ativo)
   end
 
   def active_filter

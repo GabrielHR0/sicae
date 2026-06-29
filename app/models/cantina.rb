@@ -1,9 +1,9 @@
 class Cantina < ApplicationRecord
   has_many :lancamentos
   has_many :cardapios
+  has_many :users
 
   validates :codigo, presence: true, uniqueness: true
-  has_many :users
 
   before_validation :set_codigo, on: :create
 

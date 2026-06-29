@@ -1,47 +1,144 @@
-<%= form_with(model: tabela_preco, class: "contents") do |form| %>
-  <% if tabela_preco.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
-      <h2><%= pluralize(tabela_preco.errors.count, "error") %> prohibited this tabela_preco from being saved:</h2>
+<%
+  submit_label = local_assigns[:submit_label].presence || (tabela_preco.persisted? ? "Salvar alterações" : "Criar tabela")
+  modal_id = local_assigns[:modal_id]
+  read_only = tabela_preco.persisted? && tabela_preco.base?
+%>
 
-      <ul class="list-disc ml-6">
-        <% tabela_preco.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+<%= form_with model: tabela_preco,
+              class: "space-y-6",
+              data: (modal_id.present? ? {
+                controller: "modal-form",
+                action: "turbo:submit-start->modal-form#start turbo:submit-end->modal-form#end"
+              } : {}) do |form| %>
+
+  <% if read_only %>
+    <div class="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-800 shadow-sm dark:border-amber-900/40 dark:bg-amber-950/35 dark:text-amber-200">
+      <p class="font-semibold">Tabela base</p>
+      <p class="mt-1">Esta é uma tabela base do sistema e não pode ser editada.</p>
+    </div>
+  <% end %>
+
+  <% if tabela_preco.errors.any? %>
+    <div class="rounded-xl border border-red-300 bg-red-50 p-4 text-sm text-red-800 shadow-sm dark:border-red-900/40 dark:bg-red-950/35 dark:text-red-200">
+      <p class="font-semibold"><%= pluralize(tabela_preco.errors.count, "erro") %> impediram o salvamento</p>
+      <ul class="mt-3 list-disc space-y-1 ps-5">
+        <% tabela_preco.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div class="my-5">
-    <%= form.label :nome %>
-    <%= form.text_field :nome, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": tabela_preco.errors[:nome].none?, "border-red-400 focus:outline-red-600": tabela_preco.errors[:nome].any?}] %>
+  <div class="admin-form-panel-primary">
+    <div class="mb-5 flex items-center justify-between gap-3 border-b border-gray-200 pb-4 dark:border-gray-800">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-wide text-gray-800 dark:text-white">Informações principais</p>
+        <p class="mt-1 text-sm text-gray-700 dark:text-gray-300">Preencha os dados básicos da tabela de preço.</p>
+      </div>
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-2">
+      <div class="md:col-span-2">
+        <%= form.label :nome, class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <%= form.text_field :nome,
+                required: true,
+                disabled: read_only,
+                placeholder: "Ex.: Tabela padrão",
+                class: "admin-form-input" %>
+        <p class="mt-2 text-xs text-gray-700 dark:text-gray-400">Use um nome claro e objetivo para identificar a tabela.</p>
+      </div>
+
+      <div>
+        <%= form.label :tipo, class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <%= form.select :tipo,
+                        TabelaPreco.tipos.except(:base).map { |key, _| [key.humanize, key] },
+                        {},
+                        disabled: read_only,
+                        class: "admin-form-input" %>
+        <p class="mt-2 text-xs text-gray-700 dark:text-gray-400">Categorize o tipo de precificação.</p>
+      </div>
+
+      <div>
+        <label class="mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100">Status</label>
+        <label class="admin-form-toggle-shell">
+          <%= form.check_box :ativo,
+                class: "sr-only peer",
+                disabled: read_only,
+                checked: tabela_preco.ativo? %>
+          <div class="relative h-5 w-9 rounded-full bg-gray-300 transition peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gray-300 dark:bg-gray-700 dark:peer-focus:ring-gray-700/40 peer-checked:bg-gradient-to-br from-gray-700 to-gray-900 dark:peer-checked:bg-gradient-to-br from-gray-700 to-gray-900 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:bg-white after:transition-all after:content-[""] peer-checked:after:translate-x-full"></div>
+          <div class="ms-3">
+            <span class="block text-sm font-medium text-gray-800 dark:text-gray-100">Tabela ativa</span>
+            <span class="block text-xs text-gray-700 dark:text-gray-400">Ative para disponibilizar a tabela para pedidos.</span>
+          </div>
+        </label>
+      </div>
+    </div>
   </div>
 
-  <div class="my-5">
-    <%= form.label :descricao %>
-    <%= form.text_field :descricao, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": tabela_preco.errors[:descricao].none?, "border-red-400 focus:outline-red-600": tabela_preco.errors[:descricao].any?}] %>
+  <div class="admin-form-panel-secondary">
+    <div class="mb-5 border-b border-gray-200 pb-4 dark:border-gray-800">
+      <p class="text-sm font-semibold uppercase tracking-wide text-gray-800 dark:text-white">Vigência</p>
+      <p class="mt-1 text-sm text-gray-700 dark:text-gray-300">Defina o período de validade da tabela.</p>
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-2">
+      <div>
+        <%= form.label :inicioVigencia, "Início da vigência", class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <%= form.datetime_field :inicioVigencia,
+                required: true,
+                disabled: read_only,
+                class: "admin-form-input" %>
+        <p class="mt-2 text-xs text-gray-700 dark:text-gray-400">Data e hora de início da validade.</p>
+      </div>
+
+      <div>
+        <%= form.label :fimVigencia, "Fim da vigência", class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <%= form.datetime_field :fimVigencia,
+                required: true,
+                disabled: read_only,
+                class: "admin-form-input" %>
+        <p class="mt-2 text-xs text-gray-700 dark:text-gray-400">Data e hora de término da validade.</p>
+      </div>
+    </div>
   </div>
 
-  <div class="my-5">
-    <%= form.label :tipo %>
-    <%= form.number_field :tipo, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": tabela_preco.errors[:tipo].none?, "border-red-400 focus:outline-red-600": tabela_preco.errors[:tipo].any?}] %>
+  <div class="admin-form-panel-secondary">
+    <div class="mb-5 border-b border-gray-200 pb-4 dark:border-gray-800">
+      <p class="text-sm font-semibold uppercase tracking-wide text-gray-800 dark:text-white">Descrição</p>
+      <p class="mt-1 text-sm text-gray-700 dark:text-gray-300">Informações adicionais sobre a tabela.</p>
+    </div>
+
+    <div>
+      <%= form.label :descricao, class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+      <%= form.text_area :descricao,
+              rows: 5,
+              disabled: read_only,
+              placeholder: "Descreva observações ou detalhes importantes sobre a tabela.",
+              class: "admin-form-input p-3" %>
+      <p class="mt-2 text-xs text-gray-700 dark:text-gray-400">Esse campo ajuda a detalhar melhor a tabela na visualização.</p>
+    </div>
   </div>
 
-  <div class="my-5">
-    <%= form.label :status %>
-    <%= form.number_field :status, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": tabela_preco.errors[:status].none?, "border-red-400 focus:outline-red-600": tabela_preco.errors[:status].any?}] %>
-  </div>
+  <div class="flex items-center justify-end gap-3 border-t border-gray-200 pt-4 dark:border-gray-700">
+    <% if modal_id.present? %>
+      <button type="button"
+              data-action="click->modal-loader#close"
+              class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">
+        Cancelar
+      </button>
+    <% else %>
+      <%= link_to "Cancelar", tabela_precos_path, class: "rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800" %>
+    <% end %>
 
-  <div class="my-5">
-    <%= form.label :inicioVigencia %>
-    <%= form.datetime_field :inicioVigencia, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": tabela_preco.errors[:inicioVigencia].none?, "border-red-400 focus:outline-red-600": tabela_preco.errors[:inicioVigencia].any?}] %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :fimVigencia %>
-    <%= form.datetime_field :fimVigencia, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": tabela_preco.errors[:fimVigencia].none?, "border-red-400 focus:outline-red-600": tabela_preco.errors[:fimVigencia].any?}] %>
-  </div>
-
-  <div class="inline">
-    <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+    <%= form.button type: :submit,
+                    disabled: read_only,
+                    data: { modal_form_target: "submitButton" },
+                    class: "inline-flex items-center justify-center gap-2 rounded-lg bg-ruby-700 px-4 py-2 text-sm font-medium text-white hover:bg-ruby-800 disabled:opacity-50 disabled:cursor-not-allowed" do %>
+      <span data-modal-form-target="submitLabel"><%= submit_label %></span>
+      <svg data-modal-form-target="submitSpinner" class="hidden h-4 w-4 animate-spin" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M12 2a10 10 0 1 0 10 10h-3a7 7 0 1 1-7-7V2Z"></path>
+      </svg>
+    <% end %>
   </div>
 <% end %>

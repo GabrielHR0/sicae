@@ -1,18 +1,16 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+# Roles
+roles = [
+  { nome: "admin", descricao: "Administrador do sistema" },
+  { nome: "funcionario", descricao: "Funcionário da cantina" },
+  { nome: "responsavel", descricao: "Responsável por estudante" },
+  { nome: "aluno", descricao: "Estudante" }
+]
 
-Dir[Rails.root.join("db/seeds/**/*.rb")].sort.each do |seed_file|
-	load seed_file
+roles.each do |attrs|
+  Role.find_or_create_by!(nome: attrs[:nome]) do |r|
+    r.descricao = attrs[:descricao]
+  end
 end
-<<<<<<< Updated upstream
-=======
 
 puts "Roles criadas: #{Role.pluck(:nome).join(', ')}"
 
@@ -55,4 +53,3 @@ Escola.all.each do |escola|
 end
 
 conn.schema_search_path = previous_schema
->>>>>>> Stashed changes
