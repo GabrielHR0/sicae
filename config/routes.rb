@@ -17,7 +17,13 @@ Rails.application.routes.draw do
     get "cardapio/produto/:produto_id", to: "cardapios#show", as: :cardapio_produto_responsavel
 
     resources :bloqueios, only: %i[new create destroy]
-    resources :reservas, only: %i[create destroy]
+    resources :reservas,  only: %i[create destroy]
+  end
+
+  namespace :cantina do
+    resources :cardapios do
+      resources :cardapio_produtos, only: %i[create destroy]
+    end
   end
 
   resources :redes
@@ -25,5 +31,3 @@ Rails.application.routes.draw do
   root "landing#index"
   get "dashboard", to: "home#index"
 end
-
-
