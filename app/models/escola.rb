@@ -7,7 +7,7 @@ class Escola < ApplicationRecord
   validates :nome, :slug, :schema_name, presence: true
   validates :slug, :schema_name, uniqueness: true
 
-  after_create :create_schema, :create_base_tabela_preco
+  after_create :create_schema, :create_base_tabela_preco, :create_formas_pagamento
   before_validation :generate_identifiers, on: :create
 
   private
@@ -43,6 +43,13 @@ class Escola < ApplicationRecord
       update!(metadata: (metadata || {}).merge("schema_status" => "error", "schema_error" => e.message))
     raise
     end
+  end
+
+  def create_formas_pagamento
+    connection_schema
+    FormaPagamento.create!(nome: "Dinheiro", tipo: 0, aceita_troco: true, ativo: true)
+    FormaPagamento.create!(nome: "Fatura", tipo: 1, aceita_troco: false, ativo: true)
+    connection_schema("public")
   end
 
   def connection_schema(schema = schema_name)
