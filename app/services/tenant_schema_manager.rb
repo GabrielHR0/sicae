@@ -35,7 +35,7 @@ class TenantSchemaManager
     previous_search_path = connection.schema_search_path
     connection.schema_search_path = @schema_name
 
-    tabelas_globais = %w[escolas redes users roles permissions perfis responsaveis estudantes ar_internal_metadata schema_migrations]
+    tabelas_globais = %w[escolas redes users roles permissions perfis responsaveis estudantes ar_internal_metadata schema_migrations users_roles roles_permissions]
 
     ActiveRecord::Migration.suppress_messages do
       schema_content = File.read(Rails.root.join("db", "schema.rb"))
