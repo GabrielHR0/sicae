@@ -1,5 +1,6 @@
 class CardapiosController < ApplicationController
   before_action :authenticate_user!
+  before_action :verificar_escola!
   after_action :verify_authorized
 
   def index
@@ -8,40 +9,47 @@ class CardapiosController < ApplicationController
     @responsavel = current_user.responsavel
     @estudantes = @responsavel.estudantes
 
-    # Estudante selecionado (primeiro por padrão)
     @estudante = if params[:estudante_id].present?
       @estudantes.find(params[:estudante_id])
     else
       @estudantes.first
     end
 
-    # Semana selecionada (semana atual por padrão)
     @data_inicio = if params[:data_inicio].present?
       Date.parse(params[:data_inicio])
     else
       Date.today.beginning_of_week
     end
 
+    # Regra de vigência — não permite navegar fora do mês atual
+    @data_inicio = @data_inicio.clamp(
+      Date.today.beginning_of_month,
+      Date.today.end_of_month
+    )
+
     @data_fim = @data_inicio + 4.days
 
-    # Dias da semana com seus cardápios
     @dias = (0..4).map do |i|
       data = @data_inicio + i.days
       cardapio = Cardapio.ativos.find_by(data: data)
       { data: data, cardapio: cardapio }
     end
 
-    # Dia selecionado (hoje por padrão)
     @data_selecionada = if params[:data].present?
       Date.parse(params[:data])
     else
       Date.today
     end
 
+    # Regra de vigência — data selecionada deve ser do mês atual
+    @data_selecionada = @data_selecionada.clamp(
+      Date.today.beginning_of_month,
+      Date.today.end_of_month
+    )
+
     @cardapio_do_dia = Cardapio.ativos.find_by(data: @data_selecionada)
 
     if @cardapio_do_dia
-      # Busca bloqueios ativos do estudante para cruzar com os produtos
       bloqueios_ativos = Bloqueio.ativos
                                  .para_estudante(@estudante.id)
                                  .pluck(:produto_id)
@@ -79,5 +87,17 @@ class CardapiosController < ApplicationController
                       .para_data(@data)
                       .find_by(produto_id: @produto.id)
     @reservado = @reserva.present?
+  end
+
+  private
+
+  # Regra de escola — garante que o responsável pertence à escola atual
+  def verificar_escola!
+    return if Current.escola.nil?
+
+    unless current_user.escola_id == Current.escola.id
+      flash[:alert] = "Você não tem acesso ao cardápio desta escola."
+      redirect_to root_path
+    end
   end
 end
