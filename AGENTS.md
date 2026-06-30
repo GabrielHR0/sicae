@@ -53,6 +53,41 @@ Docker dev: `docker compose -f docker-compose.dev.yml up --build`
 
 `database.yml` uses `SICAE_DATABASE_NAME/USERNAME/PASSWORD/HOST/PORT` with fallback to `DB_*`.
 
+
+## Seeds
+
+Seeds de desenvolvimento estão em `db/seeds/test/` e rodam por tenant (escola).
+
+```bash
+# Roles (globais, em public)
+bin/rails db:seed
+
+# Usuário + escola + role master (primeira execução)
+bin/rails runner "load Rails.root.join('db/seeds/test/01_dev.rb')"
+
+# Categorias (por escola)
+bin/rails runner "load Rails.root.join('db/seeds/test/02_categorias.rb')"
+
+# Produtos (por escola, pergunta quantidade no terminal)
+bin/rails runner "load Rails.root.join('db/seeds/test/03_produtos.rb')"
+
+# Ou tudo de uma vez:
+bin/rails db:seed && \
+bin/rails runner "load Rails.root.join('db/seeds/test/02_categorias.rb')" && \
+PRODUTOS_COUNT=100 bin/rails runner "load Rails.root.join('db/seeds/test/03_produtos.rb')"
+```
+
+## Slug da escola
+
+O `slug` é gerado a partir do nome + 4 hex aleatórios (ex.: `instituto-estrela-da-manhac920`).  
+Para descobrir o slug atual:
+
+```bash
+bin/rails runner "puts Escola.pluck(:slug)"
+```
+
+Com o slug, acesse a escola via: `http://localhost:3000/<slug>/vendas`
+
 ## Known quirks
 
 - `config/routes.rb` has **duplicate lines** for `resources :produtos` and `resources :categorias`.

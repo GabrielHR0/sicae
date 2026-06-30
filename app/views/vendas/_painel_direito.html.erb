@@ -1,0 +1,28 @@
+<div class="bg-white/60 dark:bg-gray-900/60 rounded-2xl p-4 flex-1 min-h-0 border border-gray-200 dark:border-gray-700 shadow-sm backdrop-blur-sm flex flex-col">
+  <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">Itens</h3>
+
+  <div id="carrinho" class="flex flex-col flex-1 overflow-y-auto space-y-3 scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden bg-gray-100/50 dark:bg-gray-800/50 rounded-lg p-3">
+    <p data-vendas-target="placeholder"
+      class="mt-auto text-sm text-gray-500 dark:text-gray-400 text-center py-8">
+      Nenhum item no carrinho
+    </p>
+    <div data-vendas-target="carrinhoItens"
+        class="mt-auto space-y-2">
+    </div>
+  </div>
+
+  <div id="carrinho-resumo" class="mt-4 pt-4 border-t-2 border-gray-300 dark:border-gray-600">
+    <div class="flex justify-between text-sm mb-3">
+      <span class="text-gray-600 dark:text-gray-400">Subtotal</span>
+      <span data-vendas-target="subtotal" class="font-bold text-gray-900 dark:text-white">R$ 0,00</span>
+    </div>
+    <button type="button"
+            data-vendas-target="botaoFinalizar"
+            data-action="click->vendas#abrirModalPagamento"
+            class="w-full rounded-xl bg-gradient-to-br from-ruby-600 to-rose-600 px-5 py-4 text-base font-bold text-white shadow-lg hover:from-ruby-700 hover:to-rose-700 focus:ring-2 focus:ring-ruby-500/30 transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed">
+      Finalizar Venda
+    </button>
+  </div>
+</div>
+
+<%= render "vendas/modal_pagamento" %>

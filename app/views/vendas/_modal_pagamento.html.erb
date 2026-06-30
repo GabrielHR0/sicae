@@ -1,0 +1,42 @@
+<div data-controller="pagamento-stepper"
+     id="modal-pagamento"
+     tabindex="-1"
+     aria-hidden="true"
+     class="fixed inset-0 z-50 hidden flex min-h-screen w-full items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-900/60 p-4 backdrop-blur-sm">
+
+  <div class="relative max-h-full w-full max-w-lg">
+    <div class="relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-900">
+
+      <!-- Stepper -->
+      <div class="px-6 pt-6 pb-2">
+        <div class="flex items-center justify-center gap-2">
+          <% %w[ Forma\ de\ pagamento Pagamento ].each_with_index do |label, idx| %>
+            <div class="flex items-center gap-2">
+              <div class="flex items-center gap-1.5">
+                <div class="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-all duration-300"
+                     data-pagamento-stepper-target="stepDot"
+                     data-step="<%= idx %>">
+                  <span data-pagamento-stepper-target="stepNumber"><%= idx + 1 %></span>
+                  <svg class="hidden h-4 w-4" data-pagamento-stepper-target="stepCheck" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </div>
+                <span class="text-xs font-medium transition-all duration-300" data-pagamento-stepper-target="stepLabel"><%= label %></span>
+              </div>
+              <% if idx < 1 %>
+                <div class="mx-2 h-px w-12 bg-gray-300 dark:bg-gray-600 transition-all duration-300" data-pagamento-stepper-target="stepLine"></div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Steps content -->
+      <div data-pagamento-stepper-target="steps" class="px-6 py-4">
+        <%= render "vendas/step_escolha_pagamento" %>
+        <%= render "vendas/step_dinheiro" %>
+      </div>
+
+    </div>
+  </div>
+</div>

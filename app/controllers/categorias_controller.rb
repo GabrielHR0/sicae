@@ -1,5 +1,4 @@
 class CategoriasController < ApplicationController
-  before_action :authenticate_user!
   before_action :set_categoria, only: %i[show edit update destroy]
   after_action :verify_authorized
 

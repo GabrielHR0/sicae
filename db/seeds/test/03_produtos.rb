@@ -73,12 +73,13 @@ Escola.all.each do |escola|
   count.times do |index|
     category = categories[index % categories.size]
     nome_alimento = ALIMENTOS[index % ALIMENTOS.size]
-    sequence_number = format("%03d", index + 1)
-    nome_produto = "#{nome_alimento} - #{sequence_number}"
+    # sequence_number = format("%03d", index + 1)
+    nome_produto = "#{nome_alimento}"
 
     produto = Produto.find_or_initialize_by(nome: nome_produto)
     produto.assign_attributes(
       descricao: "Produto alimentício: #{nome_alimento}. Categoria: #{category.nome}.",
+      codigo: format("PROD-%04d", index + 1),
       preco: Faker::Commerce.price(range: 2.0..30.0),
       estoque: Faker::Number.between(from: 0, to: 120),
       ativo: Faker::Boolean.boolean(true_ratio: 0.85)
