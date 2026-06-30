@@ -26,7 +26,7 @@ user.update!(escola: escola)
 # Criar cantina no schema da escola
 conn = ActiveRecord::Base.connection
 conn.execute("SET search_path TO #{escola.schema_name}")
-cantina = Cantina.find_or_create_by!(nome: "Cantina Principal", codigo: SecureRandom.hex(5))
+cantina = CantinaConfig.find_or_create_by!(nome: "Cantina Principal", codigo: SecureRandom.hex(5))
 conn.execute("SET search_path TO public")
 
 user.update!(cantina: cantina)
@@ -43,5 +43,5 @@ email: teste@exemplo.com
 username: teste123
 senha:123456
 Escola: #{escola.inspect}
-Cantina: #{cantina.inspect}
+CantinaConfig: #{cantina.inspect}
 "

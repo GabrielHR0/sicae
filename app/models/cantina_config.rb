@@ -1,4 +1,5 @@
-class Cantina < ApplicationRecord
+class CantinaConfig < ApplicationRecord
+  self.table_name = "cantinas"
   has_many :lancamentos
   has_many :cardapios
   has_many :users
@@ -12,7 +13,7 @@ class Cantina < ApplicationRecord
   def set_codigo
     loop do
       self.codigo = SecureRandom.hex(5)
-      break unless Cantina.exists?(codigo: codigo)
+      break unless CantinaConfig.exists?(codigo: codigo)
     end
   end
 end
