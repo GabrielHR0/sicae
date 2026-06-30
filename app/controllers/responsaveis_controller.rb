@@ -1,6 +1,8 @@
 class ResponsaveisController < ApplicationController
   include DataTableable
 
+  after_action :verify_authorized
+
   SORTABLE_COLUMNS = %w[nome relacao_parental estudantes_count].freeze
   SEARCHABLE_COLUMNS = %w[nome email cpf].freeze
 
@@ -13,6 +15,7 @@ class ResponsaveisController < ApplicationController
   before_action :set_responsavel, only: %i[show edit update destroy]
 
   def index
+    authorize Responsavel
     @pagy, @records = paginate_data_table(
       Responsavel
         .left_joins(user: :perfil)
@@ -23,6 +26,7 @@ class ResponsaveisController < ApplicationController
   end
 
   def show
+    authorize @responsavel
     @estudantes = @responsavel.estudantes.order(:nome)
     @bloqueios = @responsavel.bloqueios.ativos.includes(:produto, :estudante).order(created_at: :desc)
     @reservas = @responsavel.reservas.includes(:produto, :estudante).order(data: :desc).limit(20)
@@ -34,6 +38,8 @@ class ResponsaveisController < ApplicationController
 
   def new
     @responsavel = Responsavel.new
+    authorize @responsavel
+
     if turbo_frame_request?
       render partial: "responsaveis/create_modal_content", locals: { responsavel: @responsavel }
     end
@@ -41,6 +47,7 @@ class ResponsaveisController < ApplicationController
 
   def create
     @responsavel = Responsavel.new
+    authorize @responsavel
 
     ActiveRecord::Base.transaction do
       user = User.new(
@@ -86,12 +93,16 @@ class ResponsaveisController < ApplicationController
   end
 
   def edit
+    authorize @responsavel
+
     if turbo_frame_request?
       render partial: "responsaveis/edit_modal_content", locals: { responsavel: @responsavel }
     end
   end
 
   def update
+    authorize @responsavel
+
     ActiveRecord::Base.transaction do
       user = @responsavel.user
       user.update!(email: responsavel_params[:email]) if responsavel_params[:email].present?
@@ -119,6 +130,7 @@ class ResponsaveisController < ApplicationController
   end
 
   def destroy
+    authorize @responsavel
     @responsavel.destroy!
     redirect_to responsaveis_path, notice: "Responsável removido com sucesso."
   rescue ActiveRecord::InvalidForeignKey, ActiveRecord::DeleteRestrictionError
@@ -168,6 +180,3 @@ class ResponsaveisController < ApplicationController
     end
   end
 end
-
-
-
