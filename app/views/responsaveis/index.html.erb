@@ -22,9 +22,8 @@
     sortable: true,
     width: "14%",
     render: ->(record, view) do
-      map = { "pai" => "Pai", "mae" => "Mãe", "tutor" => "Tutor(a)", "outro" => "Outro" }
       view.tag.span(
-        map[record.relacao_parental] || record.relacao_parental.humanize,
+        record.relacao_parental_exibicao,
         class: "inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-800 dark:bg-gray-800 dark:text-gray-200"
       )
     end

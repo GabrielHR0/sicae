@@ -10,7 +10,7 @@ class ResponsaveisController < ApplicationController
              sortable_columns: SORTABLE_COLUMNS,
              searchable_columns: SEARCHABLE_COLUMNS,
              default_limit: 20,
-             per_page_options: [10, 20, 50, 100]
+             per_page_options: [ 10, 20, 50, 100 ]
 
   before_action :set_responsavel, only: %i[show edit update destroy]
 
@@ -75,6 +75,7 @@ class ResponsaveisController < ApplicationController
 
       @responsavel.user = user
       @responsavel.relacao_parental = responsavel_params[:relacao_parental]
+      @responsavel.relacao_parental_outro = responsavel_params[:relacao_parental_outro]
       @responsavel.save!
     end
 
@@ -120,7 +121,7 @@ class ResponsaveisController < ApplicationController
         )
       end
 
-      @responsavel.update!(relacao_parental: responsavel_params[:relacao_parental])
+      @responsavel.update!(relacao_parental: responsavel_params[:relacao_parental], relacao_parental_outro: responsavel_params[:relacao_parental_outro])
     end
 
     redirect_to responsaveis_path, notice: "Responsável atualizado com sucesso."
@@ -155,7 +156,7 @@ class ResponsaveisController < ApplicationController
   end
 
   def responsavel_params
-    params.require(:responsavel).permit(:nome, :email, :username, :password, :cpf, :telefone, :data_nascimento, :relacao_parental)
+    params.require(:responsavel).permit(:nome, :email, :username, :password, :cpf, :telefone, :data_nascimento, :relacao_parental, :relacao_parental_outro)
   end
 
   def assign_virtual_attrs
@@ -167,16 +168,17 @@ class ResponsaveisController < ApplicationController
     @responsavel.telefone = p[:telefone]
     @responsavel.data_nascimento = p[:data_nascimento]
     @responsavel.relacao_parental = p[:relacao_parental]
+    @responsavel.relacao_parental_outro = p[:relacao_parental_outro]
   end
 
   def data_table_search_scope(scope, search_field, term)
     case search_field
     when "nome"
-      [scope.where("perfis.nome ILIKE :term", term: "%#{term}%"), true]
+      [ scope.where("perfis.nome ILIKE :term", term: "%#{term}%"), true ]
     when "email"
-      [scope.where("users.email ILIKE :term", term: "%#{term}%"), true]
+      [ scope.where("users.email ILIKE :term", term: "%#{term}%"), true ]
     else
-      [scope, false]
+      [ scope, false ]
     end
   end
 end

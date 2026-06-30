@@ -32,7 +32,7 @@
       </div>
     </div>
 
-    <div class="grid gap-6 md:grid-cols-2">
+    <div data-controller="relacao-parental-form" class="grid gap-6 md:grid-cols-2">
       <div class="md:col-span-2">
         <%= form.label :nome, "Nome completo", class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
         <%= form.text_field :nome,
@@ -72,6 +72,14 @@
                   ["Outro", "outro"]
                 ], responsavel.relacao_parental),
                 {},
+                data: { action: "change->relacao-parental-form#toggle" },
+                class: "admin-form-input" %>
+      </div>
+
+      <div data-relacao-parental-form-target="outroField" class="<%= responsavel.relacao_parental == 'outro' ? '' : 'hidden' %>">
+        <%= form.label :relacao_parental_outro, "Especifique", class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <%= form.text_field :relacao_parental_outro,
+                placeholder: "Ex.: Avó, Tio, Vizinho(a)...",
                 class: "admin-form-input" %>
       </div>
     </div>

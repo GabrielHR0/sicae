@@ -53,8 +53,7 @@
         <div class="border-b border-gray-200 px-6 py-5 dark:border-gray-700">
           <dt class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Relação</dt>
           <dd class="mt-1 text-sm text-gray-900 dark:text-white">
-            <% map = { "pai" => "Pai", "mae" => "Mãe", "tutor" => "Tutor(a)", "outro" => "Outro" } %>
-            <%= map[@responsavel.relacao_parental] || @responsavel.relacao_parental.humanize %>
+            <%= @responsavel.relacao_parental_exibicao %>
           </dd>
         </div>
         <div class="border-b border-r-0 border-gray-200 px-6 py-5 dark:border-gray-700 sm:border-r sm:border-b-0">

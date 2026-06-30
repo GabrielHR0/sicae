@@ -7,6 +7,12 @@ class Responsavel < ApplicationRecord
   has_many :estudantes, dependent: :restrict_with_error
   has_many :faturas, class_name: "Fatura", dependent: :destroy
 
+    validates :relacao_parental_outro, presence: true, if: -> { relacao_parental == "outro" }
+
+  def relacao_parental_exibicao
+    relacao_parental == "outro" ? relacao_parental_outro : relacao_parental
+  end
+
   enum :relacao_parental, {
     pai: 0,
     mae: 1,

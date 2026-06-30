@@ -63,10 +63,12 @@ count.times do |r_index|
 
       user.roles << responsavel_role
 
-      responsavel = Responsavel.create!(
-        user: user,
-        relacao_parental: RELACOES.sample
-      )
+      relacao = RELACOES.sample
+      responsavel_attrs = { user: user, relacao_parental: relacao }
+      if relacao == "outro"
+        responsavel_attrs[:relacao_parental_outro] = ["Avó", "Avô", "Tio", "Tia", "Primo(a)", "Vizinho(a)", "Padrinho", "Madrinha"].sample
+      end
+      responsavel = Responsavel.create!(responsavel_attrs)
 
       DEFAULT_ESTUDANTES_POR_RESPONSAVEL.times do |e_index|
         nivel = NIVEIS.values.sample
