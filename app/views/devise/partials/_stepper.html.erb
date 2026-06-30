@@ -8,13 +8,13 @@
             <% if index == steps.size - 1 %>
                 <% after_classes = '' %>
             <% else %>
-                <% after_color = index < current_value ? 'after:border-ruby-500 dark:after:border-ruby-500' : 'after:border-gray-300 dark:after:border-gray-600' %>
-                <% after_classes = "after:content-[''] after:flex-1 after:block after:h-1 after:border-b after:border-4 after:ms-4 after:rounded-full ".concat(after_color) %>
+                <% after_color = index < current_value ? 'stepper-line-completed' : 'after:border-gray-300 dark:after:border-gray-600' %>
+                <% after_classes = "after:content-[''] after:flex-1 after:block after:h-1 after:ms-4 after:rounded-full ".concat(after_color) %>
             <% end %>
 
             <li class="flex w-full items-center <%= after_classes %>">
                 <div class="flex items-center gap-3">
-                    <span class="flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12 rounded-full border-2 text-sm font-medium <%= (index == current_value) ? 'border-ruby-500 bg-ruby-500 text-white dark:border-ruby-500 dark:bg-ruby-500' : 'border-gray-300 bg-white text-gray-600 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300' %>">
+                    <span class="stepper-circle flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12 rounded-full border-2 text-sm font-medium <%= (index == current_value) ? 'stepper-circle-active' : 'border-gray-300 bg-white text-gray-600 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300' %>">
                         <% if step[:icon_html].present? %>
                             <%= raw(step[:icon_html].to_s.gsub(/<svg\b/, '<svg class="w-5 h-5"')) %>
                         <% else %>
@@ -31,7 +31,7 @@
             <div class="step-content <%= 'hidden' unless index == current_value %>" data-step-index="<%= index %>">
                 <header class="mb-4 flex items-center justify-start gap-3 text-gray-900 dark:text-white">
                     <% if step[:icon_html].present? %>
-                        <div class="flex items-center justify-center w-8 h-8 rounded-full bg-ruby-100 text-ruby-600 dark:bg-ruby-900 dark:text-ruby-300">
+                        <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-red-500/20 to-orange-600/20 text-ruby-700 dark:from-red-500/30 dark:to-orange-600/30 dark:text-gray-300">
                             <%= step[:icon_html].html_safe %>
                         </div>
                     <% end %>
@@ -41,16 +41,14 @@
                 <div class="step-body">
                     <%= step[:body_html].to_s.html_safe %>
                 </div>
-                <footer class="mt-4 flex items-center justify-end gap-2">
-                    <div class="mt-6 flex items-center justify-between">
-                        <button type="button" data-action="click->stepper#prev" aria-label="Voltar" class="inline-flex items-center justify-center rounded-full p-2.5 bg-white border border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-ruby-500 dark:focus:ring-ruby-500 z-10">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-                        </button>
+                <footer class="mt-6 flex w-full items-center justify-between">
+                    <button type="button" data-action="click->stepper#prev" aria-label="Voltar" class="inline-flex items-center justify-center rounded-full p-2.5 bg-white border border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-ruby-750 dark:focus:ring-ruby-750">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                    </button>
 
-                        <button type="button" data-action="click->stepper#next" aria-label="Próximo" class="inline-flex items-center justify-center rounded-full p-2.5 bg-white border border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-ruby-500 dark:focus:ring-ruby-500 z-10">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-                        </button>
-                    </div>
+                    <button type="button" data-action="click->stepper#next" aria-label="Próximo" class="inline-flex items-center justify-center rounded-full p-2.5 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700 dark:text-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-ruby-750 dark:focus:ring-ruby-750">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                    </button>
                 </footer>
             </div>
         <% end %>

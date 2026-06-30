@@ -180,6 +180,7 @@ body:not(.admin-body) {
 }
 
 .hero-orb {
+  z-index: 3;
   position: absolute;
   border-radius: 999px;
   filter: blur(50px);
@@ -532,4 +533,57 @@ body[data-controller="landing"]::before {
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+}
+
+
+/* ===============================
+   Auth Pages (Login / Cadastro)
+   =============================== */
+
+.auth-bg {
+  position: relative;
+  z-index: 0;
+  min-height: 100vh;
+  background-color: rgb(var(--bg));
+  background-image:
+    radial-gradient(circle at top left, rgba(var(--primary), 0.12), transparent 32%),
+    radial-gradient(circle at top right, rgba(234, 88, 12, 0.10), transparent 28%),
+    radial-gradient(circle at bottom center, rgba(var(--muted), 0.10), transparent 30%);
+}
+
+.auth-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 120px 120px;
+}
+
+.dark .auth-bg::before {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+}
+
+.auth-bg > *:not(.hero-orb) {
+  position: relative;
+  z-index: 4;
+}
+
+/* Stepper — gradiente laranja (btn-primary pattern) */
+
+.stepper-circle-active {
+  background: linear-gradient(135deg, rgb(var(--primary)), rgb(234, 88, 12)) !important;
+  border-color: transparent !important;
+  color: white !important;
+  box-shadow: 0 4px 14px rgba(var(--primary), 0.35);
+}
+
+.stepper-line-completed::after {
+  background: linear-gradient(90deg, rgb(var(--primary)), rgb(234, 88, 12)) !important;
+  border: none !important;
 }

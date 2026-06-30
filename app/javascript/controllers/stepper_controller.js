@@ -36,28 +36,27 @@ export default class extends Controller {
         });
         const headerItems = Array.from(this.element.querySelectorAll("ol > li"));
         headerItems.forEach((li, index) => {
-            const circle = li.querySelector('span');
-            const rubyClasses = ['border-ruby-500','bg-ruby-500','text-white','dark:border-ruby-500','dark:bg-ruby-500'];
+            const circle = li.querySelector('.stepper-circle');
+            const activeClass = 'stepper-circle-active';
             const neutralClasses = ['border-gray-300','bg-white','text-gray-600','dark:border-gray-600','dark:bg-gray-800','dark:text-gray-300'];
 
             if (circle) {
                 if (index === current) {
                     neutralClasses.forEach(c => circle.classList.remove(c));
-                    rubyClasses.forEach(c => circle.classList.add(c));
+                    circle.classList.add(activeClass);
                 } else {
-                    rubyClasses.forEach(c => circle.classList.remove(c));
+                    circle.classList.remove(activeClass);
                     neutralClasses.forEach(c => circle.classList.add(c));
                 }
             }
 
-            const completedLineClass = 'after:border-ruby-500';
-            const completedLineDark = 'dark:after:border-ruby-500';
+            const completedLineClass = 'stepper-line-completed';
             const pendingLineClass = 'after:border-gray-300';
             const pendingLineDark = 'dark:after:border-gray-600';
 
-            li.classList.remove(completedLineClass, completedLineDark, pendingLineClass, pendingLineDark);
+            li.classList.remove(completedLineClass, pendingLineClass, pendingLineDark);
             if (index < current) {
-                li.classList.add(completedLineClass, completedLineDark);
+                li.classList.add(completedLineClass);
             } else if (index < headerItems.length - 1) {
                 li.classList.add(pendingLineClass, pendingLineDark);
             }
