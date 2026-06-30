@@ -3,7 +3,6 @@ class Cantina::CardapiosController < ApplicationController
   before_action :set_cardapio, only: %i[show edit update destroy]
   after_action :verify_authorized
 
-  include Pagy::Backend
 
   def index
     authorize [ :cantina, Cardapio ]
