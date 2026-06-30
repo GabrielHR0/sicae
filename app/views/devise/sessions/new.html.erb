@@ -1,5 +1,9 @@
+<% action_url = @escola_slug.present? ? "/#{@escola_slug}/users/sign_in" : user_session_path %>
 
-<section class="bg-gray-200 dark:bg-gray-900 font-sans">
+<section class="auth-bg font-sans">
+  <div class="hero-orb one top-[-80px] left-[-120px] w-[500px] h-[500px]"></div>
+  <div class="hero-orb two bottom-[-100px] right-[-80px] w-[420px] h-[420px]"></div>
+  <div class="hero-orb three top-1/2 right-[-60px] w-[300px] h-[300px]"></div>
   <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
    <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
       <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -7,36 +11,37 @@
       Entrar
     </h2>
 
-      <%= form_with url: user_session_path, scope: :user, local: true, class: "space-y-4 md:space-y-6" do |f| %>
+      <%= form_with url: action_url, scope: :user, local: true, class: "space-y-4 md:space-y-6" do |f| %>
         <div>
           <%= f.label :login, "Email ou usuário", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
               <%= f.text_field :login, autofocus: true, autocomplete: "username",
-                class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500" %>
+                class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg shadow-xs placeholder:text-gray-600 focus:border-ruby-750 focus:ring-2 focus:ring-ruby-750 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-500 dark:text-white " %>
         </div>
 
         <div>
           <%= f.label :password, "Senha", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
               <%= f.password_field :password, autocomplete: "current-password",
-                class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500" %>
+                class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg shadow-xs placeholder:text-gray-600 focus:border-ruby-750 focus:ring-2 focus:ring-ruby-750 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-500 dark:text-white " %>
         </div>
 
         <div class="flex items-center justify-between">
           <div class="flex items-start">
               <div class="flex items-center h-5">
-              <%= f.check_box :remember_me, type: "checkbox", class: "w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-red-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-gray-500 dark:ring-offset-gray-800" %>
+              <%= f.check_box :remember_me, type: "checkbox", class: "w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-2 focus:ring-ruby-750 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-ruby-750 dark:ring-offset-gray-800" %>
             </div>
             <div class="ml-3 text-sm">
                 <label class="text-gray-500 dark:text-gray-300">Lembrar-me</label>
             </div>
           </div>
-        </div>  
+        </div>
 
-        <%= f.submit "Entrar", class: "w-full inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-gradient-to-br from-red-700 to-red-900 hover:bg-gradient-to-br from-red-700 to-red-900 focus:outline-none focus:ring-2 focus:ring-red-300 dark:bg-gradient-to-br dark:from-red-800 dark:to-red-950 dark:hover:bg-gradient-to-br from-red-700 to-red-900 dark:focus:ring-gray-500" %>
+        <%= f.submit "Entrar", class: "w-full inline-flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-ruby-700 hover:bg-ruby-800 focus:outline-none focus:ring-2 focus:ring-ruby-750 focus:ring-offset-2 dark:focus:ring-ruby-750" %>
       <% end %>
 
         <p class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
         Ainda não tem conta?
-        <%= link_to "Criar conta", new_user_registration_path, class: "font-medium text-red-600 hover:underline dark:text-red-300 dark:hover:underline" %>
+        <% register_path = @escola_slug.present? ? "/#{@escola_slug}/users/sign_up" : new_user_registration_path %>
+        <%= link_to "Criar conta", register_path, class: "font-medium text-ruby-700 hover:underline dark:text-gray-300" %>
       </p>
     </div>
   </div>

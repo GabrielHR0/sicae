@@ -1,9 +1,15 @@
 class ApplicationController < ActionController::Base
+  before_action :authenticate_user!
   allow_browser versions: :modern
   include Pundit::Authorization
   include Pagy::Method
 
-  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+  rescue_from Pundit::NotAuthorizedError do |e|
+    respond_to do |format|
+      format.json { render json: { erro: "Não autorizado" }, status: :forbidden }
+      format.html { redirect_to(request.referrer || root_path, alert: "Sem permissão") }
+    end
+  end
 
   stale_when_importmap_changes
 

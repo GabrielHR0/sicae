@@ -39,4 +39,8 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular "cantina", "cantinas"
   inflect.irregular "escola", "escolas"
   inflect.irregular "item_preco", "item_precos"
+  inflect.irregular "forma_pagamento", "formas_pagamento"
+  inflect.irregular "forma pagamento", "formas pagamento"
+  inflect.irregular "pagamento", "pagamentos"
+  inflect.irregular "item_lancamento", "itens_lancamento"
 end

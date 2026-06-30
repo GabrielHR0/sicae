@@ -1,0 +1,113 @@
+<% content_for :title, "Itens — #{@tabela_preco.nome}" %>
+
+<%
+  columns = [
+    {
+      key: :produto,
+      label: "Produto",
+      sortable: false,
+      width: "55%",
+      render: ->(record, _view) { record.produto&.nome || "-" }
+    },
+    {
+      key: :preco,
+      label: "Preço",
+      sortable: true,
+      width: "25%",
+      render: ->(record, view) { view.number_to_currency(record.preco) }
+    },
+    {
+      key: :actions,
+      label: "Ações",
+      width: "20%",
+      actions: true,
+      buttons: [
+        {
+          title: "Editar",
+          href: ->(row) { edit_tabela_preco_item_preco_path(@tabela_preco, row, modal: "edit") },
+          data: {
+            action: "click->modal-loader#open",
+            modal_loader_modal_id: "item_preco-modal-editar",
+            turbo_frame: "item_preco-modal-editar-frame"
+          },
+          class: "rounded-lg bg-ruby-700 px-3 py-2 text-white hover:bg-ruby-800",
+          icon: ->(view) do
+            view.raw("<svg class=\"h-4 w-4\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\"><path stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m16.862 4.487 1.687-1.687a1.875 1.875 0 1 1 2.652 2.652L7.875 18.778a4.5 4.5 0 0 1-1.897 1.13L3 21l1.092-2.978a4.5 4.5 0 0 1 1.13-1.897l11.64-11.638ZM19.5 7.125 16.875 4.5\"/></svg>")
+          end
+        },
+        {
+          title: "Remover",
+          href: ->(row) { tabela_preco_item_preco_path(@tabela_preco, row) },
+          data: {
+            turbo_method: :delete,
+            turbo_confirm: "Remover este item da tabela?"
+          },
+          class: "rounded-lg border border-red-300 px-3 py-2 text-red-700 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/30",
+          icon: ->(view) do
+            view.raw("<svg class=\"h-4 w-4\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\"><path stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z\"/></svg>")
+          end
+        }
+      ]
+    }
+  ]
+%>
+
+<%= render layout: "layouts/admin" do %>
+  <div class="space-y-6" data-controller="modal-loader">
+
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div>
+        <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Itens — <%= @tabela_preco.nome %></h1>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gerencie os produtos vinculados a esta tabela de preço.</p>
+      </div>
+
+      <%= link_to new_tabela_preco_item_preco_path(@tabela_preco, modal: "create"),
+          class: "inline-flex items-center justify-center rounded-lg bg-ruby-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-ruby-800 focus:outline-none focus:ring-2 focus:ring-gray-400",
+          data: {
+            action: "click->modal-loader#open",
+            modal_loader_modal_id: "item_preco-modal-criar",
+            turbo_frame: "item_preco-modal-criar-frame"
+          } do %>
+        Novo item
+      <% end %>
+    </div>
+
+    <%= render "shared/admin/modal",
+      modal_id: "item_preco-modal-criar",
+      mode: :create,
+      resource_name: "item",
+      subtitle: "Vincule um produto a esta tabela de preço." do %>
+      <template data-modal-loader-loading-template>
+        <%= render "shared/admin/modal_loading_state", label: "Carregando formulário" %>
+      </template>
+      <%= turbo_frame_tag "item_preco-modal-criar-frame" do %>
+        <%= render "shared/admin/modal_loading_state", label: "Carregando formulário" %>
+      <% end %>
+    <% end %>
+
+    <%= render "shared/admin/modal",
+      modal_id: "item_preco-modal-editar",
+      mode: :edit,
+      resource_name: "item",
+      subtitle: "Os dados são carregados dinamicamente." do %>
+      <template data-modal-loader-loading-template>
+        <%= render "shared/admin/modal_loading_state", label: "Carregando formulário" %>
+      </template>
+      <%= turbo_frame_tag "item_preco-modal-editar-frame" do %>
+        <%= render "shared/admin/modal_loading_state", label: "Carregando formulário" %>
+      <% end %>
+    <% end %>
+
+    <%= render "shared/admin/data_table",
+      pagy: @pagy,
+      records: @records,
+      columns: columns,
+      search_fields: [
+        { value: "produto", label: "Produto" }
+      ],
+      title: content_for(:title)
+    %>
+  </div>
+<% end %>
+
+

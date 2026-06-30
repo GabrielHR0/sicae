@@ -1,29 +1,125 @@
 <% content_for :title, "Tabela precos" %>
 
-<div class="w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
-  <% end %>
-
-  <div class="flex justify-between items-center">
-    <h1 class="font-bold text-4xl">Tabela precos</h1>
-    <%= link_to "New tabela preco", new_tabela_preco_path, class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white block font-medium" %>
-  </div>
-
-  <div id="tabela_precos" class="min-w-full divide-y divide-gray-200 space-y-5">
-    <% if @tabela_precos.any? %>
-      <% @tabela_precos.each do |tabela_preco| %>
-        <div class="flex flex-col sm:flex-row justify-between items-center pb-5 sm:pb-0">
-          <%= render tabela_preco %>
-          <div class="w-full sm:w-auto flex flex-col sm:flex-row space-x-2 space-y-2">
-            <%= link_to "Show", tabela_preco, class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-            <%= link_to "Edit", edit_tabela_preco_path(tabela_preco), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-            <%= button_to "Destroy", tabela_preco, method: :delete, class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "Are you sure?" } %>
-          </div>
-        </div>
-      <% end %>
-    <% else %>
-      <p class="text-center my-10">No tabela precos found.</p>
+<%= render layout: "layouts/admin" do%>
+  <div id="tabela_precos" data-controller="modal-loader" class="space-y-6">
+    <% if notice.present? %>
+      <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
     <% end %>
+
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Tabelas de Preço</h1>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gerencie as tabelas de preço cadastradas no sistema.</p>
+        </div>
+        <div>
+          <%= link_to new_tabela_preco_path(modal: "edit"),
+            class: "inline-flex items-center justify-center rounded-lg bg-ruby-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-ruby-800 focus:outline-none focus:ring-2 focus:ring-gray-400",
+            data: {
+              action: "click->modal-loader#open",
+              modal_loader_modal_id: "tabela-preco-modal-criar",
+              turbo_frame: "tabela-preco-modal-criar-frame"
+            } do %>
+            Nova tabela de preco
+            <% end %>
+        </div>
+      </div>
+
+      <%= render "shared/admin/modal",
+        modal_id: "tabela-preco-modal-criar",
+        mode: :create,
+        resource_name: "tabela de preco",
+        subtitle: "Crie uma nova tabela de preços" do %>
+        <template data-modal-loader-loading-template>
+          <%= render "shared/admin/modal_loading_state", label: "Carregando formulário para nova tabela de preço" %>
+        </template>
+        <%= turbo_frame_tag "tabela-preco-modal-criar-frame" do %>
+          <%= render "shared/admin/modal_loading_state",
+            label: "Carregando formulário para nova tabela de preço"
+          %>
+        <% end %>
+      <% end %>
+
+      <%= render "shared/admin/modal",
+        modal_id: "tabela-preco-modal-editar",
+        mode: :edit,
+        resource_name: "tabela de preco",
+        subtitle: "Os dados são carregados dinamicamente ao clicar em editar." do %>
+        <template data-modal-loader-loading-template>
+          <%= render "shared/admin/modal_loading_state", label: "Carregando formulário para nova tabela de preço" %>
+        </template>
+        <%= turbo_frame_tag "tabela-preco-modal-editar-frame" do %>
+          <%= render "shared/admin/modal_loading_state",
+            label: "Carregando formulário de edição da tabela de preço"
+          %>
+        <% end %>
+      <% end %>
+
+    <div id="tabela_precos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <% if @tabela_precos.any? %>
+        <% @tabela_precos.each do |tabela_preco| %>
+          <%= render partial:"card", locals: { tabela_preco: } %>
+        <% end %>
+      <% else %>
+        <p class="text-center my-10">No tabela precos found.</p>
+      <% end %>
+        </div>
+
+    <div class="flex flex-col gap-4 border-t border-gray-200 pt-4 md:flex-row md:items-center md:justify-between dark:border-gray-800">
+      <p class="text-sm text-gray-600 dark:text-gray-400">
+        Mostrando <span class="font-medium text-gray-900 dark:text-white"><%= @pagy.from %></span> até
+        <span class="font-medium text-gray-900 dark:text-white"><%= @pagy.to %></span> de
+        <span class="font-medium text-gray-900 dark:text-white"><%= @pagy.count %></span> registros
+      </p>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <% if @pagy.page > 1 %>
+          <%= link_to url_for(request.query_parameters.merge(page: 1)), class: "inline-flex items-center rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800", title: "Primeira página", aria: { label: "Primeira página" } do %>
+            <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m11 17-5-5 5-5m6 10-5-5 5-5"/>
+            </svg>
+          <% end %>
+        <% end %>
+
+        <% if @pagy.previous %>
+          <%= link_to url_for(request.query_parameters.merge(page: @pagy.previous)), class: "inline-flex items-center rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800" do %>
+            <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7"/>
+            </svg>
+          <% end %>
+        <% end %>
+
+        <% pagy_page_items(@pagy).each do |item| %>
+          <% if item == :gap %>
+            <span class="inline-flex items-center px-2 text-sm font-medium text-gray-400">...</span>
+          <% else %>
+            <% page_number = item.to_i %>
+            <% if page_number == @pagy.page %>
+              <span class="inline-flex items-center rounded-lg bg-ruby-700 px-4 py-2 text-sm font-medium text-white"><%= page_number %></span>
+            <% else %>
+              <%= link_to url_for(request.query_parameters.merge(page: page_number)), class: "inline-flex items-center rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800" do %>
+                <%= page_number %>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+
+        <% if @pagy.next %>
+          <%= link_to url_for(request.query_parameters.merge(page: @pagy.next)), class: "inline-flex items-center rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800" do %>
+            <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
+            </svg>
+          <% end %>
+        <% end %>
+
+        <% if @pagy.page < @pagy.pages %>
+          <%= link_to url_for(request.query_parameters.merge(page: @pagy.pages)), class: "inline-flex items-center rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800", title: "Última página", aria: { label: "Última página" } do %>
+            <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m13 17 5-5-5-5m-6 10 5-5-5-5"/>
+            </svg>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
   </div>
-</div>
+<% end %>
+

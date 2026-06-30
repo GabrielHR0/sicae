@@ -1,0 +1,2 @@
+module Cantina::CardapiosHelper
+end

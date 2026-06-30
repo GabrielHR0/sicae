@@ -1,8 +1,17 @@
 class Responsavel < ApplicationRecord
+  attr_accessor :nome, :email, :username, :password, :cpf, :telefone, :data_nascimento
+
   belongs_to :user
   has_many :bloqueios, dependent: :destroy
   has_many :reservas, dependent: :destroy
   has_many :estudantes, dependent: :restrict_with_error
+  has_many :faturas, class_name: "Fatura", dependent: :destroy
+
+    validates :relacao_parental_outro, presence: true, if: -> { relacao_parental == "outro" }
+
+  def relacao_parental_exibicao
+    relacao_parental == "outro" ? relacao_parental_outro : relacao_parental
+  end
 
   enum :relacao_parental, {
     pai: 0,
@@ -10,5 +19,4 @@ class Responsavel < ApplicationRecord
     tutor: 2,
     outro: 3
   }
-  
 end

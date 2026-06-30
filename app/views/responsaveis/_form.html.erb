@@ -1,0 +1,145 @@
+<%
+  responsavel = local_assigns[:responsavel]
+  submit_label = local_assigns[:submit_label].presence || (responsavel&.persisted? ? "Salvar alterações" : "Cadastrar responsável")
+  modal_id = local_assigns[:modal_id]
+  edit_mode = responsavel&.persisted?
+%>
+
+<%= form_with model: responsavel,
+              class: "space-y-6",
+              data: (
+                modal_id.present? ? {
+                  controller: "modal-form",
+                  action: "turbo:submit-start->modal-form#start turbo:submit-end->modal-form#end"
+                } : {}
+              ) do |form| %>
+  <% if responsavel.errors.any? %>
+    <div class="rounded-xl border border-red-300 bg-red-50 p-4 text-sm text-red-800 shadow-sm dark:border-red-900/40 dark:bg-red-950/35 dark:text-red-200">
+      <p class="font-semibold"><%= pluralize(responsavel.errors.count, "erro") %> impediram o salvamento</p>
+      <ul class="mt-3 list-disc space-y-1 ps-5">
+        <% responsavel.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="admin-form-panel-primary">
+    <div class="mb-5 flex items-center justify-between gap-3 border-b border-gray-200 pb-4 dark:border-gray-800">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-wide text-gray-800 dark:text-white">Dados pessoais</p>
+        <p class="mt-1 text-sm text-gray-700 dark:text-gray-300">Informações do responsável.</p>
+      </div>
+    </div>
+
+    <div data-controller="relacao-parental-form" class="grid gap-6 md:grid-cols-2">
+      <div class="md:col-span-2">
+        <%= form.label :nome, "Nome completo", class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <%= form.text_field :nome,
+                required: true,
+                placeholder: "Ex.: Maria da Silva",
+                class: "admin-form-input" %>
+      </div>
+
+      <div>
+        <%= form.label :cpf, "CPF", class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <%= form.text_field :cpf,
+                placeholder: "Apenas números",
+                maxlength: 11,
+                class: "admin-form-input" %>
+      </div>
+
+      <div>
+        <%= form.label :data_nascimento, "Data de nascimento", class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <%= form.date_field :data_nascimento, class: "admin-form-input" %>
+      </div>
+
+      <div>
+        <%= form.label :telefone, "Telefone", class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <%= form.text_field :telefone,
+                placeholder: "(11) 99999-9999",
+                class: "admin-form-input" %>
+      </div>
+
+      <div>
+        <%= form.label :relacao_parental, "Relação parental", class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <%= form.select :relacao_parental,
+                options_for_select([
+                  ["Selecione", nil],
+                  ["Pai", "pai"],
+                  ["Mãe", "mae"],
+                  ["Tutor(a)", "tutor"],
+                  ["Outro", "outro"]
+                ], responsavel.relacao_parental),
+                {},
+                data: { action: "change->relacao-parental-form#toggle" },
+                class: "admin-form-input" %>
+      </div>
+
+      <div data-relacao-parental-form-target="outroField" class="<%= responsavel.relacao_parental == 'outro' ? '' : 'hidden' %>">
+        <%= form.label :relacao_parental_outro, "Especifique", class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <%= form.text_field :relacao_parental_outro,
+                placeholder: "Ex.: Avó, Tio, Vizinho(a)...",
+                class: "admin-form-input" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-form-panel-secondary">
+    <div class="mb-5 border-b border-gray-200 pb-4 dark:border-gray-800">
+      <p class="text-sm font-semibold uppercase tracking-wide text-gray-800 dark:text-white">Dados de acesso</p>
+      <p class="mt-1 text-sm text-gray-700 dark:text-gray-300">Credenciais para login no sistema.</p>
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-2">
+      <div>
+        <%= form.label :email, class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <%= form.email_field :email,
+                required: !edit_mode,
+                placeholder: "maria@exemplo.com",
+                class: "admin-form-input" %>
+        <p class="mt-2 text-xs text-gray-700 dark:text-gray-400">Usado para login e recuperação de senha.</p>
+      </div>
+
+      <div>
+        <%= form.label :username, "Usuário", class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <%= form.text_field :username,
+                required: !edit_mode,
+                placeholder: "maria.silva",
+                class: "admin-form-input" %>
+        <p class="mt-2 text-xs text-gray-700 dark:text-gray-400">Nome de usuário único para login.</p>
+      </div>
+
+      <div>
+        <%= form.label :password, edit_mode ? "Nova senha (deixe em branco para manter)" : "Senha", class: "mb-2.5 block text-sm font-medium text-gray-800 dark:text-gray-100" %>
+        <%= form.password_field :password,
+                required: !edit_mode,
+                minlength: 6,
+                class: "admin-form-input" %>
+        <p class="mt-2 text-xs text-gray-700 dark:text-gray-400">Mínimo de 6 caracteres.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex items-center justify-end gap-3 border-t border-gray-200 pt-4 dark:border-gray-700">
+    <% if modal_id.present? %>
+      <button type="button"
+              data-action="click->modal-loader#close"
+              class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">
+        Cancelar
+      </button>
+    <% else %>
+      <%= link_to "Cancelar", responsaveis_path, class: "rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800" %>
+    <% end %>
+
+    <%= form.button type: :submit,
+                    data: { modal_form_target: "submitButton" },
+                    class: "inline-flex items-center justify-center gap-2 rounded-lg bg-ruby-700 px-4 py-2 text-sm font-medium text-white hover:bg-ruby-800" do %>
+      <span data-modal-form-target="submitLabel"><%= submit_label %></span>
+      <svg data-modal-form-target="submitSpinner" class="hidden h-4 w-4 animate-spin" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M12 2a10 10 0 1 0 10 10h-3a7 7 0 1 1-7-7V2Z"></path>
+      </svg>
+    <% end %>
+  </div>
+<% end %>

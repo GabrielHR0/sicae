@@ -1,0 +1,16 @@
+<div data-controller="vendas"
+     data-action="combobox:selected->vendas#selecionaProduto combobox:selected->vendas#selecionaEstudante pagamento:confirmado->vendas#confirmarPagamento pagamento:recusado->vendas#recusarPagamento"
+     class="flex flex-col h-screen">
+
+  <%= render "vendas/topbar" %>
+
+  <div class="flex h-[calc(100vh-4rem)]">
+    <div class="w-2/3 p-4 overflow-y-auto flex flex-col">
+      <%= render "vendas/painel_esquerdo" %>
+    </div>
+
+    <div class="w-1/3 p-4 overflow-y-auto flex flex-col">
+      <%= render "vendas/painel_direito" %>
+    </div>
+  </div>
+</div>

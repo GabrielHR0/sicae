@@ -15,6 +15,7 @@ class User < ApplicationRecord
   has_one :perfil, inverse_of: :user, dependent: :destroy
 
   belongs_to :escola, optional: true
+  belongs_to :cantina, optional: true
 
   # Checa se o usuário tem um role específico pelo nome
   def has_role?(role_name)
