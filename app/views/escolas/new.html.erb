@@ -1,9 +1,40 @@
-<% content_for :title, "New escola" %>
+<% content_for :title, "Criar escola" %>
 
-<div class="md:w-2/3 w-full">
-  <h1 class="font-bold text-4xl">New escola</h1>
+<div class="auth-bg font-sans min-h-screen">
+  <div class="hero-orb one top-[-80px] left-[-120px] w-[500px] h-[500px]"></div>
+  <div class="hero-orb two bottom-[-100px] right-[-80px] w-[420px] h-[420px]"></div>
+  <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+    <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+      <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+        <div class="text-center">
+          <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+            Criar escola
+          </h1>
+          <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            Sua conta foi criada! Agora cadastre sua escola para começar.
+          </p>
+        </div>
 
-  <%= render "form", escola: @escola %>
+        <%= form_with(model: @escola, class: "space-y-4") do |form| %>
+          <% if @escola.errors.any? %>
+            <div class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md">
+              <ul class="list-disc ml-4">
+                <% @escola.errors.each do |error| %>
+                  <li><%= error.full_message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
 
-  <%= link_to "Back to escolas", escolas_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
+          <div>
+            <%= form.label :nome, "Nome da escola", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
+            <%= form.text_field :nome, required: true, placeholder: "Ex: Instituto Estrela da Manhã", autofocus: true,
+              class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg shadow-xs placeholder:text-gray-600 focus:border-ruby-750 focus:ring-2 focus:ring-ruby-750 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-500 dark:text-white" %>
+          </div>
+
+          <%= form.submit "Criar escola", class: "w-full py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-ruby-700 hover:bg-ruby-800 focus:outline-none focus:ring-2 focus:ring-ruby-750 focus:ring-offset-2 cursor-pointer" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
 </div>

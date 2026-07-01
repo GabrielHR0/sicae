@@ -1,70 +1,53 @@
 class EscolasController < ApplicationController
   before_action :set_escola, only: %i[ show edit update destroy ]
+  skip_before_action :authenticate_user!, only: %i[ new create ]
+  skip_after_action :verify_authorized, only: %i[ new create ]
 
-  # GET /escolas or /escolas.json
   def index
     @escolas = Escola.all
   end
 
-  # GET /escolas/1 or /escolas/1.json
   def show
   end
 
-  # GET /escolas/new
   def new
     @escola = Escola.new
   end
 
-  # GET /escolas/1/edit
   def edit
   end
 
-  # POST /escolas or /escolas.json
   def create
     @escola = Escola.new(escola_params)
 
-    respond_to do |format|
-      if @escola.save
-        format.html { redirect_to @escola, notice: "Escola was successfully created." }
-        format.json { render :show, status: :created, location: @escola }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @escola.errors, status: :unprocessable_entity }
-      end
+    if @escola.save
+      current_user.update!(escola: @escola) if current_user
+      redirect_to dashboard_path, notice: "Escola criada com sucesso!"
+    else
+      render :new, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /escolas/1 or /escolas/1.json
   def update
-    respond_to do |format|
-      if @escola.update(escola_params)
-        format.html { redirect_to @escola, notice: "Escola was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @escola }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @escola.errors, status: :unprocessable_entity }
-      end
+    if @escola.update(escola_params)
+      redirect_to @escola, notice: "Escola atualizada.", status: :see_other
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
-  # DELETE /escolas/1 or /escolas/1.json
   def destroy
     @escola.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to escolas_path, notice: "Escola was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
-    end
+    redirect_to escolas_path, notice: "Escola removida.", status: :see_other
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_escola
-      @escola = Escola.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def escola_params
-      params.expect(escola: [ :nome, :cnpj, :email, :telefone, :ativo, :metadata ])
-    end
+  def set_escola
+    @escola = Escola.find(params.expect(:id))
+  end
+
+  def escola_params
+    params.expect(escola: [ :nome, :cnpj, :email, :telefone, :ativo, :metadata ])
+  end
 end

@@ -29,6 +29,14 @@ class Users::RegistrationsController < Devise::RegistrationsController
     @escola_slug = Current.escola&.slug
   end
 
+  def after_sign_up_path_for(resource)
+    if resource.escola.present?
+      dashboard_path
+    else
+      new_escola_path
+    end
+  end
+
   def sign_up_params
     params.require(:user).permit(
       :email,
