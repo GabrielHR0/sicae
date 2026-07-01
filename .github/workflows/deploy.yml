@@ -15,17 +15,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build & push image
-        env:
-          DO_API_TOKEN: ${{ secrets.DO_API_TOKEN }}
-          DO_API_USER: ${{ secrets.DO_API_USER }}
-        run: |
-          docker build -t $REGISTRY:latest .
-          echo "$DO_API_TOKEN" | docker login registry.digitalocean.com \
-            -u "$DO_API_USER" --password-stdin
-          docker push $REGISTRY:latest
+      - name: Build image
+        run: docker build -t $REGISTRY:latest .
 
-      - name: Deploy on droplet
+      - name: Save & compress image
+        run: docker save $REGISTRY:latest | gzip > /tmp/image.tar.gz
+
+      - name: Copy image to droplet
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ env.DROPLET }}
+          port: 2222
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: /tmp/image.tar.gz
+          target: /tmp/
+          strip_components: 2
+
+      - name: Load image & restart app
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ env.DROPLET }}
@@ -33,36 +40,29 @@ jobs:
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script_stop: true
-          envs: REGISTRY,DO_API_TOKEN,DO_API_USER,RAILS_MASTER_KEY,DB_PASSWORD,RAILS_ENV,DB_HOST,DB_USERNAME,DB_NAME
+          envs: REGISTRY,RAILS_MASTER_KEY,DB_PASSWORD
           script: |
             set -e
-            echo "$DO_API_TOKEN" | docker login registry.digitalocean.com \
-              -u "$DO_API_USER" --password-stdin
-            docker pull $REGISTRY:latest
+            docker load < /tmp/image.tar.gz
             docker rm -f sicae-app 2>/dev/null || true
             docker run -d \
               --name sicae-app \
               --restart always \
               --network sicae-net \
-              -e RAILS_ENV="$RAILS_ENV" \
+              -e RAILS_ENV=production \
               -e RAILS_MASTER_KEY="$RAILS_MASTER_KEY" \
-              -e DB_HOST="$DB_HOST" \
-              -e DB_USERNAME="$DB_USERNAME" \
+              -e DB_HOST=sicae-db \
+              -e DB_USERNAME=sicae \
               -e DB_PASSWORD="$DB_PASSWORD" \
-              -e DB_NAME="$DB_NAME" \
-              -e SICAE_DATABASE_HOST="$DB_HOST" \
-              -e SICAE_DATABASE_USERNAME="$DB_USERNAME" \
+              -e DB_NAME=sicae_production \
+              -e SICAE_DATABASE_HOST=sicae-db \
+              -e SICAE_DATABASE_USERNAME=sicae \
               -e SICAE_DATABASE_PASSWORD="$DB_PASSWORD" \
-              -e SICAE_DATABASE_NAME="$DB_NAME" \
+              -e SICAE_DATABASE_NAME=sicae_production \
               $REGISTRY:latest
+            rm -f /tmp/image.tar.gz
             docker image prune -f
         env:
           REGISTRY: ${{ env.REGISTRY }}
-          DO_API_TOKEN: ${{ secrets.DO_API_TOKEN }}
-          DO_API_USER: ${{ secrets.DO_API_USER }}
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          RAILS_ENV: production
-          DB_HOST: sicae-db
-          DB_USERNAME: sicae
-          DB_NAME: sicae_production
