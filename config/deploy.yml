@@ -7,7 +7,7 @@ image: sicae
 # Deploy to these servers.
 servers:
   web:
-    - 167.99.9.36
+    - 137.184.76.107
 
 # Using DigitalOcean Container Registry
 registry:
@@ -52,13 +52,14 @@ builder:
 
 # Use a different ssh user than root
 ssh:
+  port: 2222
   user: root
 
 # Use accessory services
 accessories:
   db:
     image: postgres:16
-    host: 167.99.9.36
+    host: 137.184.76.107
     port: "127.0.0.1:5432:5432"
     env:
       clear:
