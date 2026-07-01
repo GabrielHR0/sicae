@@ -1,4 +1,5 @@
 <% content_for :title, "Criar escola" %>
+<% content_for :body_class, "auth-bg" %>
 
 <div class="auth-bg font-sans min-h-screen">
   <div class="hero-orb one top-[-80px] left-[-120px] w-[500px] h-[500px]"></div>
@@ -7,6 +8,11 @@
     <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
       <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
         <div class="text-center">
+          <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-ruby-500 to-rose-600 shadow-md">
+            <svg class="h-7 w-7 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342" />
+            </svg>
+          </div>
           <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
             Criar escola
           </h1>
@@ -17,8 +23,8 @@
 
         <%= form_with(model: @escola, class: "space-y-4") do |form| %>
           <% if @escola.errors.any? %>
-            <div class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md">
-              <ul class="list-disc ml-4">
+            <div class="bg-red-50 text-red-500 px-4 py-3 rounded-lg">
+              <ul class="list-disc ml-4 text-sm">
                 <% @escola.errors.each do |error| %>
                   <li><%= error.full_message %></li>
                 <% end %>
@@ -32,7 +38,8 @@
               class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg shadow-xs placeholder:text-gray-600 focus:border-ruby-750 focus:ring-2 focus:ring-ruby-750 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-500 dark:text-white" %>
           </div>
 
-          <%= form.submit "Criar escola", class: "w-full py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-ruby-700 hover:bg-ruby-800 focus:outline-none focus:ring-2 focus:ring-ruby-750 focus:ring-offset-2 cursor-pointer" %>
+          <%= form.submit "Criar escola",
+            class: "w-full py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-br from-ruby-500 to-rose-600 hover:from-ruby-600 hover:to-rose-700 focus:outline-none focus:ring-2 focus:ring-ruby-750 focus:ring-offset-2 cursor-pointer" %>
         <% end %>
       </div>
     </div>

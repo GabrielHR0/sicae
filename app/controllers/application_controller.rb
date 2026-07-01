@@ -1,8 +1,10 @@
 class ApplicationController < ActionController::Base
-  before_action :authenticate_user!
-  allow_browser versions: :modern
   include Pundit::Authorization
   include Pagy::Method
+
+  before_action :authenticate_user!
+  before_action :ensure_escola
+  allow_browser versions: :modern
 
   rescue_from Pundit::NotAuthorizedError do |e|
     respond_to do |format|
@@ -14,6 +16,15 @@ class ApplicationController < ActionController::Base
   stale_when_importmap_changes
 
   private
+
+  def ensure_escola
+    return unless current_user
+    return if current_user.escola.present?
+    return if controller_name == "escolas" && %w[new create].include?(action_name)
+    return if devise_controller?
+
+    redirect_to new_escola_path
+  end
 
   def user_not_authorized
     flash[:alert] = "Você não tem permissão para realizar esta ação."

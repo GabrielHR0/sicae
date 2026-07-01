@@ -20,4 +20,12 @@ class Users::SessionsController < Devise::SessionsController
   def set_escola_slug
     @escola_slug = Current.escola&.slug
   end
+
+  def after_sign_in_path_for(resource)
+    if resource.escola.present?
+      stored_location_for(resource) || dashboard_path
+    else
+      new_escola_path
+    end
+  end
 end
