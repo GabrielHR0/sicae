@@ -18,6 +18,12 @@ class EscolasController < ApplicationController
 
   def create
     @escola = Escola.new(escola_params)
+    @escola.assign_attributes(
+      ativo: true,
+      cnpj: @escola.cnpj.presence || "00.000.000/0000-00",
+      email: @escola.email.presence || "contato@#{@escola.nome.parameterize}.com.br",
+      telefone: @escola.telefone.presence || "(00) 0000-0000"
+    )
 
     if @escola.save
       current_user.update!(escola: @escola) if current_user
