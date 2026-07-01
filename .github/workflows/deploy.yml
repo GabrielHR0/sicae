@@ -19,7 +19,7 @@ jobs:
         run: docker build -t $REGISTRY:latest .
 
       - name: Save & compress image
-        run: docker save $REGISTRY:latest | gzip > /tmp/image.tar.gz
+        run: docker save $REGISTRY:latest | gzip > sicae-image.tar.gz
 
       - name: Copy image to droplet
         uses: appleboy/scp-action@v0.1.7
@@ -28,9 +28,8 @@ jobs:
           port: 2222
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: /tmp/image.tar.gz
+          source: sicae-image.tar.gz
           target: /tmp/
-          strip_components: 2
 
       - name: Load image & restart app
         uses: appleboy/ssh-action@v1
@@ -43,7 +42,7 @@ jobs:
           envs: REGISTRY,RAILS_MASTER_KEY,DB_PASSWORD
           script: |
             set -e
-            docker load < /tmp/image.tar.gz
+            docker load < /tmp/sicae-image.tar.gz
             docker rm -f sicae-app 2>/dev/null || true
             docker run -d \
               --name sicae-app \
@@ -60,7 +59,7 @@ jobs:
               -e SICAE_DATABASE_PASSWORD="$DB_PASSWORD" \
               -e SICAE_DATABASE_NAME=sicae_production \
               $REGISTRY:latest
-            rm -f /tmp/image.tar.gz
+            rm -f /tmp/sicae-image.tar.gz
             docker image prune -f
         env:
           REGISTRY: ${{ env.REGISTRY }}
