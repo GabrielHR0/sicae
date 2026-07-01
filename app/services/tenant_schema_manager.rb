@@ -18,6 +18,7 @@ class TenantSchemaManager
     connection.execute("CREATE SCHEMA IF NOT EXISTS #{quoted_schema}")
 
     load_tenant_structure!
+    run_pending_migrations!
   rescue StandardError => e
     raise SchemaCreationError, "Falha ao criar schema #{@schema_name}: #{e.message}"
   end
@@ -48,6 +49,18 @@ class TenantSchemaManager
 
       eval(schema_content)
     end
+  ensure
+    connection.schema_search_path = previous_search_path
+  end
+
+  def run_pending_migrations!
+    connection = ActiveRecord::Base.connection
+    previous_search_path = connection.schema_search_path
+    connection.schema_search_path = @schema_name
+
+    ActiveRecord::MigrationContext.new(
+      ActiveRecord::Tasks::DatabaseTasks.migrations_paths
+    ).migrate
   ensure
     connection.schema_search_path = previous_search_path
   end

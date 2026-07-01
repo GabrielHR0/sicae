@@ -1,4 +1,4 @@
-return unless Rails.env.development? || Rails.env.test?
+return unless Rails.env.development? || Rails.env.test? || Rails.env.production?
 
 escola_estrela = {
   ativo: true,
