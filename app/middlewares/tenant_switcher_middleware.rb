@@ -1,6 +1,6 @@
 class TenantSwitcherMiddleware
   TENANT_FALLBACK = "public".freeze
-  EXCLUDED_PATHS = [ "/assets", "/favicon.ico", "/rails", "/up", "/users", "/dashboard" ].freeze
+  EXCLUDED_PATHS = [ "/assets", "/favicon.ico", "/rails", "/up", "/users", "/escolas", "/dashboard" ].freeze
 
   def initialize(app)
     @app = app

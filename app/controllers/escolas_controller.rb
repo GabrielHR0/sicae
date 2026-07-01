@@ -1,7 +1,6 @@
 class EscolasController < ApplicationController
   before_action :set_escola, only: %i[ show edit update destroy ]
   skip_before_action :authenticate_user!, only: %i[ new create ]
-  skip_after_action :verify_authorized, only: %i[ new create ]
 
   def index
     @escolas = Escola.all
