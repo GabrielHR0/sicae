@@ -35,6 +35,27 @@ class Produto < ApplicationRecord
       &.preco
   end
 
+  def preco_atual
+    tempo_atual = Time.current
+    fc = self.class.connection.quote_column_name("fimVigencia")
+    ic = self.class.connection.quote_column_name("inicioVigencia")
+
+    ItemPreco
+      .joins(:tabela_preco)
+      .where(
+        "tabela_precos.status = ?
+         AND (
+           (tabela_precos.#{fc} >= ? AND tabela_precos.#{ic} <= ?)
+           OR
+           (tabela_precos.#{fc} IS NULL AND tabela_precos.#{ic} IS NULL)
+         )
+         AND item_precos.produto_id = ?",
+        1, tempo_atual, tempo_atual, id
+      )
+      .order(Arel.sql("COALESCE(tabela_precos.#{fc} - tabela_precos.#{ic}, '9999 days'::interval) ASC"))
+      .first&.preco
+  end
+
   def disponivel?
     ativo? && estoque > 0
   end
@@ -56,7 +77,7 @@ class Produto < ApplicationRecord
     return if codigo.present?
 
     max_id = Produto.maximum(:id) || 0
-    self.codigo = format('COD-%05d', max_id + 1)
+    self.codigo = format("COD-%05d", max_id + 1)
   end
 
   def criar_preco_base

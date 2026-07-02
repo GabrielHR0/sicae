@@ -37,7 +37,7 @@
       <div class="rounded-xl border border-gray-200 bg-gray-50 px-5 py-4 text-center dark:border-gray-700 dark:bg-gray-800/50">
         <span class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Preço unitário</span>
         <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-white tabular-nums">
-          <%= number_to_currency(produto.preco) %>
+          <%= number_to_currency(produto.preco_atual) %>
         </p>
       </div>
     </div>
@@ -67,7 +67,7 @@
     <div class="text-right shrink-0">
       <span class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Subtotal</span>
       <p class="mt-0.5 text-xl font-bold text-gray-900 dark:text-white tabular-nums" id="subtotal-item">
-        <%= number_to_currency(produto.preco) %>
+        <%= number_to_currency(produto.preco_atual) %>
       </p>
     </div>
   </div>
@@ -85,3 +85,4 @@
     </button>
   </div>
 </div>
+

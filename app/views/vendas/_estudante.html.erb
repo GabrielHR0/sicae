@@ -45,7 +45,7 @@
                           data-action="click->vendas#adicionarReserva"
                           data-produto-id="<%= r.produto_id %>"
                           data-produto-nome="<%= r.produto&.nome %>"
-                          data-produto-preco="<%= r.produto&.preco %>"
+                          data-produto-preco="<%= r.produto&.preco_atual %>"
                           data-produto-codigo="<%= r.produto&.codigo %>"
                           class="rounded-md bg-gray-200 px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
                     Add
@@ -54,7 +54,7 @@
                           data-action="click->vendas#pagarReserva"
                           data-produto-id="<%= r.produto_id %>"
                           data-produto-nome="<%= r.produto&.nome %>"
-                          data-produto-preco="<%= r.produto&.preco %>"
+                          data-produto-preco="<%= r.produto&.preco_atual %>"
                           data-produto-codigo="<%= r.produto&.codigo %>"
                           class="rounded-md bg-ruby-600 px-2 py-1 text-xs font-medium text-white hover:bg-ruby-700 dark:bg-ruby-700 dark:hover:bg-ruby-600">
                     Pagar
@@ -70,3 +70,4 @@
     </div>
   </div>
 </div>
+

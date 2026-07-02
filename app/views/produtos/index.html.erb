@@ -15,7 +15,7 @@
     label: "Preço",
     sortable: true,
     width: "14%",
-    render: ->(record, view) { view.number_to_currency(record.preco) }
+    render: ->(record, view) { view.number_to_currency(record.preco_atual) }
   },
   {
     key: :status,
@@ -151,3 +151,4 @@
     %>
   </div>
 <% end %>
+
