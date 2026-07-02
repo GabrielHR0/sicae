@@ -10,6 +10,9 @@ class LandingController < ApplicationController
 
   private
 
+  def allow_browser(versions:, block:)
+  end
+
   def redirect_if_signed_in
     if user_signed_in?
       if current_user.escola.present?

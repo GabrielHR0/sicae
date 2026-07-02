@@ -19,7 +19,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
     else
       clean_up_passwords resource
       set_minimum_password_length
-      respond_with resource
+      flash.now[:alert] = resource.errors.full_messages
+      render :new, formats: [:html], status: :unprocessable_entity
     end
   end
 
