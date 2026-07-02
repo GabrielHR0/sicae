@@ -49,9 +49,10 @@ class ApplicationController < ActionController::Base
   def collect_model_errors
     instance_variables.each_with_object([]) do |ivar, errors|
       value = instance_variable_get(ivar)
-      if value.respond_to?(:errors) && value.errors.any?
-        errors.concat(value.errors.full_messages)
-      end
+      next unless value.respond_to?(:errors)
+      model_errors = value.errors
+      next if model_errors.nil?
+      errors.concat(model_errors.full_messages) if model_errors.any?
     end
   end
 end
