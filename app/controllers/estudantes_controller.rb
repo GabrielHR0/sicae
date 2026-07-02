@@ -2,7 +2,7 @@ class EstudantesController < ApplicationController
   include DataTableable
   include Combobox
 
-  combobox_for Estudante.all, search: [:matricula], represent: [:id, :nome, :matricula]
+  combobox_for Estudante.all, search: [ :matricula ], represent: [ :id, :nome, :matricula ]
 
   SORTABLE_COLUMNS = %w[nome matricula turma serie data_nascimento nivel_escolaridade].freeze
   SEARCHABLE_COLUMNS = %w[nome matricula responsavel_nome].freeze
@@ -11,7 +11,7 @@ class EstudantesController < ApplicationController
              sortable_columns: SORTABLE_COLUMNS,
              searchable_columns: SEARCHABLE_COLUMNS,
              default_limit: 20,
-             per_page_options: [10, 20, 50, 100]
+             per_page_options: [ 10, 20, 50, 100 ]
 
   before_action :set_estudante, only: %i[show edit update destroy]
 
@@ -85,9 +85,9 @@ class EstudantesController < ApplicationController
   def data_table_search_scope(scope, search_field, term)
     case search_field
     when "responsavel_nome"
-      [scope.where("perfis.nome ILIKE :term", term: "%#{term}%"), true]
+      [ scope.where("perfis.nome ILIKE :term", term: "%#{term}%"), true ]
     else
-      [scope, false]
+      [ scope, false ]
     end
   end
 
@@ -95,5 +95,3 @@ class EstudantesController < ApplicationController
     ActiveModel::Type::Boolean.new.cast(params[:ativo])
   end
 end
-
-

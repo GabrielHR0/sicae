@@ -1,3 +1,4 @@
 <%= turbo_frame_tag "responsavel-modal-editar-frame" do %>
+  <%= render "shared/toast" %>
   <%= render "responsaveis/form", responsavel: @responsavel, modal_id: "responsavel-modal-editar" %>
 <% end %>

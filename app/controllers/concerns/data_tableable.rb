@@ -6,7 +6,7 @@ module DataTableable
   end
 
   class_methods do
-    def data_table(default_sort:, sortable_columns:, searchable_columns:, default_limit: 20, per_page_options: [10, 20, 50, 100])
+    def data_table(default_sort:, sortable_columns:, searchable_columns:, default_limit: 20, per_page_options: [ 10, 20, 50, 100 ])
       self.data_table_config = {
         default_sort: default_sort,
         sortable_columns: sortable_columns,
@@ -67,6 +67,6 @@ module DataTableable
   end
 
   def data_table_search_scope(scope, _search_field, _term)
-    [scope, false]
+    [ scope, false ]
   end
 end

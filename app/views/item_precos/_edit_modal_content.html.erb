@@ -1,4 +1,5 @@
 <%= turbo_frame_tag "item_preco-modal-editar-frame" do %>
+  <%= render "shared/toast" %>
   <%= render "item_precos/form",
     item_preco: item_preco,
     tabela_preco: tabela_preco,

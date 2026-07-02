@@ -1,5 +1,5 @@
 class Users::RegistrationsController < Devise::RegistrationsController
-  before_action :set_escola_slug, only: [:new, :create]
+  before_action :set_escola_slug, only: [ :new, :create ]
 
   def create
     build_resource(sign_up_params)
@@ -20,7 +20,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       clean_up_passwords resource
       set_minimum_password_length
       flash.now[:alert] = resource.errors.full_messages
-      render :new, formats: [:html], status: :unprocessable_entity
+      render :new, formats: [ :html ], status: :unprocessable_entity
     end
   end
 

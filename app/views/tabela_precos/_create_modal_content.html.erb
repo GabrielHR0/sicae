@@ -1,4 +1,5 @@
 <%= turbo_frame_tag "tabela-preco-modal-criar-frame" do %>
+  <%= render "shared/toast" %>
   <%= render "tabela_precos/form",
     tabela_preco: tabela_preco,
     submit_label: "Criar tabela",

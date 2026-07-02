@@ -1,5 +1,5 @@
 class Users::SessionsController < Devise::SessionsController
-  before_action :set_escola_slug, only: [:new]
+  before_action :set_escola_slug, only: [ :new ]
 
   def create
     self.resource = warden.authenticate!(auth_options)

@@ -17,6 +17,15 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def render(*args, **kwargs)
+    status = kwargs[:status] || (args.first.is_a?(Hash) && args.first[:status])
+    if (status == :unprocessable_entity || status == 422) && !request.format.json?
+      errors = collect_model_errors
+      flash.now[:alert] = errors if errors.any?
+    end
+    super
+  end
+
   def ensure_escola
     return unless current_user
     return if current_user.escola.present?
@@ -29,5 +38,14 @@ class ApplicationController < ActionController::Base
   def user_not_authorized
     flash[:alert] = "Você não tem permissão para realizar esta ação."
     redirect_to(request.referrer || root_path)
+  end
+
+  def collect_model_errors
+    instance_variables.each_with_object([]) do |ivar, errors|
+      value = instance_variable_get(ivar)
+      if value.respond_to?(:errors) && value.errors.any?
+        errors.concat(value.errors.full_messages)
+      end
+    end
   end
 end

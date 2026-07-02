@@ -56,10 +56,9 @@ class BloqueiosController < ApplicationController
       @bloqueio.data_fim = @bloqueio.data_inicio
     when "ate_sexta"
       @bloqueio.data_fim = @bloqueio.data_inicio.end_of_week(:sunday) - 2.days
-      
+
     when "indefinido"
       @bloqueio.data_fim = nil
     end
-    
   end
 end

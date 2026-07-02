@@ -1,3 +1,4 @@
 <%= turbo_frame_tag "estudante-modal-editar-frame" do %>
+  <%= render "shared/toast" %>
   <%= render "estudantes/form", estudante: @estudante, responsaveis: @responsaveis, modal_id: "estudante-modal-editar" %>
 <% end %>

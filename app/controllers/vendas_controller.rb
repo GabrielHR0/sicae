@@ -1,5 +1,5 @@
 class VendasController < ApplicationController
-  after_action :verify_authorized, except: [:new, :produto_card, :estudante_card]
+  after_action :verify_authorized, except: [ :new, :produto_card, :estudante_card ]
 
   def new
   end
@@ -9,7 +9,7 @@ class VendasController < ApplicationController
 
     cantina = current_user.cantina
     unless cantina
-      render json: { erros: ["Usuário sem cantina associada"] }, status: :unprocessable_entity
+      render json: { erros: [ "Usuário sem cantina associada" ] }, status: :unprocessable_entity
       return
     end
 
@@ -19,7 +19,7 @@ class VendasController < ApplicationController
         next unless produto
 
         if Bloqueio.ativos.para_estudante(params[:estudante_id]).para_produto(produto.id).exists?
-          render json: { erros: ["#{produto.nome} está bloqueado para este estudante"] },
+          render json: { erros: [ "#{produto.nome} está bloqueado para este estudante" ] },
                  status: :unprocessable_entity
           return
         end
@@ -51,7 +51,7 @@ class VendasController < ApplicationController
     if (pagamento_params = params[:pagamento]).present?
       forma = FormaPagamento.find_by("nome ILIKE ?", pagamento_params[:forma])
       unless forma
-        render json: { erros: ["Forma de pagamento '#{pagamento_params[:forma]}' não encontrada"] },
+        render json: { erros: [ "Forma de pagamento '#{pagamento_params[:forma]}' não encontrada" ] },
                status: :unprocessable_entity
         return
       end
@@ -77,7 +77,7 @@ class VendasController < ApplicationController
     compra.update!(status: :cancelado)
     render json: compra.as_json, status: :ok
   rescue ActiveRecord::RecordNotFound
-    render json: { erros: ["Venda não encontrada"] }, status: :not_found
+    render json: { erros: [ "Venda não encontrada" ] }, status: :not_found
   end
 
   def produto_card

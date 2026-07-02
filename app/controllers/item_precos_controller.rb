@@ -8,7 +8,7 @@ class ItemPrecosController < ApplicationController
              sortable_columns: SORTABLE_COLUMNS,
              searchable_columns: SEARCHABLE_COLUMNS,
              default_limit: 20,
-             per_page_options: [10, 20, 50, 100]
+             per_page_options: [ 10, 20, 50, 100 ]
 
   before_action :set_tabela_preco
   before_action :set_item_preco, only: %i[edit update destroy]
