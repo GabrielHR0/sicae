@@ -1,8 +1,6 @@
 class CategoriasController < ApplicationController
   before_action :set_categoria, only: %i[show edit update destroy]
-  after_action :verify_authorized
-
-  def index
+    def index
     authorize Categoria
     @pagy, @categorias = pagy(Categoria.order(:nome), limit: 20)
   end

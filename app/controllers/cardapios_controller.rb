@@ -1,7 +1,5 @@
 class CardapiosController < ApplicationController
-  after_action :verify_authorized
-
-  def index
+    def index
     authorize :cardapio, :index?
 
     @responsavel = current_user.responsavel

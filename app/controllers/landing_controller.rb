@@ -1,6 +1,7 @@
 class LandingController < ApplicationController
   skip_before_action :authenticate_user!
   skip_before_action :ensure_escola
+  skip_after_action :verify_authorized
   layout "landing"
 
   before_action :redirect_if_signed_in

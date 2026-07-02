@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_30_170304) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_01_190532) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -247,6 +247,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_30_170304) do
     t.index ["permission_id"], name: "index_roles_permissions_on_permission_id"
     t.index ["role_id", "permission_id"], name: "index_roles_permissions_on_role_id_and_permission_id", unique: true
     t.index ["role_id"], name: "index_roles_permissions_on_role_id"
+  end
+
+  create_table "solid_cache_entrys", force: :cascade do |t|
+    t.bigint "byte_size", null: false
+    t.datetime "created_at", null: false
+    t.binary "key", null: false
+    t.string "key_hash", null: false
+    t.binary "value", null: false
+    t.index ["byte_size"], name: "index_solid_cache_entries_on_byte_size"
+    t.index ["key_hash", "byte_size"], name: "index_solid_cache_entries_on_key_hash_and_byte_size"
+    t.index ["key_hash"], name: "index_solid_cache_entries_on_key_hash", unique: true
   end
 
   create_table "tabela_precos", force: :cascade do |t|

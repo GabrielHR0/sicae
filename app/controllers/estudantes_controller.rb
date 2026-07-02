@@ -16,6 +16,7 @@ class EstudantesController < ApplicationController
   before_action :set_estudante, only: %i[show edit update destroy]
 
   def index
+    authorize Estudante
     @stats = {
       "total_count" => Estudante.count,
       "nivel_fundamental" => Estudante.where(nivel_escolaridade: 0).count,
@@ -28,6 +29,7 @@ class EstudantesController < ApplicationController
   end
 
   def show
+    authorize @estudante
     @bloqueios = @estudante.bloqueios.ativos.includes(:produto, :responsavel).order(created_at: :desc)
     @reservas = @estudante.reservas.includes(:produto, :responsavel).order(data: :desc).limit(20)
 
@@ -38,6 +40,7 @@ class EstudantesController < ApplicationController
 
   def new
     @estudante = Estudante.new
+    authorize @estudante
     @responsaveis = Responsavel.includes(user: :perfil).map { |r| [ r.user.perfil.nome, r.id ] }
     if turbo_frame_request?
       render partial: "estudantes/create_modal_content", locals: { estudante: @estudante, responsaveis: @responsaveis }
@@ -46,6 +49,7 @@ class EstudantesController < ApplicationController
 
   def create
     @estudante = Estudante.new(estudante_params)
+    authorize @estudante
     @responsaveis = Responsavel.includes(user: :perfil).map { |r| [ r.user.perfil.nome, r.id ] }
     if @estudante.save
       redirect_to estudantes_path, notice: "Estudante cadastrado com sucesso."
@@ -55,10 +59,12 @@ class EstudantesController < ApplicationController
   end
 
   def edit
+    authorize @estudante
     @responsaveis = Responsavel.includes(user: :perfil).map { |r| [ r.user.perfil.nome, r.id ] }
   end
 
   def update
+    authorize @estudante
     @responsaveis = Responsavel.includes(user: :perfil).map { |r| [ r.user.perfil.nome, r.id ] }
     if @estudante.update(estudante_params)
       redirect_to estudantes_path, notice: "Estudante atualizado com sucesso."
@@ -68,6 +74,7 @@ class EstudantesController < ApplicationController
   end
 
   def destroy
+    authorize @estudante
     @estudante.destroy!
     redirect_to estudantes_path, notice: "Estudante removido com sucesso."
   end

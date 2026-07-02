@@ -14,11 +14,13 @@ class ItemPrecosController < ApplicationController
   before_action :set_item_preco, only: %i[edit update destroy]
 
   def index
+    authorize ItemPreco
     @pagy, @records = paginate_data_table(@tabela_preco.item_precos.includes(:produto))
   end
 
   def new
     @item_preco = @tabela_preco.item_precos.build
+    authorize @item_preco
 
     if turbo_frame_request?
       render partial: "item_precos/create_modal_content",
@@ -28,6 +30,7 @@ class ItemPrecosController < ApplicationController
 
   def create
     @item_preco = @tabela_preco.item_precos.build(item_preco_params)
+    authorize @item_preco
 
     if @item_preco.save
       redirect_to tabela_preco_item_precos_path(@tabela_preco), notice: "Item cadastrado com sucesso."
@@ -39,6 +42,7 @@ class ItemPrecosController < ApplicationController
   end
 
   def edit
+    authorize @item_preco
     if turbo_frame_request?
       render partial: "item_precos/edit_modal_content",
              locals: { item_preco: @item_preco, tabela_preco: @tabela_preco, produtos: Produto.ativos.order(:nome) }
@@ -46,6 +50,7 @@ class ItemPrecosController < ApplicationController
   end
 
   def update
+    authorize @item_preco
     if @item_preco.update(item_preco_params)
       redirect_to tabela_preco_item_precos_path(@tabela_preco), notice: "Item atualizado com sucesso."
     else
@@ -56,6 +61,7 @@ class ItemPrecosController < ApplicationController
   end
 
   def destroy
+    authorize @item_preco
     @item_preco.destroy!
     redirect_to tabela_preco_item_precos_path(@tabela_preco), notice: "Item removido com sucesso."
   end

@@ -1,9 +1,7 @@
 # app/controllers/cantina/cardapio_produtos_controller.rb
 class Cantina::CardapioProdutosController < ApplicationController
   before_action :authenticate_user!
-  after_action :verify_authorized
-
-  def create
+    def create
     @cardapio = Cardapio.find(params[:cardapio_id])
     @cardapio_produto = @cardapio.cardapio_produtos.new(produto_id: params[:produto_id])
     authorize [ :cantina, @cardapio_produto ]

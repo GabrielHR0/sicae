@@ -1,10 +1,7 @@
 class Cantina::CardapiosController < ApplicationController
   before_action :authenticate_user!
   before_action :set_cardapio, only: %i[show edit update destroy]
-  after_action :verify_authorized
-
-
-  def index
+    def index
     authorize [ :cantina, Cardapio ]
     @pagy, @cardapios = pagy(Cardapio.order(data: :desc), limit: 20)
   end

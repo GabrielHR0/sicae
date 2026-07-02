@@ -14,9 +14,9 @@ class ProdutosController < ApplicationController
              per_page_options: [ 10, 20, 50, 100 ]
 
   before_action :set_produto, only: %i[show edit update destroy]
-  # after_action :verify_authorized
 
   def index
+    authorize Produto
     @stats = Produto.stats
 
     @pagy, @records = paginate_data_table(Produto.includes(:categoria)) do |scope|
@@ -27,6 +27,7 @@ class ProdutosController < ApplicationController
   end
 
   def show
+    authorize @produto
     if turbo_frame_request?
       case params[:modal]
       when "view"
@@ -42,6 +43,7 @@ class ProdutosController < ApplicationController
 
   def new
     @produto = Produto.new
+    authorize @produto
     @categorias = Categoria.order(:nome)
 
     if turbo_frame_request?
@@ -51,6 +53,7 @@ class ProdutosController < ApplicationController
 
   def create
     @produto = Produto.new(produto_params)
+    authorize @produto
     @categorias = Categoria.order(:nome)
 
     if @produto.save
@@ -61,10 +64,12 @@ class ProdutosController < ApplicationController
   end
 
   def edit
+    authorize @produto
     @categorias = Categoria.order(:nome)
   end
 
   def update
+    authorize @produto
     @categorias = Categoria.order(:nome)
 
     if @produto.update(produto_params)
@@ -75,6 +80,7 @@ class ProdutosController < ApplicationController
   end
 
   def destroy
+    authorize @produto
     @produto.destroy
     redirect_to produtos_path, notice: "Produto removido com sucesso."
   end

@@ -1,8 +1,6 @@
 class ReservasController < ApplicationController
   before_action :authenticate_user!
-  after_action :verify_authorized
-
-  def create
+    def create
     @responsavel = current_user.responsavel
     @estudante = @responsavel.estudantes.find(reserva_params[:estudante_id])
     @produto = Produto.find(reserva_params[:produto_id])

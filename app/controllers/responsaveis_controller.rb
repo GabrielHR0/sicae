@@ -1,9 +1,7 @@
 class ResponsaveisController < ApplicationController
   include DataTableable
 
-  after_action :verify_authorized
-
-  SORTABLE_COLUMNS = %w[nome relacao_parental estudantes_count].freeze
+    SORTABLE_COLUMNS = %w[nome relacao_parental estudantes_count].freeze
   SEARCHABLE_COLUMNS = %w[nome email cpf].freeze
 
   data_table default_sort: { nome: :asc },

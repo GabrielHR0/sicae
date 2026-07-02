@@ -6,6 +6,8 @@ class ApplicationController < ActionController::Base
   before_action :ensure_escola
   allow_browser versions: :modern
 
+  after_action :verify_authorized, unless: :devise_or_pages?
+
   rescue_from Pundit::NotAuthorizedError do |e|
     respond_to do |format|
       format.json { render json: { erro: "Não autorizado" }, status: :forbidden }
@@ -16,6 +18,10 @@ class ApplicationController < ActionController::Base
   stale_when_importmap_changes
 
   private
+
+  def devise_or_pages?
+    devise_controller? || self.class == ErrorsController || self.class == LandingController
+  end
 
   def render(*args, **kwargs)
     status = kwargs[:status] || (args.first.is_a?(Hash) && args.first[:status])

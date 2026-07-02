@@ -1,5 +1,5 @@
 class VendasController < ApplicationController
-  after_action :verify_authorized, except: [ :new, :produto_card, :estudante_card ]
+  skip_after_action :verify_authorized, only: %i[new produto_card estudante_card]
 
   def new
   end

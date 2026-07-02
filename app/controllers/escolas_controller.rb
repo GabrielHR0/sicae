@@ -1,12 +1,15 @@
 class EscolasController < ApplicationController
   before_action :set_escola, only: %i[ show edit update destroy ]
   skip_before_action :authenticate_user!, only: %i[ new create ]
+  skip_after_action :verify_authorized, only: %i[ new create ]
 
   def index
+    authorize Escola
     @escolas = Escola.all
   end
 
   def show
+    authorize @escola
   end
 
   def new
@@ -14,6 +17,7 @@ class EscolasController < ApplicationController
   end
 
   def edit
+    authorize @escola
   end
 
   def create
@@ -34,6 +38,7 @@ class EscolasController < ApplicationController
   end
 
   def update
+    authorize @escola
     if @escola.update(escola_params)
       redirect_to @escola, notice: "Escola atualizada.", status: :see_other
     else
@@ -42,6 +47,7 @@ class EscolasController < ApplicationController
   end
 
   def destroy
+    authorize @escola
     @escola.destroy!
     redirect_to escolas_path, notice: "Escola removida.", status: :see_other
   end
