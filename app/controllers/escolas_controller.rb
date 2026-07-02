@@ -24,11 +24,10 @@ class EscolasController < ApplicationController
     @escola = Escola.new(escola_params)
     @escola.assign_attributes(
       ativo: true,
-      cnpj: @escola.cnpj.presence || "00.000.000/0000-00",
-      email: @escola.email.presence || "contato@#{@escola.nome.parameterize}.com.br",
-      telefone: @escola.telefone.presence || "(00) 0000-0000"
+      cnpj: @escola.cnpj.presence || "00.000.000/#{SecureRandom.hex(4)}-00",
+      email: @escola.email.presence || "contato@#{@escola.nome.parameterize}.#{SecureRandom.hex(2)}.com.br",
+      telefone: @escola.telefone.presence || "(00) #{format("%04d", SecureRandom.random_number(10000))}-0000"
     )
-
     if @escola.save
       current_user.update!(escola: @escola) if current_user
       redirect_to dashboard_path, notice: "Escola criada com sucesso!"
