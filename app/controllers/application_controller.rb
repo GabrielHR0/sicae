@@ -17,12 +17,6 @@ class ApplicationController < ActionController::Base
 
   stale_when_importmap_changes
 
-  private
-
-  def devise_or_pages?
-    devise_controller? || self.class == ErrorsController || self.class == LandingController
-  end
-
   def render(*args, **kwargs)
     status = kwargs[:status] || (args.first.is_a?(Hash) && args.first[:status])
     if (status == :unprocessable_entity || status == 422) && !request.format.json?
@@ -30,6 +24,12 @@ class ApplicationController < ActionController::Base
       flash.now[:alert] = errors if errors.any?
     end
     super
+  end
+
+  private
+
+  def devise_or_pages?
+    devise_controller? || self.class == ErrorsController || self.class == LandingController
   end
 
   def ensure_escola
