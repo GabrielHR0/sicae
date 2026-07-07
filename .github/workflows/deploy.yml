@@ -22,7 +22,7 @@ jobs:
         run: docker save $REGISTRY:latest | gzip > sicae-image.tar.gz
 
       - name: Copy image to droplet
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@v1.0.0
         with:
           host: ${{ env.DROPLET }}
           port: 2222
