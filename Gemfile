@@ -32,7 +32,7 @@ gem "pundit", "~> 2.5"
 
 gem "rails-i18n", "~> 8.1.0"
 
-gem "pagy", "~> 43.4"
+gem "pagy", "~> 43.6"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
